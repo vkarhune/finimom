@@ -1,0 +1,3 @@
+simulate_phenotype_data <- function(X, N, p, ncausals, R2, seed){
+  # ...
+}
