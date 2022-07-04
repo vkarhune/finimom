@@ -1,0 +1,186 @@
+posterior_samples <- function(
+    beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
+    n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
+    msprior = NULL){
+
+
+  if(0){
+    beta <- d[,1]
+    se <- d[,2]
+    eaf <- eafs
+    maxsize <- 10
+    tau0 <- 0.008
+    r0 <- 1
+    niter <- 2500
+    burnin <- 500
+    p <- nrow(d)
+    seed <- 456
+    n <- 1000
+    a0 <- 0.05
+    b0 <- 1
+    inds0 <- NULL
+  }
+
+
+  if(standardize){
+    beta <- beta*sqrt(2*eaf*(1-eaf))
+    se <- se*sqrt(2*eaf*(1-eaf))
+  }
+
+  z <- beta/se
+
+  if(is.null(msprior)) { msprior <- "complexity" }
+
+  if(msprior %in% "complexity") {
+    lprior <- sapply(seq_len(maxsize), dbb, samplesize = p, a = a0, b = b0)
+    lprior <- log(exp(lprior)/sum(exp(lprior)))
+  }
+
+  if(msprior %in% "uniform") {
+    lprior <- log(rep(1/maxsize, maxsize))
+  }
+
+  # initialise
+  if(is.null(inds0)){
+    inds <- which.max(abs(z))
+  } else {
+    inds <- inds0
+  }
+  opt <- optim(as.matrix(beta[inds], ncol = 1), g,
+               beta = as.matrix(beta[inds], ncol = 1),
+               se = se[inds],
+               R = R[inds,inds,drop = F],
+               psi = 1,
+               k = length(inds), tau = tau0, r = r0,
+               # method = "BFGS")
+               method = "Nelder-Mead", control = list(warn.1d.NelderMead = FALSE))
+
+  lml <- logmyb(as.matrix(beta[inds], ncol = 1),
+               se[inds],
+               tau = tau0, psi = 1, r = r0, k = length(inds),
+               R = R[inds,inds,drop = F], gval = opt$value)
+  lp <- lml + logmk(lprior, length(inds))
+
+  modelsize <- length(inds)
+
+  betavec <- rep(0, p)
+
+  betavec[inds] <- opt$par
+
+  set.seed(seed)
+
+  out <- list(matrix(NA, nrow = niter, ncol = p),
+              vector("numeric", length = niter),
+              vector("character", length = niter),
+              vector("numeric", length = niter)
+  )
+
+  # loop
+  prc <- proc.time()
+  for(i in 1:niter){
+    # for(i in 1:27){
+
+    # i <- 1
+
+    # i <- i + 1
+
+    # randomly pick add = 1, delete = 0, swap = 2
+    if(modelsize == 1){
+      add <- sample(1:2, size = 1)
+    } else if(modelsize == maxsize){
+      add <- sample(c(0, 2), size = 1)
+    } else {
+      add <- sample(0:2, size = 1)
+    }
+
+    fullrank <- FALSE
+    while(!fullrank){
+
+      if(add == 1){
+        # swapindex <- sample(which(betavec == 0), 1)
+        probs <- abs(z^2)[which(betavec == 0)]/sum(abs(z^2)[which(betavec == 0)])
+        swapindex <- sample(which(betavec == 0), size = 1, prob = probs)
+        indsprop <- sort(c(inds, swapindex))
+      } else if(add == 2){
+        swapindex <- sample2(which(betavec != 0), 1)
+        probs <- R[swapindex,which(betavec == 0)]^2/sum(R[swapindex,which(betavec == 0)]^2)
+        # probs <- abs(R[swapindex,which(betavec == 0)])/sum(abs(R[swapindex,which(betavec == 0)]))
+        addindex <- sample2(which(betavec == 0), size = 1, prob = probs)
+        indsprop <- sort(c(addindex, setdiff(inds, swapindex)))
+      } else {
+        swapindex <- sample(which(betavec != 0), 1)
+        indsprop <- setdiff(which(betavec != 0), swapindex)
+      }
+
+      if(qr(R[indsprop,indsprop])$rank == length(indsprop)){
+        fullrank <- TRUE
+      }
+
+    }
+
+    # inds <- sort(c(inds, newinds))
+
+    opt <- optim(as.matrix(beta[indsprop], ncol = 1),
+                 g,
+                 beta = as.matrix(beta[indsprop], ncol = 1),
+                 se = se[indsprop],
+                 R = R[c(indsprop),c(indsprop),drop = F],
+                 psi = 1,
+                 k = length(indsprop), tau = tau0, r = r0,
+                 # method = "BFGS")
+                 method = "Nelder-Mead", control = list(warn.1d.NelderMead = FALSE))
+
+
+
+    lmlnew <- logmyb(as.matrix(beta[indsprop], ncol = 1),
+                    se[indsprop],
+                    tau = tau0, psi = 1, r = r0, k = length(indsprop),
+                    R = R[c(indsprop),c(indsprop),drop = F],
+                    gval = opt$value)
+    lpnew <- lmlnew + logmk(lprior, length(indsprop))
+
+    betaprop <- rep(0, p)
+    betaprop[indsprop] <- opt$par
+    modelsizeprop <- length(indsprop)
+
+    # lp
+    # lpnew
+
+    # log likelihood ratio
+    # llr <- lpnew - lp
+    # barker <- exp(lpnew)/(exp(lp) + exp(lpnew))
+    barker <- 1/(1+exp(lp - lpnew))
+
+    if(is.infinite(lpnew)) { barker <- -1 }
+    # if(opt$convergence %in% c(1, 10)) { barker <- -1 }
+
+    u <- runif(1)
+
+    if(u < barker){
+      betavec <- betaprop
+      modelsize <- modelsizeprop
+      lml <- lmlnew
+      lp <- lpnew
+      inds <- indsprop
+    }
+
+    out[[1]][i,] <- betavec
+    out[[2]][i] <- modelsize
+    out[[3]][i] <- paste0(inds, collapse = ",")
+    out[[4]][i] <- lml
+
+    if(i %% 100 == 0) { cat(sprintf("%i\n", i)) }
+
+  }
+  cat(sprintf("%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
+
+  if(excl.burnin){
+  out <- list(out[[1]][(burnin + 1):niter,],
+              out[[2]][(burnin + 1):niter],
+              out[[3]][(burnin + 1):niter],
+              out[[4]][(burnin + 1):niter])
+  }
+
+  return(out)
+
+}
