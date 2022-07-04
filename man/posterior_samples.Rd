@@ -36,7 +36,7 @@ posterior_samples(
 
 \item{maxsize}{The maximum number of causal variants.}
 
-\item{tau0}{Parameter \tau.}
+\item{tau0}{Parameter tau.}
 
 \item{r0}{Parameter $r$.}
 

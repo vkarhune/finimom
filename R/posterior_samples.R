@@ -5,7 +5,7 @@
 #' @param eaf Vector of effect allele frequencies.
 #' @param R LD matrix.
 #' @param maxsize The maximum number of causal variants.
-#' @param tau0 Parameter \tau.
+#' @param tau0 Parameter tau.
 #' @param r0 Parameter $r$.
 #' @param niter Number of iterations.
 #' @param burnin Number of burn-in samples.
@@ -30,15 +30,15 @@ posterior_samples <- function(
 
 
   if(0){
-    beta <- d[,1]
-    se <- d[,2]
-    eaf <- eafs
+    #beta <- d[,1]
+    #se <- d[,2]
+    #eaf <- eafs
     maxsize <- 10
     tau0 <- 0.008
     r0 <- 1
     niter <- 2500
     burnin <- 500
-    p <- nrow(d)
+    #p <- nrow(d)
     seed <- 456
     n <- 1000
     a0 <- 0.05
@@ -71,7 +71,7 @@ posterior_samples <- function(
   } else {
     inds <- inds0
   }
-  opt <- optim(as.matrix(beta[inds], ncol = 1), g,
+  opt <- stats::optim(as.matrix(beta[inds], ncol = 1), g,
                beta = as.matrix(beta[inds], ncol = 1),
                se = se[inds],
                R = R[inds,inds,drop = F],
@@ -145,7 +145,7 @@ posterior_samples <- function(
 
     # inds <- sort(c(inds, newinds))
 
-    opt <- optim(as.matrix(beta[indsprop], ncol = 1),
+    opt <- stats::optim(as.matrix(beta[indsprop], ncol = 1),
                  g,
                  beta = as.matrix(beta[indsprop], ncol = 1),
                  se = se[indsprop],
@@ -179,7 +179,7 @@ posterior_samples <- function(
     if(is.infinite(lpnew)) { barker <- -1 }
     # if(opt$convergence %in% c(1, 10)) { barker <- -1 }
 
-    u <- runif(1)
+    u <- stats::runif(1)
 
     if(u < barker){
       betavec <- betaprop

@@ -24,7 +24,7 @@ simulate_phenotype_data(X, N, p, causals, R2, seed, meanbeta = 0, sdbeta = 1)
 \item{sdbeta}{Standard deviation of the Gaussian where the effect sizes are drawn from.}
 }
 \value{
-
+List of the phenotype and the betas, after scaling to var(Y) = 1.
 }
 \description{
 Title

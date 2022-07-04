@@ -9,7 +9,7 @@
 #' @param meanbeta Mean of the Gaussian where effect sizes are drawn from.
 #' @param sdbeta Standard deviation of the Gaussian where the effect sizes are drawn from.
 #'
-#' @return
+#' @return List of the phenotype and the betas, after scaling to var(Y) = 1.
 #' @export
 #'
 #' @examples
@@ -22,18 +22,18 @@ simulate_phenotype_data <- function(X, N, p, causals, R2, seed,
   # sdbeta <- 1
 
   betas <- vector("numeric", length = p)
-  betas[causals] <- rnorm(length(causals), mean = meanbeta, sd = sdbeta)
+  betas[causals] <- stats::rnorm(length(causals), mean = meanbeta, sd = sdbeta)
   xtb <- X %*% betas
 
   # R2 <- 0.005
 
-  sigmayy2 <- var(xtb)*(1/R2 - 1)
+  sigmayy2 <- stats::var(xtb)*(1/R2 - 1)
 
-  YY <- xtb + rnorm(nrow(X), mean = 0, sd = sqrt(sigmayy2))
+  YY <- xtb + stats::rnorm(nrow(X), mean = 0, sd = sqrt(sigmayy2))
 
   # scale back to sd(Y) = 1
-  Y <- YY/sd(YY)
-  betas <- betas/sd(YY)
+  Y <- YY/stats::sd(YY)
+  betas <- betas/stats::sd(YY)
   # sigma2 <- sigmayy2/var(YY)
 
   return(list(Y, betas))
