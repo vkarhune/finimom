@@ -1,4 +1,4 @@
-select_causals <- function(numcausals, LDmat, mincorr = 0.5, maxcorr = 0.8){
+select_causals <- function(numcausals, LDmat, mincorr = 0.5, maxcorr = 0.8, minmutualcorr = 0.5){
 
 # numcausals <- sample(c(1, 2, 4, 8), size = 1)
 causals <- numeric(length = numcausals)
@@ -29,7 +29,7 @@ if(numcausals > 2){
   cond <- FALSE
 
   while(!cond){
-    chooseinds2 <- which(apply(LDmat, 1, function(x) sum(abs(x) > 0.5)) > 1)
+    chooseinds2 <- which(apply(LDmat, 1, function(x) sum(abs(x) > minmutualcorr)) > 1)
 
     causal3 <- sample(chooseinds2, size = numcausals - 2)
     # causal3 <- sample(nrow(dd), size = numcausals - 2) # alternative
