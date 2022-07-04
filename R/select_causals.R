@@ -7,7 +7,7 @@ cond <- FALSE
 
 while(!cond){
   causalindex <- sample(seq_len(nrow(LDmat)), size = 1)
-  if(sum(abs(LDmat[causalindex,]) > 0.5 & abs(LDmat[causalindex,]) < maxcorr) > 1){
+  if(sum(abs(LDmat[causalindex,]) > mincorr & abs(LDmat[causalindex,]) < maxcorr) > 1){
     cond <- TRUE
   }
 }
@@ -34,7 +34,7 @@ if(numcausals > 2){
     causal3 <- sample(chooseinds2, size = numcausals - 2)
     # causal3 <- sample(nrow(dd), size = numcausals - 2) # alternative
     tm <- LDmat[c(causalindex, causal2, causal3),c(causalindex, causal2, causal3)]
-    if(max(abs(tm[lower.tri(tm)])) < 0.9){
+    if(max(abs(tm[lower.tri(tm)])) < maxcorr){
       cond <- TRUE
     }
   }
