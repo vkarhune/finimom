@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param x Input
+#' @param beta Vector of effect size estimates.
+#' @param se Vector of the standard errors of the effect size estimates.
+#' @param tau Parameter tau.
+#' @param psi Parameter psi (not used).
+#' @param r Parameter r.
+#' @param k Model size.
+#' @param R LD matrix.
+#'
+#' @return Value.
+#' @export
+#'
+#' @examples
 g <- function(x, beta, se, tau, psi, r, k, R){
 
   if(k == 1){

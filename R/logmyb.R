@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param x Vector of effect sizes.
+#' @param se Vector of standard errors.
+#' @param tau Parameter tau.
+#' @param psi Parameter psi (not used).
+#' @param r Parameter r.
+#' @param k Model size.
+#' @param R LD matrix.
+#' @param gval Value of g.
+#'
+#' @return Value.
+#' @export
+#'
+#' @examples
 logmyb <- function(x, se, tau, psi, r, k, R, gval){
 
   if(k == 1){

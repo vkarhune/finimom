@@ -1,3 +1,13 @@
+#' Title
+#'
+#' @param phenotype Phenotype.
+#' @param X Genotype matrix.
+#' @param adj Adjustments (defaults to NULL).
+#'
+#' @return Summary statistics with four columns: Effect size, its standard error, log(p-value), and p-value (note: min(p) = 1e-300, more accurate given by log(p-value)).
+#' @export
+#'
+#' @examples
 generate_sumstats <- function(phenotype, X, adj = NULL){
 
   out <- t(vapply(seq_len(ncol(X)), function(i){

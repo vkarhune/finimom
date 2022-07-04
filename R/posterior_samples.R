@@ -1,3 +1,28 @@
+#' Title
+#'
+#' @param beta Vector of effect sizes.
+#' @param se Vector of standard errors.
+#' @param eaf Vector of effect allele frequencies.
+#' @param R LD matrix.
+#' @param maxsize The maximum number of causal variants.
+#' @param tau0 Parameter \tau.
+#' @param r0 Parameter $r$.
+#' @param niter Number of iterations.
+#' @param burnin Number of burn-in samples.
+#' @param p Number of variants.
+#' @param seed Random seed.
+#' @param excl.burnin Should the burn-in be excluded?
+#' @param n Sample size (not used).
+#' @param a0 Hyperparameter a for the model size prior.
+#' @param b0 Hyperparameter b for the model size prior.
+#' @param inds0 Initial model indices (not used).
+#' @param standardize Should the effect sizes be standardised? Defaults to TRUE.
+#' @param msprior Model size prior (not used).
+#'
+#' @return List.
+#' @export
+#'
+#' @examples
 posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,

@@ -1,3 +1,18 @@
+#' Title
+#'
+#' @param X Genotype matrix.
+#' @param N Number of individuals.
+#' @param p Number of genetic variants.
+#' @param causals Indices of causal variants.
+#' @param R2 Variance explained by causal variants.
+#' @param seed Random seed.
+#' @param meanbeta Mean of the Gaussian where effect sizes are drawn from.
+#' @param sdbeta Standard deviation of the Gaussian where the effect sizes are drawn from.
+#'
+#' @return
+#' @export
+#'
+#' @examples
 simulate_phenotype_data <- function(X, N, p, causals, R2, seed,
                                     meanbeta = 0, sdbeta = 1){
 

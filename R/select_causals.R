@@ -1,3 +1,15 @@
+#' Title
+#'
+#' @param numcausals Number of causal variants.
+#' @param LDmat Linkage disequilibrium (LD) matrix, ie. correlation matrix of the variants.
+#' @param mincorr Minimum absoluate correlation of a causal variant with at least one other variant.
+#' @param maxcorr Maximum absolute correlation of a causal variant with another variant.
+#' @param minmutualcorr Minimum mutual correlation between one pair of causal variants.
+#'
+#' @return Indices of causal variants.
+#' @export
+#'
+#' @examples
 select_causals <- function(numcausals, LDmat, mincorr = 0.5, maxcorr = 0.8, minmutualcorr = 0.5){
 
 # numcausals <- sample(c(1, 2, 4, 8), size = 1)
