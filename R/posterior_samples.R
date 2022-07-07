@@ -123,7 +123,9 @@ posterior_samples <- function(
 
       if(add == 1){
         # swapindex <- sample(which(betavec == 0), 1)
-        probs <- abs(z^2)[which(betavec == 0)]/sum(abs(z^2)[which(betavec == 0)])
+        # probs <- abs(z^2)[which(betavec == 0)]/sum(abs(z^2)[which(betavec == 0)])
+        xtr <- beta - R %*% betavec
+        probs <- abs(xtr[which(betavec == 0)])/sum(abs(xtr[which(betavec == 0)]))
         swapindex <- sample(which(betavec == 0), size = 1, prob = probs)
         indsprop <- sort(c(inds, swapindex))
       } else if(add == 2){
