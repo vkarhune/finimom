@@ -2,15 +2,15 @@
 #'
 #' @param numcausals Number of causal variants.
 #' @param LDmat Linkage disequilibrium (LD) matrix, ie. correlation matrix of the variants.
-#' @param mincorr Minimum absoluate correlation of a causal variant with at least one other variant.
-#' @param maxcorr Maximum absolute correlation of a causal variant with another variant.
-#' @param minmutualcorr Minimum mutual correlation between one pair of causal variants.
+#' @param mincorr Minimum absolute correlation between a pair of causal variants.
+#' @param maxcorr Maximum absolute correlation between a pair of causal variants.
+#' @param minanycorr Minimum absolute correlation of a causal variant with at least one other variant.
 #'
 #' @return Indices of causal variants.
 #' @export
 #'
 #' @examples
-select_causals <- function(numcausals, LDmat, mincorr = 0.5, maxcorr = 0.8, minmutualcorr = 0.5){
+select_causals <- function(numcausals, LDmat, mincorr = 0.5, maxcorr = 0.8, minanycorr = 0.5){
 
 # numcausals <- sample(c(1, 2, 4, 8), size = 1)
 causals <- numeric(length = numcausals)
@@ -19,7 +19,9 @@ cond <- FALSE
 
 while(!cond){
   causalindex <- sample(seq_len(nrow(LDmat)), size = 1)
-  if(sum(abs(LDmat[causalindex,]) > mincorr & abs(LDmat[causalindex,]) < maxcorr) > 1){
+  if(sum(abs(LDmat[causalindex,]) > mincorr &
+         abs(LDmat[causalindex,]) > minanycorr &
+         abs(LDmat[causalindex,]) < maxcorr) > 1){
     cond <- TRUE
   }
 }
@@ -41,7 +43,7 @@ if(numcausals > 2){
   cond <- FALSE
 
   while(!cond){
-    chooseinds2 <- which(apply(LDmat, 1, function(x) sum(abs(x) > minmutualcorr)) > 1)
+    chooseinds2 <- which(apply(LDmat, 1, function(x) sum(abs(x) > minanycorr)) > 1)
 
     causal3 <- sample(chooseinds2, size = numcausals - 2)
     # causal3 <- sample(nrow(dd), size = numcausals - 2) # alternative
