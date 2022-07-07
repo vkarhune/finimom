@@ -57,7 +57,7 @@ posterior_samples <- function(
   if(is.null(msprior)) { msprior <- "complexity" }
 
   if(msprior %in% "complexity") {
-    lprior <- sapply(seq_len(maxsize), dbb, samplesize = p, a = a0, b = b0)
+    lprior <- sapply(seq_len(maxsize), dbb, p = p, a = a0, b = b0)
     lprior <- log(exp(lprior)/sum(exp(lprior)))
   }
 
