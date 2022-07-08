@@ -18,6 +18,7 @@
 #' @param inds0 Initial model indices (not used).
 #' @param standardize Should the effect sizes be standardised? Defaults to TRUE.
 #' @param msprior Model size prior (not used).
+#' @param verbose Verbose output.
 #'
 #' @return List.
 #' @export
@@ -26,7 +27,7 @@
 posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
-    msprior = NULL){
+    msprior = NULL, verbose = TRUE){
 
 
   if(0){
@@ -196,7 +197,9 @@ posterior_samples <- function(
     out[[3]][i] <- paste0(inds, collapse = ",")
     out[[4]][i] <- lml
 
-    if(i %% 100 == 0) { cat(sprintf("%i\n", i)) }
+    if(verbose){
+      if(i %% 100 == 0) { cat(sprintf("%i\n", i)) }
+    }
 
   }
   cat(sprintf("%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
