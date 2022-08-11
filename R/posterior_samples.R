@@ -27,24 +27,27 @@
 posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
-    msprior = NULL, verbose = TRUE){
+    msprior = NULL, verbose = TRUE,
+    clump = TRUE, clump_r2 = 0.99){
 
 
   if(0){
-    #beta <- d[,1]
-    #se <- d[,2]
-    #eaf <- eafs
+    R <- LDmat
+    beta <- summarystats[,1]
+    se <- summarystats[,2]
+    eaf <- eafs
     maxsize <- 10
-    tau0 <- 0.008
+    tau0 <- 0.0083
     r0 <- 1
     niter <- 2500
     burnin <- 500
     #p <- nrow(d)
     seed <- 456
-    n <- 1000
+    #n <- 1000
     a0 <- 0.05
-    b0 <- 1
+    b0 <- 0.95
     inds0 <- NULL
+    clump_r2 <- 0.99
   }
 
 
@@ -54,6 +57,63 @@ posterior_samples <- function(
   }
 
   z <- beta/se
+
+  if(clump){
+    cat(sprintf("Clumping variants at r2=%.2g\n", clump_r2))
+
+    if(0){
+    r2inds <- which(abs(R) > sqrt(clump_r2), arr.ind = T)
+    r2inds <- r2inds[r2inds[,1] >= r2inds[,2],]
+    r2inds <- cbind(r2inds, abs(z)[r2inds[,1]])
+    r2inds <- r2inds[order(r2inds[,"col"], -r2inds[,3]),]
+
+    rminds <- unique(r2inds[duplicated(r2inds[,2]),1])
+
+    keepinds <- setdiff(seq_len(nrow(R)), rminds)
+
+    R <- R[keepinds, keepinds]
+
+    all.equal(keepinds, sort(keepinds))
+    sum(abs(R) > sqrt(clump_r2)) == length(keepinds)
+}
+    # NOTE: does not quite work as expected
+    # (or mainly, the output doesn't work - try to get the correct clusters)
+    # LDmat[c(1017, 1194, 1201),c(1017, 1194, 1201)]
+
+    # try again:
+    ldlist <- lapply(seq_len(nrow(R)), function(i){
+      c(i, setdiff(which(abs(R[i,]) > sqrt(clump_r2)), i))
+    })
+
+    ldlist_sort <- ldlist[order(-abs(z))]
+
+    keeplist_sort <- lapply(seq_len(nrow(R)), function(i){
+      if(i == 1){
+        ldlist_sort[[i]]
+      } else {
+        setdiff(ldlist_sort[[i]], unique(unlist(ldlist_sort[1:(i - 1)])))
+      }
+    })
+
+    keeplist_cleaned <- keeplist_sort[sapply(keeplist_sort,
+                                             function(x) length(x) > 0)]
+
+    keepinds <- sapply(keeplist_cleaned, "[", 1)
+
+
+
+    beta <- beta[keepinds]
+    se <- se[keepinds]
+    z <- z[keepinds]
+    p <- length(keepinds)
+
+    R <- R[keepinds, keepinds]
+
+    sum(abs(R) > sqrt(clump_r2)) == length(keepinds)
+
+
+  }
+
 
   if(is.null(msprior)) { msprior <- "complexity" }
 
@@ -209,6 +269,11 @@ posterior_samples <- function(
               out[[2]][(burnin + 1):niter],
               out[[3]][(burnin + 1):niter],
               out[[4]][(burnin + 1):niter])
+  }
+
+  if(clump){
+    out <- c(out,
+             list(keeplist_cleaned))
   }
 
   return(out)
