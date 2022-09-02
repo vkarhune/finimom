@@ -154,7 +154,11 @@ posterior_samples2 <- function(
     if(modelsize == 1){
       add <- sample(1:2, size = 1)
     } else if(modelsize == maxsize){
-      add <- sample(c(0, 2), size = 1)
+      if(modelsize == p){
+        add <- 0
+      } else {
+        add <- sample(c(0, 2), size = 1)
+      }
     } else {
       add <- sample(0:2, size = 1)
     }
