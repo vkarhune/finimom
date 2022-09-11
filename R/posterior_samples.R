@@ -63,11 +63,6 @@ posterior_samples <- function(
 
     keeplist_cleaned <- clump_variants(R = R, clump_r2 = clump_r2, z = z)
 
-    if(0){
-      R[897,998] <- 1
-      R[998,897] <- 1
-    }
-
     if(check_ld){
       ldcheck <- lapply(keeplist_cleaned, check_ld_disc, z = z,
       # ldcheck <- lapply(keeplist_cleaned[1:5], check_ld_disc, z = z,
@@ -95,8 +90,6 @@ posterior_samples <- function(
       keeplist_cleaned <- lapply(rapply(ldcheck, enquote, how = "unlist"), eval)
 
     }
-  }
-
 
     keepinds <- sapply(keeplist_cleaned, "[", 1)
 
