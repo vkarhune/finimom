@@ -20,9 +20,9 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
   z <- z[indices]
   LDmat <- LDm[indices, indices]
 
-  if(abs(z[1]) < 3){
-    ld_disc_out <- indices
-  } else {
+  #if(abs(z[1]) < 3){
+  #  ld_disc_out <- indices
+  #} else {
 
 
   maxz <- 1 # this is sorted in "clump_variants.R"
@@ -52,20 +52,16 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
 
     ld_disc_out <- lapply(ld_disc_out, function(x) indices[x])
 
-    ld_disc_out <- list(ld_disc_out, c(indices[maxz], indices[mismatch], projected_r))
+    # ld_disc_out <- list(ld_disc_out, c(indices[maxz], indices[mismatch], projected_r))
 
   } else {
     ld_disc_out <- indices
   }
 
-  }
+  #}
 }
 
-  # what if more than two discrepancies?!
-  # -everything should work as vectorised
 
-#   KESKEN add LDmat changes to output
-  # output: new groups, indices to change in LDmat, value to change in LDmat
 
   return(ld_disc_out)
 }

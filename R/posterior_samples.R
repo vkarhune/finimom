@@ -69,6 +69,9 @@ posterior_samples <- function(
                         Chi2_quantile = 0.5,
                         LDm = R, clump_r2 = clump_r2)
 
+      #KESKEN simply edit the groups, but do not touch the LD matrix
+      if(0){
+
       ld_changes <- lapply(ldcheck, function(x){
         if(!(is.list(x))){
           out <- NULL
@@ -80,16 +83,20 @@ posterior_samples <- function(
 
       ld_changes <- ld_changes[sapply(ld_changes, function(x) !(is.null(x)))]
 
-      if(0){
       invisible(lapply(ld_changes, function(x){
         R[x[1],x[2]] <<- x[3]
         R[x[2],x[1]] <<- x[3]
       }))
-      }
+
 
       ldcheck <- lapply(ldcheck, "[[", 1)
 
+
       keeplist_cleaned <- lapply(rapply(ldcheck, enquote, how = "unlist"), eval)
+      }
+
+      keeplist_cleaned <- lapply(rapply(ldcheck, enquote, how = "unlist"), eval)
+
 
     }
 
