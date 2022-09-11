@@ -28,7 +28,7 @@ clump_variants <- function(R, clump_r2, z){
   for(i in 2:length(ldlist_sort)){
     if(ldlist_sort[[i]][[1]] %in% unlist(keeplist_sort[1:(i-1)])){
       NULL } else {
-        keeplist_sort[[i]] <- ldlist_sort[[i]]
+        keeplist_sort[[i]] <- setdiff(ldlist_sort[[i]], unlist(keeplist_sort[1:(i-1)]))
     }
   }
 
