@@ -163,6 +163,9 @@ posterior_samples <- function(
 
     # i <- i + 1
 
+    fullrank <- FALSE
+    while(!fullrank){
+
     # randomly pick add = 1, delete = 0, swap = 2
     if(modelsize == 1){
       add <- sample(1:2, size = 1)
@@ -175,9 +178,6 @@ posterior_samples <- function(
     } else {
       add <- sample(0:2, size = 1)
     }
-
-    fullrank <- FALSE
-    while(!fullrank){
 
       if(add == 1){
         # swapindex <- sample(which(betavec == 0), 1)
