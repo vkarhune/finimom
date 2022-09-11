@@ -154,11 +154,7 @@ posterior_samples2 <- function(
     if(modelsize == 1){
       add <- sample(1:2, size = 1)
     } else if(modelsize == maxsize){
-      if(modelsize == p){
-        add <- 0
-      } else {
-        add <- sample(c(0, 2), size = 1)
-      }
+      add <- sample(c(0, 2), size = 1)
     } else {
       add <- sample(0:2, size = 1)
     }
@@ -170,8 +166,8 @@ posterior_samples2 <- function(
         # swapindex <- sample(which(betavec == 0), 1)
         # probs <- abs(z^2)[which(betavec == 0)]/sum(abs(z^2)[which(betavec == 0)])
         xtr <- beta - R %*% betavec
-        probs <- (xtr[which(betavec == 0)]^2)/sum((xtr[which(betavec == 0)])^2)
-        swapindex <- sample2(which(betavec == 0), size = 1, prob = probs)
+        probs <- abs(xtr[which(betavec == 0)])/sum(abs(xtr[which(betavec == 0)]))
+        swapindex <- sample(which(betavec == 0), size = 1, prob = probs)
         indsprop <- sort(c(inds, swapindex))
       } else if(add == 2){
         swapindex <- sample2(which(betavec != 0), 1)
@@ -180,7 +176,7 @@ posterior_samples2 <- function(
         addindex <- sample2(which(betavec == 0), size = 1, prob = probs)
         indsprop <- sort(c(addindex, setdiff(inds, swapindex)))
       } else {
-        swapindex <- sample2(which(betavec != 0), 1)
+        swapindex <- sample(which(betavec != 0), 1)
         indsprop <- setdiff(which(betavec != 0), swapindex)
       }
 

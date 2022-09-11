@@ -28,7 +28,7 @@ posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
     msprior = NULL, verbose = TRUE,
-    clump = TRUE, clump_r2 = 0.95^2){
+    clump = TRUE, clump_r2 = 0.95^2, check_ld = FALSE){
 
 
   if(0){
@@ -47,7 +47,7 @@ posterior_samples <- function(
     a0 <- 0.05
     b0 <- 0.95
     inds0 <- NULL
-    clump_r2 <- 0.99
+    clump_r2 <- 0.95^2
   }
 
 
@@ -61,22 +61,42 @@ posterior_samples <- function(
   if(clump){
     cat(sprintf("Clumping variants at r2=%.3g\n", clump_r2))
 
-    ldlist <- lapply(seq_len(nrow(R)), function(i){
-      c(i, setdiff(which(abs(R[i,]) > sqrt(clump_r2)), i))
-    })
+    keeplist_cleaned <- clump_variants(R = R, clump_r2 = clump_r2, z = z)
 
-    ldlist_sort <- ldlist[order(-abs(z))]
+    if(0){
+      R[897,998] <- 1
+      R[998,897] <- 1
+    }
 
-    keeplist_sort <- lapply(seq_len(nrow(R)), function(i){
-      if(i == 1){
-        ldlist_sort[[i]]
-      } else {
-        setdiff(ldlist_sort[[i]], unique(unlist(ldlist_sort[1:(i - 1)])))
-      }
-    })
+    if(check_ld){
+      ldcheck <- lapply(keeplist_cleaned, check_ld_disc, z = z,
+      # ldcheck <- lapply(keeplist_cleaned[1:5], check_ld_disc, z = z,
+                        Chi2_quantile = 0.5,
+                        LDm = R, clump_r2 = clump_r2)
 
-    keeplist_cleaned <- keeplist_sort[sapply(keeplist_sort,
-                                             function(x) length(x) > 0)]
+      ld_changes <- lapply(ldcheck, function(x){
+        if(!(is.list(x))){
+          out <- NULL
+        } else {
+          out <- x[[2]]
+        }
+        return(out)
+      })
+
+      ld_changes <- ld_changes[sapply(ld_changes, function(x) !(is.null(x)))]
+
+      invisible(lapply(ld_changes, function(x){
+        R[x[1],x[2]] <<- x[3]
+        R[x[2],x[1]] <<- x[3]
+      }))
+
+      ldcheck <- lapply(ldcheck, "[[", 1)
+
+      keeplist_cleaned <- lapply(rapply(ldcheck, enquote, how = "unlist"), eval)
+
+    }
+  }
+
 
     keepinds <- sapply(keeplist_cleaned, "[", 1)
 
@@ -154,7 +174,11 @@ posterior_samples <- function(
     if(modelsize == 1){
       add <- sample(1:2, size = 1)
     } else if(modelsize == maxsize){
-      add <- sample(c(0, 2), size = 1)
+      if(modelsize == p){
+        add <- 0
+      } else {
+        add <- sample(c(0, 2), size = 1)
+      }
     } else {
       add <- sample(0:2, size = 1)
     }
@@ -166,8 +190,8 @@ posterior_samples <- function(
         # swapindex <- sample(which(betavec == 0), 1)
         # probs <- abs(z^2)[which(betavec == 0)]/sum(abs(z^2)[which(betavec == 0)])
         xtr <- beta - R %*% betavec
-        probs <- abs(xtr[which(betavec == 0)])/sum(abs(xtr[which(betavec == 0)]))
-        swapindex <- sample(which(betavec == 0), size = 1, prob = probs)
+        probs <- (xtr[which(betavec == 0)]^2)/sum((xtr[which(betavec == 0)])^2)
+        swapindex <- sample2(which(betavec == 0), size = 1, prob = probs)
         indsprop <- sort(c(inds, swapindex))
       } else if(add == 2){
         swapindex <- sample2(which(betavec != 0), 1)
@@ -176,7 +200,7 @@ posterior_samples <- function(
         addindex <- sample2(which(betavec == 0), size = 1, prob = probs)
         indsprop <- sort(c(addindex, setdiff(inds, swapindex)))
       } else {
-        swapindex <- sample(which(betavec != 0), 1)
+        swapindex <- sample2(which(betavec != 0), 1)
         indsprop <- setdiff(which(betavec != 0), swapindex)
       }
 
