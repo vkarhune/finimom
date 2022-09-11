@@ -20,9 +20,9 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
   z <- z[indices]
   LDmat <- LDm[indices, indices]
 
-  #if(abs(z[1]) < 3){
-  #  ld_disc_out <- indices
-  #} else {
+  if(abs(z[1]) < 3){
+    ld_disc_out <- indices
+  } else {
 
 
   maxz <- 1 # this is sorted in "clump_variants.R"
@@ -58,7 +58,7 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
     ld_disc_out <- indices
   }
 
-  #}
+  }
 }
 
 
