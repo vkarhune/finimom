@@ -80,10 +80,12 @@ posterior_samples <- function(
 
       ld_changes <- ld_changes[sapply(ld_changes, function(x) !(is.null(x)))]
 
+      if(0){
       invisible(lapply(ld_changes, function(x){
         R[x[1],x[2]] <<- x[3]
         R[x[2],x[1]] <<- x[3]
       }))
+      }
 
       ldcheck <- lapply(ldcheck, "[[", 1)
 
