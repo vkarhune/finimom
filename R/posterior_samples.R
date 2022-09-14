@@ -109,7 +109,7 @@ posterior_samples <- function(
     z <- z[keepinds]
     p <- length(keepinds)
 
-    R <- R[keepinds, keepinds]
+    R <- R[keepinds, keepinds, drop = F]
 
     # sum(abs(R) > sqrt(clump_r2)) == length(keepinds)
 
