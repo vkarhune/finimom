@@ -28,7 +28,7 @@ posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
     msprior = NULL, verbose = TRUE,
-    clump = TRUE, clump_r2 = 0.95^2, check_ld = FALSE){
+    clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE){
 
 
   if(0){
@@ -47,7 +47,7 @@ posterior_samples <- function(
     a0 <- 0.05
     b0 <- 0.95
     inds0 <- NULL
-    clump_r2 <- 0.95^2
+    clump_r2 <- 0.99^2
   }
 
 
@@ -111,7 +111,7 @@ posterior_samples <- function(
 
     R <- R[keepinds, keepinds]
 
-    sum(abs(R) > sqrt(clump_r2)) == length(keepinds)
+    # sum(abs(R) > sqrt(clump_r2)) == length(keepinds)
 
 
   }
