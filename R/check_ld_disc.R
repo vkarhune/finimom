@@ -45,8 +45,8 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
   # teststat <- (observed - expected)/sqrt(1 + 1 - 2*LDmat[maxz,])
   # this reduces to 0 if r = 1 - smth to protect this
   # solution: use clump_r2 threshold
-  rr <- ifelse(LDmat[maxz,] == 1, clump_r2, LDmat[maxz,])
-  teststat <- (observed - expected)^2/(2*(1 - rr))
+  # rr <- ifelse(LDmat[maxz,] > sqrt(clump_r2), sqrt(clump_r2), LDmat[maxz,])
+  teststat <- (observed - expected)^2/(2*(1 - sqrt(clump_r2)))
 
 
 
