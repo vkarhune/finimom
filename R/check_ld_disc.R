@@ -36,7 +36,7 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
   # test statistic
   # teststat <- ((observed - expected)/LDmat[maxz,])^2
 
-  teststat <- (observed - expected)^2
+  # teststat <- (observed - expected)^2
 
   # X - Y \sim N(mux - muy, sigmax2 + sigmay2 - 2*cor(X,y)*sigmax*sigmay)
   # Z = ((X - Y) - mu[x-y])/sigma[x-y] \sim N(0, 1)
@@ -44,6 +44,11 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
   # Hormozdiari et al.
   # teststat <- (observed - expected)/sqrt(1 + 1 - 2*LDmat[maxz,])
   # this reduces to 0 if r = 1 - smth to protect this
+  # solution: use clump_r2 threshold
+  rr <- ifelse(LDmat[maxz,] == 1, clump_r2, LDmat[maxz,])
+  teststat <- (observed - expected)^2/(2*(1 - rr))
+
+
 
   if(is.null(Chi2_quantile)) { Chi2_quantile <- 0.5 }
 

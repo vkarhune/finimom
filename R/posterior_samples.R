@@ -109,7 +109,12 @@ posterior_samples <- function(
     z <- z[keepinds]
     p <- length(keepinds)
 
-    R <- R[keepinds, keepinds, drop = F]
+    R <- R[keepinds, keepinds]
+
+    if(!(is.matrix(R))){
+      cat(sprintf("Only one set of variants for fine-mapping - exiting\n"))
+      return(NULL)
+    }
 
     # sum(abs(R) > sqrt(clump_r2)) == length(keepinds)
 
