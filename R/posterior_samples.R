@@ -139,6 +139,16 @@ posterior_samples <- function(
   } else {
     inds <- inds0
   }
+
+  # anchor 95% credible set
+  lbf <- bf(beta, se, tau, r0)
+
+  pp <- exp(lbf)/sum(exp(lbf))
+
+  anchorset <- order(pp, decreasing = T)[which(cumsum(sort(pp, decreasing = TRUE)/sum(pp)) < 0.95)]
+
+
+
   opt <- stats::optim(as.matrix(beta[inds], ncol = 1), g,
                beta = as.matrix(beta[inds], ncol = 1),
                se = se[inds],
@@ -211,7 +221,7 @@ posterior_samples <- function(
         indsprop <- setdiff(which(betavec != 0), swapindex)
       }
 
-      if(qr(R[indsprop,indsprop])$rank == length(indsprop)){
+      if(qr(R[indsprop,indsprop])$rank == length(indsprop) | any(indsprop %in% anchorset)){
         fullrank <- TRUE
       }
 
