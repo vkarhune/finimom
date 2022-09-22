@@ -57,7 +57,7 @@ check_ld_disc <- function(indices, z, Chi2_quantile = NULL, LDm, clump_r2){
   if(length(mismatch) > 0){
 
     # projected_r <- mean(c(LDmat[mismatch,maxz], sqrt(observed[mismatch]/observed[maxz])*sign(LDmat[mismatch,maxz])))
-    projected_r <- sqrt(observed[mismatch]/observed[maxz])*sign(LDmat[mismatch,maxz])
+    projected_r <- sqrt(abs(observed[mismatch]/observed[maxz]))*sign(LDmat[mismatch,maxz])
 
     LDmat[mismatch, maxz] <- projected_r
     LDmat[maxz, mismatch] <- projected_r
