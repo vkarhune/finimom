@@ -19,6 +19,11 @@
 #' @param standardize Should the effect sizes be standardised? Defaults to TRUE.
 #' @param msprior Model size prior (not used).
 #' @param verbose Verbose output.
+#' @param clump
+#' @param clump_r2
+#' @param check_ld
+#' @param anchor
+#' @param anchor_cslevel
 #'
 #' @return List.
 #' @export
@@ -28,7 +33,7 @@ posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
     msprior = NULL, verbose = TRUE,
-    clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE){
+    clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE, anchor = FALSE, anchor_cslevel = 0.5){
 
 
   if(0){
@@ -140,12 +145,14 @@ posterior_samples <- function(
     inds <- inds0
   }
 
+  if(anchor){
   # anchor 95% credible set
   lbf <- bf(beta, se, tau, r0)
 
   pp <- exp(lbf)/sum(exp(lbf))
 
-  anchorset <- order(pp, decreasing = T)[which(cumsum(sort(pp, decreasing = TRUE)/sum(pp)) < 0.95)]
+  anchorset <- order(pp, decreasing = T)[which(cumsum(sort(pp, decreasing = TRUE)/sum(pp)) < anchor_cslevel)]
+  }
 
 
 
@@ -221,7 +228,10 @@ posterior_samples <- function(
         indsprop <- setdiff(which(betavec != 0), swapindex)
       }
 
-      if(qr(R[indsprop,indsprop])$rank == length(indsprop) | any(indsprop %in% anchorset)){
+      cond <- qr(R[indsprop,indsprop])$rank == length(indsprop)
+      if(anchor) { cond <- cond & any(indsprop %in% anchorset) }
+
+      if(cond){
         fullrank <- TRUE
       }
 
