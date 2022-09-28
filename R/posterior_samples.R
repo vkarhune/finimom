@@ -192,7 +192,10 @@ posterior_samples <- function(
         lpnew <- Inf
       } else {
 
-    opt <- stats::optim(as.matrix(beta[indsprop], ncol = 1),
+        initpars <- as.matrix(beta[indsprop], ncol = 1)
+        if(any(initpars == 0)){ initpars[initpars == 0] <- 1e-7 }
+
+    opt <- stats::optim(initpars,
                         g,
                         beta = as.matrix(beta[indsprop], ncol = 1),
                         se = se[indsprop],
