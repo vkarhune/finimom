@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-posterior_samples <- function(
+posterior_samples2 <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     n, a0 = 0.05, b0 = 0.95, inds0 = NULL, standardize = TRUE,
     msprior = NULL, verbose = TRUE,

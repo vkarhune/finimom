@@ -25,7 +25,7 @@
 #' @export
 #'
 #' @examples
-posterior_samples2 <- function(
+posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     a0 = 1, b0 = NULL, inds0 = NULL, standardize = TRUE,
     verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE){
