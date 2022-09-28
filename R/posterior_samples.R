@@ -206,8 +206,10 @@ posterior_samples <- function(
                         method = "Nelder-Mead", control = list(warn.1d.NelderMead = FALSE))
 
 
+    b <- as.matrix(beta[indsprop], ncol = 1)
+    if(any(b == 0)){ b[b == 0] <- 1e-7 }
 
-    lmlnew <- logmyb(as.matrix(beta[indsprop], ncol = 1),
+    lmlnew <- logmyb(b,
                      se[indsprop],
                      tau = tau0, psi = 1, r = r0, k = length(indsprop),
                      R = R[c(indsprop),c(indsprop),drop = F],
