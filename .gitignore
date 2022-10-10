@@ -3,5 +3,4 @@
 .RData
 .Ruserdata
 setup.R
-docs
 inst/doc
