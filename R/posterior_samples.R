@@ -142,6 +142,10 @@ posterior_samples <- function(
               vector("numeric", length = niter)
   )
 
+  pb <- txtProgressBar(min = 1, max = niter, style = 3)
+
+  if(verbose){ cat(sprintf("Sampling from the posterior...\n")) }
+
   # loop
   prc <- proc.time()
   for(i in 1:niter){
@@ -249,11 +253,13 @@ posterior_samples <- function(
     out[[4]][i] <- lml
 
     if(verbose){
-      if(i %% 100 == 0) { cat(sprintf("%i\n", i)) }
+      #if(i %% 100 == 0) { cat(sprintf("%i\n", i)) }
+      setTxtProgressBar(pb, i)
     }
 
   }
-  cat(sprintf("%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
+  close(pb)
+  cat(sprintf("\n%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
 
   if(excl.burnin){
     out <- list(out[[1]][(burnin + 1):niter,],

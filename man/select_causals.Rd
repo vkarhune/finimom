@@ -9,7 +9,7 @@ select_causals(
   LDmat,
   mincorr = 0.5,
   maxcorr = 0.8,
-  minmutualcorr = 0.5
+  minanycorr = 0.5
 )
 }
 \arguments{
@@ -17,11 +17,11 @@ select_causals(
 
 \item{LDmat}{Linkage disequilibrium (LD) matrix, ie. correlation matrix of the variants.}
 
-\item{mincorr}{Minimum absoluate correlation of a causal variant with at least one other variant.}
+\item{mincorr}{Minimum absolute correlation between a pair of causal variants.}
 
-\item{maxcorr}{Maximum absolute correlation of a causal variant with another variant.}
+\item{maxcorr}{Maximum absolute correlation between a pair of causal variants.}
 
-\item{minmutualcorr}{Minimum mutual correlation between one pair of causal variants.}
+\item{minanycorr}{Minimum absolute correlation of a causal variant with at least one other variant.}
 }
 \value{
 Indices of causal variants.

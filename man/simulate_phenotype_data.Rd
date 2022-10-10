@@ -4,7 +4,18 @@
 \alias{simulate_phenotype_data}
 \title{Title}
 \usage{
-simulate_phenotype_data(X, N, p, causals, R2, seed, meanbeta = 0, sdbeta = 1)
+simulate_phenotype_data(
+  X,
+  N,
+  p,
+  causals,
+  R2,
+  seed,
+  meanbeta = 0,
+  sdbeta = 1,
+  minpower = NULL,
+  alpha = NULL
+)
 }
 \arguments{
 \item{X}{Genotype matrix.}
@@ -22,6 +33,8 @@ simulate_phenotype_data(X, N, p, causals, R2, seed, meanbeta = 0, sdbeta = 1)
 \item{meanbeta}{Mean of the Gaussian where effect sizes are drawn from.}
 
 \item{sdbeta}{Standard deviation of the Gaussian where the effect sizes are drawn from.}
+
+\item{alpha}{}
 }
 \value{
 List of the phenotype and the betas, after scaling to var(Y) = 1.
