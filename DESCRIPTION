@@ -11,3 +11,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Imports: 
     stats
+URL: https://vkarhune.github.io/finimom
