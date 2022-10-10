@@ -2,33 +2,33 @@
 
 #' Title
 #'
-#' @param beta
-#' @param se
-#' @param eaf
-#' @param R
-#' @param cs
-#' @param cs_num
-#' @param cs_level
-#' @param maxsize
-#' @param tau0
-#' @param r0
-#' @param niter
-#' @param burnin
-#' @param seed
-#' @param excl.burnin
-#' @param a0
-#' @param b0
-#' @param inds0
-#' @param standardize
-#' @param verbose
-#' @param clump
-#' @param clump_r2
-#' @param check_ld
-#' @param pip
-#' @param u
-#' @param insampleLD
+#' @param beta Effect size estimates.
+#' @param se Standard errors.
+#' @param eaf Effect allele frequencies.
+#' @param R LD-matrix.
+#' @param cs Are credible sets returned?
+#' @param cs_num How many credible sets? The default is to use the posterior mode.
+#' @param cs_level Credible set level.
+#' @param maxsize Maximum model size.
+#' @param tau0 Prior parameter tau.
+#' @param r0 Prior parameter r.
+#' @param niter Number of iterations.
+#' @param burnin Number of burn-in iterations.
+#' @param seed Random seed.
+#' @param excl.burnin Should burn-in be excluded?
+#' @param a0 Hyperparameter a for the model size prior.
+#' @param b0 Hyperparameter b for the model size prior (but preferably use parameter u).
+#' @param inds0 Indices for the starting model.
+#' @param standardize Should the effect sizes be standardised? Defaults to TRUE.
+#' @param verbose Verbose output.
+#' @param clump Should clumping be done for extremely highly-correlated variants?
+#' @param clump_r2 Clumping threshold for extremely highly-correlated variants.
+#' @param check_ld Should LD discrepancy check be performed?
+#' @param pip Are posterior inclusion probabilities returned?
+#' @param u Hyperparameter for model size prior.
+#' @param insampleLD Is in-sample LD used?
 #'
-#' @return
+#' @return List.
 #' @export
 #'
 #' @examples
@@ -44,7 +44,7 @@ finimom <- function(beta, se, eaf, R,
                     clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE){
 
   # all checks here
-  if(is.na(beta)) { stop("Effect sizes required") }
+  if(is.null(beta)) { stop("Effect sizes required") }
   p <- length(beta)
 
   if(length(se) != p){ stop("beta and se are of different length") }
