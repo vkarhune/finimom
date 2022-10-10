@@ -1,0 +1,51 @@
+---
+title: "Non-local priors"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Non-local priors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<!--
+rm(list=ls())
+#rmarkdown::render("vignettes/nonlocalpriors.Rmd")
+devtools::build_rmd("vignettes/nonlocalpriors.Rmd")
+# for difference, see https://r-pkgs.org/vignettes.html
+-->
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+
+library(finimom)
+library(mombf)
+
+```
+
+
+We can use the function from mombf package [ref]
+
+
+```{r graph}
+
+curve(dimom(x, tau = 0.0083), -0.8, 0.8)
+
+```
+
+
+The parameter $\tau$ can be set to a given quantile using the relation of the non-local priors to (inverse) Gamma distribution:
+
+```{r tauquant}
+
+qgamma(0.99, shape = 0.5, scale = 1)*0.05^2
+
+```
+
+

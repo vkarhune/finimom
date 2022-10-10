@@ -12,3 +12,7 @@ RoxygenNote: 7.1.2
 Imports: 
     stats
 URL: https://vkarhune.github.io/finimom
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
