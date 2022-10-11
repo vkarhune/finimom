@@ -33,10 +33,58 @@ finimom(
 )
 }
 \arguments{
-\item{insampleLD}{}
+\item{beta}{Effect size estimates.}
+
+\item{se}{Standard errors.}
+
+\item{eaf}{Effect allele frequencies.}
+
+\item{R}{LD-matrix.}
+
+\item{cs}{Are credible sets returned?}
+
+\item{cs_num}{How many credible sets? The default is to use the posterior mode.}
+
+\item{cs_level}{Credible set level.}
+
+\item{pip}{Are posterior inclusion probabilities returned?}
+
+\item{maxsize}{Maximum model size.}
+
+\item{tau0}{Prior parameter tau.}
+
+\item{r0}{Prior parameter r.}
+
+\item{niter}{Number of iterations.}
+
+\item{burnin}{Number of burn-in iterations.}
+
+\item{seed}{Random seed.}
+
+\item{excl.burnin}{Should burn-in be excluded?}
+
+\item{a0}{Hyperparameter a for the model size prior.}
+
+\item{b0}{Hyperparameter b for the model size prior (but preferably use parameter u).}
+
+\item{u}{Hyperparameter for model size prior.}
+
+\item{inds0}{Indices for the starting model.}
+
+\item{standardize}{Should the effect sizes be standardised? Defaults to TRUE.}
+
+\item{verbose}{Verbose output.}
+
+\item{insampleLD}{Is in-sample LD used?}
+
+\item{clump}{Should clumping be done for extremely highly-correlated variants?}
+
+\item{clump_r2}{Clumping threshold for extremely highly-correlated variants.}
+
+\item{check_ld}{Should LD discrepancy check be performed?}
 }
 \value{
-
+List.
 }
 \description{
 Title

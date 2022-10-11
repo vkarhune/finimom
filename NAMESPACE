@@ -3,6 +3,7 @@
 export(check_ld_disc)
 export(clump_variants)
 export(dbb)
+export(dimom)
 export(extract_subchain)
 export(finimom)
 export(g)
