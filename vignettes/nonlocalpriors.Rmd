@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 
 library(finimom)
-library(mombf)
+# library(mombf)
 
 ```
 
@@ -35,7 +35,18 @@ We can use the function from mombf package [ref]
 
 ```{r graph}
 
-curve(dimom(x, tau = 0.0083), -0.8, 0.8)
+fbeta <- function(x, r, tau, phi){
+  if(x == 0){
+    0
+  } else {
+    ((tau*phi)^(r/2)/gamma(r/2))*abs(x)^(-(r+1))*exp(-tau*phi/x^2)
+  }
+}
+
+vfbeta <- Vectorize(fbeta)
+
+# curve(dimom(x, tau = 0.0083), -0.8, 0.8)
+curve(vfbeta(x, r = 1, tau = 0.0083, phi = 1), -0.8, 0.8)
 
 ```
 
