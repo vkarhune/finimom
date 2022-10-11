@@ -1,5 +1,6 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- remember to knit this separately with devtools::build_readme() -->
 
 # finimom
 
@@ -24,11 +25,14 @@ remotes::install_github("vkarhune/finimom")
 Here is a minimal example on using finimom:
 
 ``` r
+
+# load package
 library(finimom)
 
 
-# ADD CODE HERE
+# add minimal example
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+## Further details
+
+Further examples are given in the articles.
