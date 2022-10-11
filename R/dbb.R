@@ -10,6 +10,8 @@
 #' @export
 #'
 #' @examples
-dbb <- function(x, p, a, b){
-  lchoose(p, x) + lbeta(x + a, p - x + b) - lbeta(a, b)
+dbb <- function(x, p, a, b, log = TRUE){
+  out <- lchoose(p, x) + lbeta(x + a, p - x + b) - lbeta(a, b)
+  if(!(log)) { out <- exp(out) }
+  return(out)
 }
