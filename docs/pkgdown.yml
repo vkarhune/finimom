@@ -2,8 +2,9 @@ pandoc: '2.18'
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
+  betabinprior: betabinprior.html
   nonlocalpriors: nonlocalpriors.html
-last_built: 2022-10-11T12:38Z
+last_built: 2022-10-11T12:58Z
 urls:
   reference: https://vkarhune.github.io/finimom/reference
   article: https://vkarhune.github.io/finimom/articles

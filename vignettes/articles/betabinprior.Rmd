@@ -1,0 +1,31 @@
+---
+title: "Beta-binomial prior for model dimension"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Finimom employs a beta-binomial prior for model dimension (model size):
+
+```{r setup}
+library(finimom)
+
+p <- 100
+
+maxsize <- 10
+
+a <- 1
+u <- 1.5
+
+val <- exp(sapply(seq_len(maxsize), dbb, p = p, a = a, b = p^u))
+val <- val/sum(val)
+
+plot(val, type = "b", ylim = c(0, 1))
+
+
+
+```
