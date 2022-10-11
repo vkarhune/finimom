@@ -2,10 +2,12 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- remember to knit this separately with devtools::build_readme() -->
 
-# finimom
+# finimom: fine-mapping using inverse-moment prior
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+<img src="man/figures/finimom.png" align="right" width="125"/>
 
 Finimom package implements a method for fine-mapping summarised genetic
 data using product inverse-moment prior the effect sizes, and a
