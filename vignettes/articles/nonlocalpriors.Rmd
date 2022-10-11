@@ -1,0 +1,18 @@
+---
+title: "Non-local priors"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here is an example of a non-local prior:
+
+```{r setup}
+library(finimom)
+```
+
+The end.
