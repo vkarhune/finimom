@@ -13,6 +13,29 @@ Here is an example of a non-local prior:
 
 ```{r setup}
 library(finimom)
+
+curve(dimom(x, tau = 0.0083, r = 1, phi = 1), -0.8, 0.8, xlab = bquote(beta), ylab = "Density")
+
+
 ```
 
-The end.
+The choice of $\tau$ parameter is based on the suggestion in Sanyal et al. (2019).
+We can obtain the corresponding quantile from the relation of the inverse-moment prior with the (inverse) Gamma distribution:
+
+```{r invgamma}
+
+betaq <- 0.05
+prob <- 0.01
+
+qgamma(1 - prob, shape = 0.5, scale = 1)*betaq^2
+
+```
+
+
+Session info:
+
+```{r sessioninfo}
+
+sessionInfo()
+
+```
