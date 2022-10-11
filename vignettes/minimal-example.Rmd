@@ -1,0 +1,21 @@
+---
+title: "Minimal example"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{minimal-example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Here is a minimal example using finimom for fine-mapping summarised genetic data.
+
+```{r setup}
+library(finimom)
+```
