@@ -1,5 +1,7 @@
 ---
 title: "Non-local priors"
+author: "Ville Karhunen"
+date: "`r Sys.Date()`"
 ---
 
 ```{r, include = FALSE}
@@ -9,17 +11,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-Here is an example of a non-local prior:
 
 ```{r setup}
+
+# load required package
 library(finimom)
-
-curve(dimom(x, tau = 0.0083, r = 1, phi = 1), -0.8, 0.8, xlab = bquote(beta), ylab = "Density")
-
 
 ```
 
-The choice of $\tau$ parameter is based on the suggestion in Sanyal et al. (2019).
+Non-local densities are a family of distributions with zero density at the null parameter value.
+A product inverse-moment prior for a parameter vector $\boldsymbol{\beta}$ of length $d$ has density
+
+<!--
+\[
+f(\boldsymbol{\beta}|\tau, r, m) = \prod_{k = 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left\ -\frac{\tau}{\beta_k^2} \right\
+\]
+-->
+
+Belongs to this family.
+
+
+
+The parameter $\tau$ controls the.
+Parameter $r$ controls the tail behaviour
+
+The choice of $\tau$ parameter is based on the suggestion by Sanyal et al. (2019).
 We can obtain the corresponding quantile from the relation of the inverse-moment prior with the (inverse) Gamma distribution:
 
 ```{r invgamma}
@@ -31,6 +47,15 @@ qgamma(1 - prob, shape = 0.5, scale = 1)*betaq^2
 
 ```
 
+
+The correspondence of the choice $\tau = 0.0083$ is reminiscent of the Gaussian prior with $\sigma^2 = 0.15$, suggested by Wakefield (201?):
+
+```{r comparison}
+
+curve(dimom(x, tau = 0.0083, r = 1), -0.8, 0.8, xlab = bquote(beta), ylab = "Density")
+
+
+```
 
 Session info:
 

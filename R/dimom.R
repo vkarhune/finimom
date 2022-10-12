@@ -10,7 +10,7 @@
 #'
 #' @examples
 #'
-dimom <- Vectorize(function(x, r, tau, phi){
+dimom <- Vectorize(function(x, r, tau, phi = 1){
   if(x == 0){
     0
   } else {
