@@ -43,8 +43,21 @@ Here is a minimal example on using finimom:
 # load package
 library(finimom)
 
+beta <- exampledata$betahat
+se <- exampledata$sebetahat
+eaf <- exampledata$allelefreq
+R <- exampledata$insampleLD
 
-# add minimal example
+res <- finimom(beta = beta, se = se, eaf = eaf, R = R, u = 1.5, insampleLD = TRUE)
+
+res$sets
+
+# compare with the true causal variants
+exampledata$causals
+
+# check whether the true causals were captured by the credible sets
+
+sapply(res$sets, function(x) exampledata$causals %in% x)
 
 ```
 
