@@ -72,10 +72,16 @@ finimom <- function(beta, se, eaf, R,
 
   if(insampleLD){
     if(is.null(check_ld)){ check_ld <- FALSE }
-    if(is.null(u)) { u <- 1.5 }
+    if(is.null(u)) {
+      u <- 1.5
+      b0 <- p^u
+    }
   } else {
     if(is.null(check_ld)){ check_ld <- TRUE }
-    if(is.null(u)) { u <- 1.75 }
+    if(is.null(u)) {
+      u <- 1.75
+      b0 <- p^u
+    }
   }
 
 

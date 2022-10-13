@@ -16,18 +16,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-# finimom: fine-mapping using inverse-moment prior
+# finimom
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 <img src="man/figures/finimom.png" align="right" width="125"/>
 
-Finimom package implements a method for fine-mapping summarised genetic data using product inverse-moment prior the effect sizes, and a beta-binomial prior for the model dimension.
+This R package implements a method for fine-mapping summarised genetic data using product inverse-moment prior for the effect sizes, and a beta-binomial prior for the model dimension.
 
 ## Installation
 
-You can install finimom from [GitHub](https://github.com/) with:
+You can install `finimom` from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("remotes")
@@ -43,21 +43,32 @@ Here is a minimal example on using finimom:
 # load package
 library(finimom)
 
+# example data:
+str(exampledata)
+
+# effect size estimates and their standard errors
 beta <- exampledata$betahat
 se <- exampledata$sebetahat
+
+# allele frequencies
 eaf <- exampledata$allelefreq
+
+# LD matrix
 R <- exampledata$insampleLD
 
-res <- finimom(beta = beta, se = se, eaf = eaf, R = R, u = 1.5, insampleLD = TRUE)
+# run finimom
+res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
+               insampleLD = TRUE,
+               verbose = FALSE) # set 'verbose = TRUE' for a progress bar 
 
+# output: credible sets
 res$sets
 
 # compare with the true causal variants
 exampledata$causals
 
-# check whether the true causals were captured by the credible sets
-
-sapply(res$sets, function(x) exampledata$causals %in% x)
+# check whether the true causals were captured in the credible sets
+lapply(res$sets, function(x) exampledata$causals %in% x)
 
 ```
 
