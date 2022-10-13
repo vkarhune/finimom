@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">2022-10-13</h4>
+            <h4 data-toc-skip class="date">13.10.2022</h4>
       
       
       <div class="d-none name"><code>nonlocalpriors.Rmd</code></div>
@@ -87,14 +87,14 @@ density</p>
 <p><span class="math display">\[
 f(\boldsymbol{\beta}|\tau, r) = \prod_{k =
 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left(
--\frac{\tau}{\beta_k^2} \right)
+-\frac{\tau}{\beta_k^2} \right),
 \]</span></p>
-<p>The parameter <span class="math inline">\(\tau\)</span> controls the
-spread of the distribution away from the null value, and the parameter
-<span class="math inline">\(r\)</span> controls the tail behaviour of
-the distribution (Johnson, Rossell 2012). Here, we only consider the
-case of <span class="math inline">\(r = 1\)</span>, which leads to
-Cauchy-like tails in the distribution.</p>
+<p>with parameters <span class="math inline">\(\tau, r &gt; 0\)</span>.
+The parameter <span class="math inline">\(\tau\)</span> controls the
+spread of the distribution away from the null value, and <span class="math inline">\(r\)</span> controls the tail behaviour of the
+distribution (Johnson, Rossell 2012). Here, we only consider the case of
+<span class="math inline">\(r = 1\)</span>, which leads to Cauchy-like
+tails in the distribution.</p>
 <p>The choice of <span class="math inline">\(\tau\)</span> can be set
 such that <span class="math inline">\(\mathbb{P}(|\beta| &lt; q_\beta) =
 q\)</span>. For genetic analyses, Sanyal et al. (2019) suggested <span class="math inline">\(q_\beta = X\)</span> and <span class="math inline">\(q = 0.01\)</span>. We can obtain the corresponding

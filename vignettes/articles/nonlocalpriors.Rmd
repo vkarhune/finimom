@@ -1,7 +1,7 @@
 ---
 title: "Non-local priors"
 author: "Ville Karhunen"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), '%d.%m.%Y')`"
 ---
 
 ```{r, include = FALSE}
@@ -23,10 +23,11 @@ Non-local densities are a family of probability distributions with zero density 
 One of the members of this probability distribution family is a product inverse-moment (piMOM) prior for a parameter vector $\boldsymbol{\beta} \in \mathbb{R}^d$, with density
 
 \[
-f(\boldsymbol{\beta}|\tau, r) = \prod_{k = 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left( -\frac{\tau}{\beta_k^2} \right)
+f(\boldsymbol{\beta}|\tau, r) = \prod_{k = 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left( -\frac{\tau}{\beta_k^2} \right),
 \]
 
-The parameter $\tau$ controls the spread of the distribution away from the null value, and the parameter $r$ controls the tail behaviour of the distribution (Johnson, Rossell 2012).
+with parameters $\tau, r > 0$.
+The parameter $\tau$ controls the spread of the distribution away from the null value, and $r$ controls the tail behaviour of the distribution (Johnson, Rossell 2012).
 Here, we only consider the case of $r = 1$, which leads to Cauchy-like tails in the distribution.
 
 The choice of $\tau$ can be set such that $\mathbb{P}(|\beta| < q_\beta) = q$.

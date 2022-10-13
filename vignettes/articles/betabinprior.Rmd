@@ -1,7 +1,7 @@
 ---
 title: "Beta-binomial prior for model dimension"
 author: "Ville Karhunen"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), '%d.%m.%Y')`"
 ---
 
 ```{r, include = FALSE}
@@ -11,12 +11,26 @@ knitr::opts_chunk$set(
 )
 ```
 
-Finimom employs a beta-binomial prior for model dimension (model size):
+Finimom employs a beta-binomial prior for model dimension $d$:
+
+\[
+\mathbb{P}(d = k | a, b) = \binom{p}{k}\frac{B(a + k, p - k + b)}{B(a, b)}, \quad a, b > 0, \quad d = 1, \dots, K,
+\]
+
+where $p$ is the number of variants and $K$ the maximum model size.
+The priors of this form with $a = 1$ and $b = p^u$ with $u > 1$, are discussed in Castillo (201x).
+The parameter $u$ here controls the amount of prior density for smaller models, with larger values of $u$ giving more prior mass to smaller models.
+
+Using LD matrix from an external dataset tend to increase the false positive rate.
+In our formulation, parameter $u$ provides a flexible way to adjust for this.
+The default values are $u = 1.5$ when using in-sample LD matrix, and $u = 1.75$ when using out-of-sample LD matrix.
+
+We demonstrate the prior for model dimension using the example dataset:
 
 ```{r setup}
 library(finimom)
 
-p <- 100
+(p <- length(exampledata$betahat))
 
 maxsize <- 10
 
@@ -24,7 +38,7 @@ a <- 1
 u <- 1.5
 
 val <- exp(sapply(seq_len(maxsize), dbb, p = p, a = a, b = p^u))
-val <- val/sum(val)
+(val <- val/sum(val))
 
 plot(val, type = "b", ylim = c(0, 1))
 
@@ -32,9 +46,9 @@ plot(val, type = "b", ylim = c(0, 1))
 
 ```
 
-The priors of form xyz are discussed in xyz.
-The parameter $u$ here controls the amount of prior density for smaller models.
-Larger values of $u$ apply more prior mass to smaller models:
+
+And for different values of $u$:
+
 
 ```{r compareu}
 
