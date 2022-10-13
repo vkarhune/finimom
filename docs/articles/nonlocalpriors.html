@@ -79,38 +79,61 @@ Karhunen</h4>
 <code class="sourceCode R"><span></span>
 <span><span class="co"># load required package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vkarhune.github.io/finimom">finimom</a></span><span class="op">)</span></span></code></pre></div>
-<p>Non-local densities are a family of distributions with zero density
-at the null parameter value. A product inverse-moment prior for a
-parameter vector <span class="math inline">\(\boldsymbol{\beta}\)</span>
-of length <span class="math inline">\(d\)</span> has density</p>
+<p>Non-local densities are a family of probability distributions with
+zero density at the null parameter value. One of the members of this
+probability distribution family is a product inverse-moment (piMOM)
+prior for a parameter vector <span class="math inline">\(\boldsymbol{\beta} \in \mathbb{R}^d\)</span>, with
+density</p>
 <p><span class="math display">\[
 f(\boldsymbol{\beta}|\tau, r) = \prod_{k =
 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left(
 -\frac{\tau}{\beta_k^2} \right)
 \]</span></p>
-<p>Belongs to this family.</p>
-<p>The parameter <span class="math inline">\(\tau\)</span> controls the.
-Parameter <span class="math inline">\(r\)</span> controls the tail
-behaviour</p>
-<p>The choice of <span class="math inline">\(\tau\)</span> parameter is
-based on the suggestion by Sanyal et al. (2019). We can obtain the
-corresponding quantile from the relation of the inverse-moment prior
-with the (inverse) Gamma distribution:</p>
+<p>The parameter <span class="math inline">\(\tau\)</span> controls the
+spread of the distribution away from the null value, and the parameter
+<span class="math inline">\(r\)</span> controls the tail behaviour of
+the distribution (Johnson, Rossell 2012). Here, we only consider the
+case of <span class="math inline">\(r = 1\)</span>, which leads to
+Cauchy-like tails in the distribution.</p>
+<p>The choice of <span class="math inline">\(\tau\)</span> can be set
+such that <span class="math inline">\(\mathbb{P}(|\beta| &lt; q_\beta) =
+q\)</span>. For genetic analyses, Sanyal et al. (2019) suggested <span class="math inline">\(q_\beta = X\)</span> and <span class="math inline">\(q = 0.01\)</span>. We can obtain the corresponding
+quantile from the relation of the inverse-moment prior with the
+(inverse) Gamma distribution (Johnson, Rossell 2010):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">betaq</span> <span class="op">&lt;-</span> <span class="fl">0.05</span></span>
-<span><span class="va">prob</span> <span class="op">&lt;-</span> <span class="fl">0.01</span></span>
+<span><span class="va">q</span> <span class="op">&lt;-</span> <span class="fl">0.01</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">prob</span>, shape <span class="op">=</span> <span class="fl">0.5</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">betaq</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">qgamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">q</span>, shape <span class="op">=</span> <span class="fl">0.5</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">betaq</span><span class="op">^</span><span class="fl">2</span></span>
 <span><span class="co">#&gt; [1] 0.008293621</span></span></code></pre></div>
-<p>The correspondence of the choice <span class="math inline">\(\tau =
-0.0083\)</span> is reminiscent of the Gaussian prior with <span class="math inline">\(\sigma^2 = 0.15\)</span>, suggested by Wakefield
-(201?):</p>
+<p>The marginal density with <span class="math inline">\(\tau =
+0.0083\)</span> is reminiscent of the Gaussian distribution with <span class="math inline">\(\sigma^2 = 0.15\)</span>, suggested by Wakefield
+(2017) as the prior for genetic effects:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu"><a href="../reference/dimom.html">dimom</a></span><span class="op">(</span><span class="va">x</span>, tau <span class="op">=</span> <span class="fl">0.0083</span>, r <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.8</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.8</span>,</span>
+<span>      col <span class="op">=</span> <span class="st">"red"</span>, lty <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>      xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu"><a href="../reference/dimom.html">dimom</a></span><span class="op">(</span><span class="va">x</span>, tau <span class="op">=</span> <span class="fl">0.0083</span>, r <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">1</span>, add <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nonlocalpriors_files/figure-html/comparison-1.png" width="700"></p>
-<p>Session info:</p>
+<p>The key differences between the two distributions are that (i) the
+non-local prior density approaches 0 when <span class="math inline">\(|\beta| \rightarrow 0\)</span>, and (ii) the tails
+of the non-local density are thicker. Due to (i), non-local priors apply
+a strong penalty when any of its components are close to zero, therefore
+making them suitable for variable selection. As for (ii), the
+Cauchy-like tails protect from over-shrinkage of true large effects.</p>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Johnson, Rossell 2010</p>
+<p>Johnson, Rossell 2012</p>
+<p>Sanyal et al.</p>
+<p>Wakefield</p>
+</div>
+<div class="section level2">
+<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+</h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -141,6 +164,7 @@ with the (inverse) Gamma distribution:</p>
 <span><span class="co">#&gt; [25] memoise_2.0.0     cachem_1.0.6      evaluate_0.14     rmarkdown_2.11   </span></span>
 <span><span class="co">#&gt; [29] stringi_1.7.5     compiler_4.2.1    bslib_0.3.1       desc_1.4.0       </span></span>
 <span><span class="co">#&gt; [33] jsonlite_1.7.2</span></span></code></pre></div>
+</div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>

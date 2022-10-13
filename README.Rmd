@@ -16,12 +16,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-# finimom
+# finimom <img src="man/figures/finimom.png" align="right" width="125"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
-
-<img src="man/figures/finimom.png" align="right" width="125"/>
 
 This R package implements a method for fine-mapping summarised genetic data using product inverse-moment prior for the effect sizes, and a beta-binomial prior for the model dimension.
 

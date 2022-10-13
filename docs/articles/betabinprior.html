@@ -64,7 +64,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Beta-binomial prior for model dimension</h1>
+                        <h4 data-toc-skip class="author">Ville
+Karhunen</h4>
             
+            <h4 data-toc-skip class="date">2022-10-13</h4>
       
       
       <div class="d-none name"><code>betabinprior.Rmd</code></div>
@@ -89,7 +92,65 @@ size):</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">val</span>, type <span class="op">=</span> <span class="st">"b"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="betabinprior_files/figure-html/setup-1.png" width="700"></p>
-  </main>
+<p>The priors of form xyz are discussed in xyz. The parameter <span class="math inline">\(u\)</span> here controls the amount of prior
+density for smaller models. Larger values of <span class="math inline">\(u\)</span> apply more prior mass to smaller
+models:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">us</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.01</span>, <span class="fl">1.25</span>, <span class="fl">1.5</span>, <span class="fl">1.75</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">us</span>, <span class="kw">function</span><span class="op">(</span><span class="va">u</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">b</span> <span class="op">&lt;-</span> <span class="va">p</span><span class="op">^</span><span class="va">u</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="va">dbb</span>, a <span class="op">=</span> <span class="va">a</span>, p <span class="op">=</span> <span class="va">p</span>, b <span class="op">=</span> <span class="va">b</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, lty <span class="op">=</span> <span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="betabinprior_files/figure-html/compareu-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># legend("topright")</span></span>
+<span></span>
+<span><span class="co"># the same on a log scale</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, log <span class="op">=</span> <span class="st">"y"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">vals</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, lty <span class="op">=</span> <span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="betabinprior_files/figure-html/compareu-2.png" width="700"></p>
+<div class="section level2">
+<h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; R version 4.2.1 (2022-06-23 ucrt)</span></span>
+<span><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span></span>
+<span><span class="co">#&gt; Running under: Windows 10 x64 (build 19042)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Matrix products: default</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; locale:</span></span>
+<span><span class="co">#&gt; [1] LC_COLLATE=Finnish_Finland.utf8  LC_CTYPE=Finnish_Finland.utf8   </span></span>
+<span><span class="co">#&gt; [3] LC_MONETARY=Finnish_Finland.utf8 LC_NUMERIC=C                    </span></span>
+<span><span class="co">#&gt; [5] LC_TIME=Finnish_Finland.utf8    </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; attached base packages:</span></span>
+<span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; other attached packages:</span></span>
+<span><span class="co">#&gt; [1] finimom_0.0.0.9000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
+<span><span class="co">#&gt;  [1] rstudioapi_0.13   knitr_1.36        magrittr_2.0.1    R6_2.5.1         </span></span>
+<span><span class="co">#&gt;  [5] ragg_1.2.3        rlang_1.0.5       fastmap_1.1.0     highr_0.9        </span></span>
+<span><span class="co">#&gt;  [9] stringr_1.4.0     tools_4.2.1       xfun_0.27         cli_3.4.0        </span></span>
+<span><span class="co">#&gt; [13] jquerylib_0.1.4   htmltools_0.5.2   systemfonts_1.0.3 yaml_2.2.1       </span></span>
+<span><span class="co">#&gt; [17] digest_0.6.28     rprojroot_2.0.2   pkgdown_2.0.6     crayon_1.4.2     </span></span>
+<span><span class="co">#&gt; [21] textshaping_0.3.6 purrr_0.3.4       sass_0.4.0        fs_1.5.0         </span></span>
+<span><span class="co">#&gt; [25] memoise_2.0.0     cachem_1.0.6      evaluate_0.14     rmarkdown_2.11   </span></span>
+<span><span class="co">#&gt; [29] stringi_1.7.5     compiler_4.2.1    bslib_0.3.1       desc_1.4.0       </span></span>
+<span><span class="co">#&gt; [33] jsonlite_1.7.2</span></span></code></pre></div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

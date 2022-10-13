@@ -2,12 +2,10 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- remember to knit this separately with devtools::build_readme() -->
 
-# finimom
+# finimom <img src="man/figures/finimom.png" align="right" width="125"/>
 
 <!-- badges: start -->
 <!-- badges: end -->
-
-<img src="man/figures/finimom.png" align="right" width="125"/>
 
 This R package implements a method for fine-mapping summarised genetic
 data using product inverse-moment prior for the effect sizes, and a
@@ -61,7 +59,7 @@ res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 #> Clumping variants at r2=0.98
 #> 
 #> 
-#> 12500 iterations done in 32.67 seconds
+#> 12500 iterations done in 35.47 seconds
 
 # output: credible sets
 res$sets

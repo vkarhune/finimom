@@ -1,5 +1,7 @@
 ---
 title: "Beta-binomial prior for model dimension"
+author: "Ville Karhunen"
+date: "`r Sys.Date()`"
 ---
 
 ```{r, include = FALSE}
@@ -29,3 +31,37 @@ plot(val, type = "b", ylim = c(0, 1))
 
 
 ```
+
+The priors of form xyz are discussed in xyz.
+The parameter $u$ here controls the amount of prior density for smaller models.
+Larger values of $u$ apply more prior mass to smaller models:
+
+```{r compareu}
+
+us <- c(1.01, 1.25, 1.5, 1.75)
+
+vals <- lapply(us, function(u){
+  b <- p^u
+  out <- exp(sapply(1:10, dbb, a = a, p = p, b = b))
+  out <- out/sum(out)
+})
+
+plot(vals[[1]], type = "b", ylim = c(0, 1))
+invisible(lapply(2:4, function(i) lines(vals[[i]], type = "b", lty = i)))
+# legend("topright")
+
+# the same on a log scale
+plot(vals[[1]], type = "b", log = "y", ylim = range(unlist(vals)))
+invisible(lapply(2:4, function(i) lines(vals[[i]], type = "b", lty = i)))
+
+
+```
+
+# Session information
+
+```{r sessioninfo}
+
+sessionInfo()
+
+```
+

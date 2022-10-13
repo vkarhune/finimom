@@ -19,44 +19,58 @@ library(finimom)
 
 ```
 
-Non-local densities are a family of distributions with zero density at the null parameter value.
-A product inverse-moment prior for a parameter vector $\boldsymbol{\beta}$ of length $d$ has density
+Non-local densities are a family of probability distributions with zero density at the null parameter value.
+One of the members of this probability distribution family is a product inverse-moment (piMOM) prior for a parameter vector $\boldsymbol{\beta} \in \mathbb{R}^d$, with density
 
 \[
 f(\boldsymbol{\beta}|\tau, r) = \prod_{k = 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left( -\frac{\tau}{\beta_k^2} \right)
 \]
 
+The parameter $\tau$ controls the spread of the distribution away from the null value, and the parameter $r$ controls the tail behaviour of the distribution (Johnson, Rossell 2012).
+Here, we only consider the case of $r = 1$, which leads to Cauchy-like tails in the distribution.
 
-Belongs to this family.
-
-
-
-The parameter $\tau$ controls the.
-Parameter $r$ controls the tail behaviour
-
-The choice of $\tau$ parameter is based on the suggestion by Sanyal et al. (2019).
-We can obtain the corresponding quantile from the relation of the inverse-moment prior with the (inverse) Gamma distribution:
+The choice of $\tau$ can be set such that $\mathbb{P}(|\beta| < q_\beta) = q$.
+For genetic analyses, Sanyal et al. (2019) suggested $q_\beta = X$ and $q = 0.01$.
+We can obtain the corresponding quantile from the relation of the inverse-moment prior with the (inverse) Gamma distribution (Johnson, Rossell 2010):
 
 ```{r invgamma}
 
 betaq <- 0.05
-prob <- 0.01
+q <- 0.01
 
-qgamma(1 - prob, shape = 0.5, scale = 1)*betaq^2
+qgamma(1 - q, shape = 0.5, scale = 1)*betaq^2
 
 ```
 
 
-The correspondence of the choice $\tau = 0.0083$ is reminiscent of the Gaussian prior with $\sigma^2 = 0.15$, suggested by Wakefield (201?):
+The marginal density with $\tau = 0.0083$ is reminiscent of the Gaussian distribution with $\sigma^2 = 0.15$, suggested by Wakefield (2017) as the prior for genetic effects:
 
 ```{r comparison}
 
-curve(dimom(x, tau = 0.0083, r = 1), -0.8, 0.8, xlab = bquote(beta), ylab = "Density")
+curve(dnorm(x, 0, 0.15), -0.8, 0.8,
+      col = "red", lty = 2, 
+      xlab = bquote(beta), ylab = "Density")
+curve(dimom(x, tau = 0.0083, r = 1), lty = 1, add = T)
 
 
 ```
 
-Session info:
+The key differences between the two distributions are that (i) the non-local prior density approaches 0 when $|\beta| \rightarrow 0$, and (ii) the tails of the non-local density are thicker.
+Due to (i), non-local priors apply a strong penalty when any of its components are close to zero, therefore making them suitable for variable selection.
+As for (ii), the Cauchy-like tails protect from over-shrinkage of true large effects.
+
+
+# References
+
+Johnson, Rossell 2010
+
+Johnson, Rossell 2012
+
+Sanyal et al.
+
+Wakefield
+
+# Session information
 
 ```{r sessioninfo}
 
