@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">2022-10-12</h4>
+            <h4 data-toc-skip class="date">2022-10-13</h4>
       
       
       <div class="d-none name"><code>nonlocalpriors.Rmd</code></div>
@@ -80,10 +80,13 @@ Karhunen</h4>
 <span><span class="co"># load required package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vkarhune.github.io/finimom">finimom</a></span><span class="op">)</span></span></code></pre></div>
 <p>Non-local densities are a family of distributions with zero density
-at the null parameter value. A product inverse-moment prior with a
-density function</p>
+at the null parameter value. A product inverse-moment prior for a
+parameter vector <span class="math inline">\(\boldsymbol{\beta}\)</span>
+of length <span class="math inline">\(d\)</span> has density</p>
 <p><span class="math display">\[
-f(\boldsymbol{\beta}|\tau, r, m) = \frac{1}{2}
+f(\boldsymbol{\beta}|\tau, r) = \prod_{k =
+1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left(
+-\frac{\tau}{\beta_k^2} \right)
 \]</span></p>
 <p>Belongs to this family.</p>
 <p>The parameter <span class="math inline">\(\tau\)</span> controls the.
@@ -105,7 +108,7 @@ with the (inverse) Gamma distribution:</p>
 (201?):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu"><a href="../reference/dimom.html">dimom</a></span><span class="op">(</span><span class="va">x</span>, tau <span class="op">=</span> <span class="fl">0.0083</span>, r <span class="op">=</span> <span class="fl">1</span>, phi <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.8</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu"><a href="../reference/dimom.html">dimom</a></span><span class="op">(</span><span class="va">x</span>, tau <span class="op">=</span> <span class="fl">0.0083</span>, r <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.8</span>, xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/bquote.html" class="external-link">bquote</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>, ylab <span class="op">=</span> <span class="st">"Density"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="nonlocalpriors_files/figure-html/comparison-1.png" width="700"></p>
 <p>Session info:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">

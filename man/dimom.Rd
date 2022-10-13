@@ -4,7 +4,7 @@
 \alias{dimom}
 \title{Title}
 \usage{
-dimom(x, r, tau, phi)
+dimom(x, r, tau, phi = 1)
 }
 \arguments{
 \item{phi}{}

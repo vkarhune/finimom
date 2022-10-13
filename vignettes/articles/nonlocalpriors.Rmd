@@ -22,11 +22,10 @@ library(finimom)
 Non-local densities are a family of distributions with zero density at the null parameter value.
 A product inverse-moment prior for a parameter vector $\boldsymbol{\beta}$ of length $d$ has density
 
-<!--
 \[
-f(\boldsymbol{\beta}|\tau, r, m) = \prod_{k = 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left\ -\frac{\tau}{\beta_k^2} \right\
+f(\boldsymbol{\beta}|\tau, r) = \prod_{k = 1}^d\frac{\tau^{r/2}}{\Gamma(r/2)}|\beta_k|^{-(r+1)}\exp \left( -\frac{\tau}{\beta_k^2} \right)
 \]
--->
+
 
 Belongs to this family.
 

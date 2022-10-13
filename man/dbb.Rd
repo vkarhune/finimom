@@ -4,7 +4,7 @@
 \alias{dbb}
 \title{Title}
 \usage{
-dbb(x, p, a, b)
+dbb(x, p, a, b, log = TRUE)
 }
 \arguments{
 \item{x}{Function argument.}
