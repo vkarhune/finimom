@@ -22,7 +22,7 @@ Finimom employs a beta-binomial prior for model dimension $d$:
 \]
 
 where $p$ is the number of variants and $K$ the maximum model size.
-The priors of this form with $a = 1$ and $b = p^u$ with $u > 1$, are discussed in Castillo (201x).
+The priors of this form with $a = 1$ and $b = p^u$ with $u > 1$, are discussed in Castillo and van der Vaart (2012) and in Castillo et al. (2015).
 The parameter $u$ here controls the amount of prior density for smaller models, with larger values of $u$ giving more prior mass to smaller models.
 
 Using LD matrix from an external dataset tend to increase the false positive rate.
