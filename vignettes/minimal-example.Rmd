@@ -14,6 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+<img src="man/figures/work-in-progress.png" align="left" width="125"/>
+
 Here is a minimal example using finimom for fine-mapping summarised genetic data.
 
 ```{r setup}
