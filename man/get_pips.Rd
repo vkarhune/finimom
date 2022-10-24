@@ -2,16 +2,16 @@
 % Please edit documentation in R/get_pips.R
 \name{get_pips}
 \alias{get_pips}
-\title{Title}
+\title{Obtain posterior inclusion probabilities from the posterior samples.}
 \usage{
 get_pips(samples)
 }
 \arguments{
-\item{samples}{Posterior samples}
+\item{samples}{Posterior samples.}
 }
 \value{
 Posterior inclusion probabilities
 }
 \description{
-Title
+Obtain posterior inclusion probabilities from the posterior samples.
 }

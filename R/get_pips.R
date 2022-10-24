@@ -1,6 +1,6 @@
-#' Title
+#' Obtain posterior inclusion probabilities from the posterior samples.
 #'
-#' @param samples Posterior samples
+#' @param samples Posterior samples.
 #'
 #' @return Posterior inclusion probabilities
 #' @export

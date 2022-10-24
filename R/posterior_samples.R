@@ -1,4 +1,4 @@
-#' Title
+#' Samples from the posterior distribution
 #'
 #' @param beta Vector of effect sizes.
 #' @param se Vector of standard errors.
@@ -17,9 +17,9 @@
 #' @param inds0 Initial model indices (not used).
 #' @param standardize Should the effect sizes be standardised? Defaults to TRUE.
 #' @param verbose Verbose output.
-#' @param clump
-#' @param clump_r2
-#' @param check_ld
+#' @param clump Whether to clump extremely highly correlated variants.
+#' @param clump_r2 Clumping threshold for extremely highly correlated variants.
+#' @param check_ld Should the Z-scores be checked for LD discrepancy?
 #'
 #' @return List.
 #' @export
@@ -113,7 +113,7 @@ posterior_samples <- function(
 
 
 
-  opt <- stats::optim(as.matrix(beta[inds], ncol = 1), g,
+  opt <- optim(as.matrix(beta[inds], ncol = 1), g,
                       beta = as.matrix(beta[inds], ncol = 1),
                       se = se[inds],
                       R = R[inds,inds,drop = F],
@@ -199,7 +199,7 @@ posterior_samples <- function(
         initpars <- as.matrix(beta[indsprop], ncol = 1)
         if(any(initpars == 0)){ initpars[initpars == 0] <- 1e-7 }
 
-    opt <- stats::optim(initpars,
+    opt <- optim(initpars,
                         g,
                         beta = as.matrix(beta[indsprop], ncol = 1),
                         se = se[indsprop],
@@ -237,7 +237,7 @@ posterior_samples <- function(
     if(is.infinite(lpnew)) { barker <- -1 }
     # if(opt$convergence %in% c(1, 10)) { barker <- -1 }
 
-    u <- stats::runif(1)
+    u <- runif(1)
 
     if(u < barker){
       betavec <- betaprop

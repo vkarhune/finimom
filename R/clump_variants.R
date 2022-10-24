@@ -1,10 +1,10 @@
-#' Title
+#' Clump highly correlated variants.
 #'
-#' @param R
-#' @param clump_r2
-#' @param z
+#' @param R LD matrix.
+#' @param clump_r2 Clumping threshold r^2.
+#' @param z Z-scores.
 #'
-#' @return
+#' @return List of variant indices within each group.
 #' @export
 #'
 #' @examples

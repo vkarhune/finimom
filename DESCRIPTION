@@ -3,7 +3,7 @@ Title: Fine-mapping Using Inverse-Moment Prior
 Version: 0.0.0.9000
 Authors@R: 
     person("Ville", "Karhunen", , "ville.karhunen@oulu.fi", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0001-6064-1588"))
 Description: Genetic fine-mapping for summarised data using product inverse-moment prior for non-zero effect sizes, and a beta-binomial prior for model dimension.
 License: MIT + file LICENSE
 Encoding: UTF-8

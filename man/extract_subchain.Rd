@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_subchain.R
 \name{extract_subchain}
 \alias{extract_subchain}
-\title{Title}
+\title{Extract a subchain from exsisting posterior samples, excluding a burn-in.}
 \usage{
 extract_subchain(posterior_sample, burnin = NULL, niter = NULL)
 }
@@ -14,8 +14,8 @@ extract_subchain(posterior_sample, burnin = NULL, niter = NULL)
 \item{niter}{The number of iterations kept.}
 }
 \value{
-
+Posterior samples with burn-in excluded.
 }
 \description{
-Title
+Extract a subchain from exsisting posterior samples, excluding a burn-in.
 }

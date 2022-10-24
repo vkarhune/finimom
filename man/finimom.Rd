@@ -2,7 +2,7 @@
 % Please edit documentation in R/finimom.R
 \name{finimom}
 \alias{finimom}
-\title{Title}
+\title{Fine-mapping using an inverse-moment prior.}
 \usage{
 finimom(
   beta,
@@ -67,7 +67,7 @@ finimom(
 
 \item{b0}{Hyperparameter b for the model size prior (but preferably use parameter u).}
 
-\item{u}{Hyperparameter for model size prior.}
+\item{u}{Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.}
 
 \item{inds0}{Indices for the starting model.}
 
@@ -87,5 +87,5 @@ finimom(
 List.
 }
 \description{
-Title
+Fine-mapping using an inverse-moment prior.
 }

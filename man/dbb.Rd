@@ -2,7 +2,7 @@
 % Please edit documentation in R/dbb.R
 \name{dbb}
 \alias{dbb}
-\title{Title}
+\title{Beta-binomial density.}
 \usage{
 dbb(x, p, a, b, log = TRUE)
 }
@@ -14,10 +14,12 @@ dbb(x, p, a, b, log = TRUE)
 \item{a}{Parameter a.}
 
 \item{b}{Parameter b.}
+
+\item{log}{Whether log-density is returned -- defaults to TRUE.}
 }
 \value{
-Log-density value.
+(Log-)density value.
 }
 \description{
-Title
+Beta-binomial density.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/g.R
 \name{g}
 \alias{g}
-\title{Title}
+\title{Negative exponential of the Laplace approximation}
 \usage{
 g(x, beta, se, tau, psi, r, k, R)
 }
@@ -27,5 +27,5 @@ g(x, beta, se, tau, psi, r, k, R)
 Value.
 }
 \description{
-Title
+Negative exponential of the Laplace approximation
 }

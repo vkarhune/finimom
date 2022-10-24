@@ -2,16 +2,20 @@
 % Please edit documentation in R/clump_variants.R
 \name{clump_variants}
 \alias{clump_variants}
-\title{Title}
+\title{Clump highly correlated variants.}
 \usage{
 clump_variants(R, clump_r2, z)
 }
 \arguments{
-\item{z}{}
+\item{R}{LD matrix.}
+
+\item{clump_r2}{Clumping threshold r^2.}
+
+\item{z}{Z-scores.}
 }
 \value{
-
+List of variant indices within each group.
 }
 \description{
-Title
+Clump highly correlated variants.
 }

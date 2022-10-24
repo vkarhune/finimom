@@ -2,7 +2,7 @@
 % Please edit documentation in R/logmyb.R
 \name{logmyb}
 \alias{logmyb}
-\title{Title}
+\title{Log-marginal likelihood for the data.}
 \usage{
 logmyb(x, se, tau, psi, r, k, R, gval)
 }
@@ -27,5 +27,5 @@ logmyb(x, se, tau, psi, r, k, R, gval)
 Value.
 }
 \description{
-Title
+Log-marginal likelihood for the data.
 }

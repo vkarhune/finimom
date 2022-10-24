@@ -2,7 +2,7 @@
 % Please edit documentation in R/logmk.R
 \name{logmk}
 \alias{logmk}
-\title{Title}
+\title{Model size prior.}
 \usage{
 logmk(lprior, k)
 }
@@ -15,5 +15,5 @@ logmk(lprior, k)
 Log-value of model size prior.
 }
 \description{
-Title
+Model size prior.
 }

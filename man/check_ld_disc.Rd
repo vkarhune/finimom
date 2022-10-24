@@ -2,16 +2,24 @@
 % Please edit documentation in R/check_ld_disc.R
 \name{check_ld_disc}
 \alias{check_ld_disc}
-\title{Title}
+\title{Check discrepancy of the linkage equilibrium and test statistics}
 \usage{
 check_ld_disc(indices, z, Chi2_quantile = NULL, LDm, clump_r2)
 }
 \arguments{
-\item{clump_r2}{}
+\item{indices}{Variant indices.}
+
+\item{z}{Test statistic.}
+
+\item{Chi2_quantile}{Quantile for declaring a mismatch. The default is the median of a Chi-squared distribution with one degree of freedom.}
+
+\item{LDm}{LD matrix.}
+
+\item{clump_r2}{Clumping threshold for extremely highly correlated variants.}
 }
 \value{
-
+List of indices within each LD clump, corrected for the LD discrepancy.
 }
 \description{
-Title
+Check discrepancy of the linkage equilibrium and test statistics
 }

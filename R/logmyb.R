@@ -1,4 +1,4 @@
-#' Title
+#' Log-marginal likelihood for the data.
 #'
 #' @param x Vector of effect sizes.
 #' @param se Vector of standard errors.

@@ -1,6 +1,6 @@
 
 
-#' Title
+#' Fine-mapping using an inverse-moment prior.
 #'
 #' @param beta Effect size estimates.
 #' @param se Standard errors.
@@ -25,7 +25,7 @@
 #' @param clump_r2 Clumping threshold for extremely highly-correlated variants.
 #' @param check_ld Should LD discrepancy check be performed?
 #' @param pip Are posterior inclusion probabilities returned?
-#' @param u Hyperparameter for model size prior.
+#' @param u Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.
 #' @param insampleLD Is in-sample LD used?
 #'
 #' @return List.

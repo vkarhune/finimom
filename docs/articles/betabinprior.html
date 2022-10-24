@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">14.10.2022</h4>
+            <h4 data-toc-skip class="date">18.10.2022</h4>
       
       
       <div class="d-none name"><code>betabinprior.Rmd</code></div>
@@ -83,11 +83,10 @@ b)}, \quad a, b &gt; 0, \quad d = 1, \dots, K,
 <p>where <span class="math inline">\(p\)</span> is the number of
 variants and <span class="math inline">\(K\)</span> the maximum model
 size. The priors of this form with <span class="math inline">\(a =
-1\)</span> and <span class="math inline">\(b = p^u\)</span> with <span class="math inline">\(u &gt; 1\)</span>, are discussed in Castillo
-(201x). The parameter <span class="math inline">\(u\)</span> here
-controls the amount of prior density for smaller models, with larger
-values of <span class="math inline">\(u\)</span> giving more prior mass
-to smaller models.</p>
+1\)</span> and <span class="math inline">\(b = p^u\)</span> with <span class="math inline">\(u &gt; 1\)</span>, are discussed in Castillo and
+van der Vaart (2012) and in Castillo et al. (2015). The parameter <span class="math inline">\(u\)</span> here controls the amount of prior
+density for smaller models, with larger values of <span class="math inline">\(u\)</span> giving more prior mass to smaller
+models.</p>
 <p>Using LD matrix from an external dataset tend to increase the false
 positive rate. In our formulation, parameter <span class="math inline">\(u\)</span> provides a flexible way to adjust for
 this. The default values are <span class="math inline">\(u =

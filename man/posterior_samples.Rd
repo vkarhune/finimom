@@ -2,7 +2,7 @@
 % Please edit documentation in R/posterior_samples.R
 \name{posterior_samples}
 \alias{posterior_samples}
-\title{Title}
+\title{Samples from the posterior distribution}
 \usage{
 posterior_samples(
   beta,
@@ -62,11 +62,15 @@ posterior_samples(
 
 \item{verbose}{Verbose output.}
 
-\item{check_ld}{}
+\item{clump}{Whether to clump extremely highly correlated variants.}
+
+\item{clump_r2}{Clumping threshold for extremely highly correlated variants.}
+
+\item{check_ld}{Should the Z-scores be checked for LD discrepancy?}
 }
 \value{
 List.
 }
 \description{
-Title
+Samples from the posterior distribution
 }

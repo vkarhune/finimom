@@ -14,7 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-<img src="man/figures/work-in-progress.png" align="left" width="125"/>
+
+<!-- <img src="vignettes/work-in-progress.png" align="left" width="125"/> -->
+
+```{r workinprogress, echo = FALSE, out.width = '20%' }
+
+knitr::include_graphics("work-in-progress.png")
+
+```
 
 Here is a minimal example using finimom for fine-mapping summarised genetic data.
 

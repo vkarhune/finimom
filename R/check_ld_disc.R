@@ -1,12 +1,12 @@
-#' Title
+#' Check discrepancy of the linkage equilibrium and test statistics
 #'
-#' @param z
-#' @param mismatch_quantile
-#' @param LDm
-#' @param indices
-#' @param clump_r2
+#' @param z Test statistic.
+#' @param Chi2_quantile Quantile for declaring a mismatch. The default is the median of a Chi-squared distribution with one degree of freedom.
+#' @param LDm LD matrix.
+#' @param indices Variant indices.
+#' @param clump_r2 Clumping threshold for extremely highly correlated variants.
 #'
-#' @return
+#' @return List of indices within each LD clump, corrected for the LD discrepancy.
 #' @export
 #'
 #' @examples

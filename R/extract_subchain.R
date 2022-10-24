@@ -1,10 +1,10 @@
-#' Title
+#' Extract a subchain from exsisting posterior samples, excluding a burn-in.
 #'
 #' @param posterior_sample Object from posterior_samples().
 #' @param burnin The number of initial iterations to be excluded.
 #' @param niter The number of iterations kept.
 #'
-#' @return
+#' @return Posterior samples with burn-in excluded.
 #' @export
 #'
 #' @examples

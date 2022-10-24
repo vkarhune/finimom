@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_credible_sets.R
 \name{get_credible_sets}
 \alias{get_credible_sets}
-\title{Title}
+\title{Obtain credible sets from the posterior samples.}
 \usage{
 get_credible_sets(samples, num_signals, level = 0.95)
 }
@@ -14,8 +14,8 @@ get_credible_sets(samples, num_signals, level = 0.95)
 \item{level}{Probability level, default = 0.95.}
 }
 \value{
-List of credible sets
+List of credible sets.
 }
 \description{
-Title
+Obtain credible sets from the posterior samples.
 }

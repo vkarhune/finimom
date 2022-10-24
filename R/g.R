@@ -1,4 +1,4 @@
-#' Title
+#' Negative exponential of the Laplace approximation
 #'
 #' @param x Input
 #' @param beta Vector of effect size estimates.

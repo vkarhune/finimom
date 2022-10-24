@@ -1,4 +1,4 @@
-#' Title
+#' Model size prior.
 #'
 #' @param lprior Output of dbb.
 #' @param k Model size.

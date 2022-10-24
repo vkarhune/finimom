@@ -1,12 +1,13 @@
 # beta-binomial prior for model size:
-#' Title
+#' Beta-binomial density.
 #'
 #' @param x Function argument.
 #' @param p Parameter p.
 #' @param a Parameter a.
 #' @param b Parameter b.
+#' @param log Whether log-density is returned -- defaults to TRUE.
 #'
-#' @return Log-density value.
+#' @return (Log-)density value.
 #' @export
 #'
 #' @examples

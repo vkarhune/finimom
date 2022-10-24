@@ -1,10 +1,10 @@
-#' Title
+#' Obtain credible sets from the posterior samples.
 #'
 #' @param samples Posterior samples from posterior_samples() function.
 #' @param num_signals Number of signals.
 #' @param level Probability level, default = 0.95.
 #'
-#' @return List of credible sets
+#' @return List of credible sets.
 #' @export
 #'
 #' @examples
