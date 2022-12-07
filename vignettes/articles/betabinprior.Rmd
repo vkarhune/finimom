@@ -2,6 +2,7 @@
 title: "Beta-binomial prior for model dimension"
 author: "Ville Karhunen"
 date: "`r format(Sys.Date(), '%d.%m.%Y')`"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{betabinprior}
   %\VignetteEngine{knitr::rmarkdown}
