@@ -43,7 +43,7 @@ The parameter $\tau$ controls the spread of the distribution away from the null 
 Here, we only consider the case of $r = 1$, which leads to Cauchy-like tails in the distribution.
 
 The choice of $\tau$ can be set such that $\mathbb{P}(|\beta| < q_\beta) = q$.
-For genetic analyses, Sanyal et al. (2019) suggested $q_\beta = X$ and $q = 0.01$.
+For genetic analyses, Sanyal et al. (2019) suggested $q_\beta = 0.05$ and $q = 0.01$.
 We can obtain the corresponding quantile from the relation of the inverse-moment prior with the (inverse) Gamma distribution (Johnson, Rossell 2010):
 
 ```{r invgamma}
@@ -56,7 +56,7 @@ qgamma(1 - q, shape = 0.5, scale = 1)*betaq^2
 ```
 
 
-The marginal density with $\tau = 0.0083$ is reminiscent of the Gaussian distribution with $\sigma^2 = 0.15$, suggested by Wakefield (2017) as the prior for genetic effects:
+The marginal density with $\tau = 0.0083$ is reminiscent of the Gaussian distribution with $\sigma^2 = 0.15$, suggested by Wakefield (2017) and commonly used as the prior for genetic effects (e.g. Giambartolomei et al. 2014):
 
 ```{r comparison}
 
@@ -75,13 +75,15 @@ As for (ii), the Cauchy-like tails protect from over-shrinkage of true large eff
 
 # References
 
-Johnson, Rossell 2010
+Giambartolomei et al. (2014). Bayesian Test for Colocalisation between Pairs of Genetic Association Studies Using Summary Statistics. *PLoS Genet*.
 
-Johnson, Rossell 2012
+Johnson, Rossell (2010). On the use of non-local prior densities in Bayesian hypothesis tests. *J. R. Statist. Soc. B*.
 
-Sanyal et al.
+Johnson, Rossell (2012). Bayesian Model Selection in High-Dimensional Settings. *J Am Stat Assoc*.
 
-Wakefield
+Sanyal et al. (2019). GWASinlps: non-local prior based iterative SNP selection tool for genome-wide association studies. *Bioinformatics*.
+
+Wakefield (2009). Bayes factors for genome-wide association studies: comparison with P-values. *Genet Epidemiol*.
 
 # Session information
 

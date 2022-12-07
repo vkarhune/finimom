@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">24.10.2022</h4>
+            <h4 data-toc-skip class="date">07.12.2022</h4>
       
       
       <div class="d-none name"><code>betabinprior.Rmd</code></div>
@@ -88,9 +88,10 @@ size. The priors of this form with <span class="math inline">\(a =
 van der Vaart (2012) and in Castillo et al. (2015). The parameter <span class="math inline">\(u\)</span> here controls the amount of prior
 density for smaller models, with larger values of <span class="math inline">\(u\)</span> giving more prior mass to smaller
 models.</p>
-<p>Using LD matrix from an external dataset tend to increase the false
-positive rate. In our formulation, parameter <span class="math inline">\(u\)</span> provides a flexible way to adjust for
-this. The default values are <span class="math inline">\(u =
+<p>Using a linkage disequilibrium (LD) matrix from an external dataset
+tend to increase the false positive rate. In our formulation, parameter
+<span class="math inline">\(u\)</span> provides a flexible way to adjust
+for this. The default values are <span class="math inline">\(u =
 1.5\)</span> when using in-sample LD matrix, and <span class="math inline">\(u = 1.75\)</span> when using out-of-sample LD
 matrix.</p>
 <p>We demonstrate the prior for model dimension using the example
@@ -127,13 +128,12 @@ dataset:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, lty <span class="op">=</span> <span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="betabinprior_files/figure-html/compareu-1.png" width="700"></p>
+<p>The same on a log scale:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># legend("topright")</span></span>
-<span></span>
-<span><span class="co"># the same on a log scale</span></span>
+<code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, log <span class="op">=</span> <span class="st">"y"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">vals</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">vals</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"b"</span>, lty <span class="op">=</span> <span class="va">i</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="betabinprior_files/figure-html/compareu-2.png" width="700"></p>
+<p><img src="betabinprior_files/figure-html/compareulog-1.png" width="700"></p>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>

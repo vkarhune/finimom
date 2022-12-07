@@ -67,7 +67,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">24.10.2022</h4>
+            <h4 data-toc-skip class="date">07.12.2022</h4>
       
       
       <div class="d-none name"><code>nonlocalpriors.Rmd</code></div>
@@ -98,7 +98,7 @@ distribution (Johnson, Rossell 2012). Here, we only consider the case of
 tails in the distribution.</p>
 <p>The choice of <span class="math inline">\(\tau\)</span> can be set
 such that <span class="math inline">\(\mathbb{P}(|\beta| &lt; q_\beta) =
-q\)</span>. For genetic analyses, Sanyal et al. (2019) suggested <span class="math inline">\(q_\beta = X\)</span> and <span class="math inline">\(q = 0.01\)</span>. We can obtain the corresponding
+q\)</span>. For genetic analyses, Sanyal et al. (2019) suggested <span class="math inline">\(q_\beta = 0.05\)</span> and <span class="math inline">\(q = 0.01\)</span>. We can obtain the corresponding
 quantile from the relation of the inverse-moment prior with the
 (inverse) Gamma distribution (Johnson, Rossell 2010):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -110,7 +110,8 @@ quantile from the relation of the inverse-moment prior with the
 <span><span class="co">#&gt; [1] 0.008293621</span></span></code></pre></div>
 <p>The marginal density with <span class="math inline">\(\tau =
 0.0083\)</span> is reminiscent of the Gaussian distribution with <span class="math inline">\(\sigma^2 = 0.15\)</span>, suggested by Wakefield
-(2017) as the prior for genetic effects:</p>
+(2017) and commonly used as the prior for genetic effects
+(e.g. Giambartolomei et al. 2014):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/curve.html" class="external-link">curve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">dnorm</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">0</span>, <span class="fl">0.15</span><span class="op">)</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.8</span>,</span>
@@ -127,10 +128,18 @@ Cauchy-like tails protect from over-shrinkage of true large effects.</p>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Johnson, Rossell 2010</p>
-<p>Johnson, Rossell 2012</p>
-<p>Sanyal et al.</p>
-<p>Wakefield</p>
+<p>Giambartolomei et al. (2014). Bayesian Test for Colocalisation
+between Pairs of Genetic Association Studies Using Summary Statistics.
+<em>PLoS Genet</em>.</p>
+<p>Johnson, Rossell (2010). On the use of non-local prior densities in
+Bayesian hypothesis tests. <em>J. R. Statist. Soc. B</em>.</p>
+<p>Johnson, Rossell (2012). Bayesian Model Selection in High-Dimensional
+Settings. <em>J Am Stat Assoc</em>.</p>
+<p>Sanyal et al. (2019). GWASinlps: non-local prior based iterative SNP
+selection tool for genome-wide association studies.
+<em>Bioinformatics</em>.</p>
+<p>Wakefield (2009). Bayes factors for genome-wide association studies:
+comparison with P-values. <em>Genet Epidemiol</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
