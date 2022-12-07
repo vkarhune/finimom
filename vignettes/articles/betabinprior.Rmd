@@ -87,6 +87,12 @@ invisible(lapply(2:4, function(i) lines(vals[[i]], type = "b", lty = i)))
 
 ```
 
+# References
+
+Castillo and van der Vaart (2012). Needles and Straw in a Haystack: Posterior concentration for possibly sparse sequences. *The Annals of Statistics*.
+
+Castillo et al. (2015). Bayesian linear regression with sparse priors. *The Annals of Statistics*.
+
 # Session information
 
 ```{r sessioninfo}
