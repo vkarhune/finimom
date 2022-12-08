@@ -59,7 +59,7 @@ res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 #> Clumping variants at r2=0.98
 #> 
 #> 
-#> 12500 iterations done in 35.47 seconds
+#> 12500 iterations done in 44.43 seconds
 
 # output: credible sets
 res$sets
