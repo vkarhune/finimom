@@ -9,9 +9,6 @@ get_csbf(beta, se, tau, r, level = 0.95)
 \arguments{
 \item{level}{}
 }
-\value{
-
-}
 \description{
 Title
 }

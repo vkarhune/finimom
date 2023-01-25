@@ -9,12 +9,6 @@ dimom(x, r, tau, phi = 1)
 \arguments{
 \item{phi}{}
 }
-\value{
-
-}
 \description{
 Title
-}
-\examples{
-
 }
