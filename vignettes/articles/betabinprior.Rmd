@@ -1,0 +1,99 @@
+---
+title: "Beta-binomial prior for model dimension"
+author: "Ville Karhunen"
+date: "`r format(Sys.Date(), '%d.%m.%Y')`"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r workinprogress, echo = FALSE, out.width = '20%' }
+
+knitr::include_graphics("work-in-progress.png")
+
+```
+
+
+Finimom employs a beta-binomial prior for model dimension $d$:
+
+\[
+\mathbb{P}(d = k | a, b) = \binom{p}{k}\frac{B(a + k, p - k + b)}{B(a, b)}, \quad a, b > 0, \quad d = 1, \dots, K,
+\]
+
+where $p$ is the number of variants and $K$ the maximum model size.
+The priors of this form with $a = 1$ and $b = p^u$ with $u > 1$, are discussed in Castillo and van der Vaart (2012) and in Castillo et al. (2015).
+The parameter $u$ here controls the amount of prior density for smaller models, with larger values of $u$ giving more prior mass to smaller models.
+
+Using a linkage disequilibrium (LD) matrix from an external dataset tend to increase the false positive rate.
+In our formulation, parameter $u$ provides a flexible way to adjust for this.
+The default values are $u = 1.5$ when using in-sample LD matrix, and $u = 1.75$ when using out-of-sample LD matrix.
+
+We demonstrate the prior for model dimension using the example dataset:
+
+```{r setup}
+library(finimom)
+
+(p <- length(exampledata$betahat))
+
+maxsize <- 10
+
+a <- 1
+u <- 1.5
+
+val <- exp(sapply(seq_len(maxsize), dbb, p = p, a = a, b = p^u))
+(val <- val/sum(val))
+
+plot(val, type = "b", ylim = c(0, 1))
+
+
+
+```
+
+
+And for different values of $u$:
+
+
+```{r compareu}
+
+us <- c(1.01, 1.25, 1.5, 1.75)
+
+vals <- lapply(us, function(u){
+  b <- p^u
+  out <- exp(sapply(1:10, dbb, a = a, p = p, b = b))
+  out <- out/sum(out)
+})
+
+plot(vals[[1]], type = "b", ylim = c(0, 1))
+invisible(lapply(2:4, function(i) lines(vals[[i]], type = "b", lty = i)))
+
+```
+
+The same on a log scale:
+
+```{r compareulog}
+
+plot(vals[[1]], type = "b", log = "y", ylim = range(unlist(vals)))
+invisible(lapply(2:4, function(i) lines(vals[[i]], type = "b", lty = i)))
+
+
+```
+
+# References
+
+Castillo and van der Vaart (2012). Needles and Straw in a Haystack: Posterior concentration for possibly sparse sequences. *The Annals of Statistics*.
+
+Castillo et al. (2015). Bayesian linear regression with sparse priors. *The Annals of Statistics*.
+
+# Session information
+
+```{r sessioninfo}
+
+sessionInfo()
+
+```
+
