@@ -9,6 +9,6 @@ navbar:
       - text: 'Tutorial'
         href: minimal-example.html
       - text: 'Non-local priors for effect size'
-        href: articles/nonlocalpriors.html
+        href: nonlocalpriors.html
       - text: 'Prior for model dimension'
-        href: articles/betabinprior.html
+        href: betabinprior.html
