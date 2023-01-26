@@ -11,4 +11,4 @@ navbar:
       - text: 'Non-local priors for effect size'
         href: nonlocalpriors.html
       - text: 'Prior for model dimension'
-        href: betabinprior.html
+        href: articles/betabinprior.html
