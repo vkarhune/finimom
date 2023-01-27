@@ -97,7 +97,7 @@ if(ala == FALSE){
     verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld
     )
 } else {
-  samples0 <- finimom::posterior(
+  samples0 <- finimom:::posterior(
     dat = list(beta = beta, se = se, LDmat = R),
     tau = rep(tau0, length(beta)),
     r = r0, p = p, u = u,
