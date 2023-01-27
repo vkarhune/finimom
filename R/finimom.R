@@ -97,6 +97,10 @@ if(ala == FALSE){
     verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld
     )
 } else {
+
+  lprior <- sapply(seq_len(maxsize), dbb, p = p, a = a0, b = b0)
+  lprior <- log(exp(lprior)/sum(exp(lprior)))
+
   samples0 <- posterior(
     dat = list(beta = beta, se = se, LDmat = R),
     tau = rep(tau0, length(beta)),
