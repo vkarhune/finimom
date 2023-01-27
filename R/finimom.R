@@ -86,8 +86,9 @@ finimom <- function(beta, se, eaf, R,
     }
   }
 
+if(is.null(ala)) ala <- FALSE
 
-if(is.null(ala) | ala == FALSE){
+if(ala == FALSE){
   samples <- posterior_samples(
     beta = beta, se = se, eaf = eaf, R = R,
     maxsize = maxsize, tau0 = tau0, r0 = r0, p = p,

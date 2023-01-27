@@ -215,7 +215,7 @@ posterior_samples <- function(
     if(any(b == 0)){ b[b == 0] <- 1e-7 }
 
     #lmlnew <- logmyb(b,
-    lmlnew <- logmyb_fixed(as.matrix(opt$par, ncol = 1),
+    lmlnew <- logmyb(as.matrix(opt$par, ncol = 1),
                      se[indsprop],
                      tau = tau0, psi = 1, r = r0, k = length(indsprop),
                      R = R[c(indsprop),c(indsprop),drop = F],
