@@ -122,7 +122,8 @@ posterior_samples <- function(
                       # method = "BFGS")
                       method = "Nelder-Mead", control = list(warn.1d.NelderMead = FALSE))
 
-  lml <- logmyb(as.matrix(beta[inds], ncol = 1),
+  # lml <- logmyb(as.matrix(beta[inds], ncol = 1),
+  lml <- logmyb(as.matrix(opt$par, ncol = 1),
                 se[inds],
                 tau = tau0, psi = 1, r = r0, k = length(inds),
                 R = R[inds,inds,drop = F], gval = opt$value)
@@ -213,7 +214,8 @@ posterior_samples <- function(
     b <- as.matrix(beta[indsprop], ncol = 1)
     if(any(b == 0)){ b[b == 0] <- 1e-7 }
 
-    lmlnew <- logmyb(b,
+    #lmlnew <- logmyb(b,
+    lmlnew <- logmyb_fixed(as.matrix(opt$par, ncol = 1),
                      se[indsprop],
                      tau = tau0, psi = 1, r = r0, k = length(indsprop),
                      R = R[c(indsprop),c(indsprop),drop = F],

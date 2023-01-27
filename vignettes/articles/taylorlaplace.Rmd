@@ -1,0 +1,101 @@
+---
+title: "Taylor approximation and Laplace's method"
+author: "Ville Karhunen"
+date: "`r format(Sys.Date(), '%d.%m.%Y')`"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Consider the scenario where we want to evaluate the marginal likelihood of the data, that is, the integral
+
+\[
+\pi_{m}(D) = \int \pi(\hat{\beta}|\beta_{m})\pi_{\beta}(\beta_m)d\beta_{m} = \int e^{-f(\beta_{m})}d\beta_{m}.
+\]
+
+The subscript $m$ refers to a specific model (or causal configuration), and we drop this index from further notation for simplicity.
+A second order Taylor approximation of $f$ at $\beta_0$ is:
+
+\[
+\pi(D) \approx \int e^{-(f(\beta_0) + (\beta - \beta_{0})f'(\beta_0) + \frac{1}{2}(\beta - \beta_{0})^2f''(\beta_0))}d\beta
+\]
+
+The standard Laplace's method would use the global maximum of $f$ as $\beta_0$, in which case $f'(\beta_0) = 0$ and the first order term of the approximation vanishes.
+However, this requires optimising $f$, which can be costly.
+
+Alternatively, we can apply *approximate Laplace's approximation* (Rossell et al. 2021) to evaluate the Taylor approximation at some $\beta_0$, which is not necessarily the global maximum.
+Note that as $\beta$ is small, we can safely assume that this point will be in the vicinity of the global maximum.
+
+Let's consider an example with $\hat{\beta} = 0.049$ and $\text{SE}(\hat{\beta}) = 0.007$:
+
+```{r setup}
+library(finimom)
+
+betahat <- 0.049
+sebetahat <- 0.007
+
+xx <- seq(-0.2, 0.2, length.out = 200)
+
+f <- function(x, beta, se, r = 1, tau = 0.0083){ log(dimom(x, r = r, tau = tau)) + dnorm(x, beta, se, log = TRUE)}
+y <- f(xx, beta = betahat, se = sebetahat)
+plot(xx, y, type = "l")
+
+```
+
+Let's now construct the functions needed for the Taylor approximation:
+
+```{r taylorfunc}
+
+gradient <- function(x, beta, se, r = 1, tau = 0.0083){ -1*((r + 1)/x - 2*tau/x^3 + x/se^2 - beta/se^2) }
+
+hessian <- function(x, se, r = 1, tau = 0.0083){ -1*(6*tau/x^4 - (r + 1)/x^2 + 1/se^2)}
+
+fval <- function(x, x0, beta, se){ (f(x0, beta = beta, se = se) +
+                                      gradient(x0, beta = beta, se = se)*(x - x0) +
+                                      0.5*(x - x0)^2*hessian(x0, se = se)) }
+fval_laplace <- function(x, x0, beta, se){ (f(x0, beta = beta, se = se) - 0.5*(x - x0)^2*abs(hessian(x0, se = se))) }
+
+```
+
+Optimization for Laplace approximation:
+
+```{r optimise}
+opt <- optim(betahat, f, beta = betahat, se = sebetahat, method = "Nelder-Mead", control = list(fnscale = -1, warn.1d.NelderMead = FALSE))
+opt$par
+```
+
+The curves of the true $f$ and its approxmations:
+
+```{r curves}
+
+xf <- sapply(xx, fval_laplace, x0 = opt$par, beta = betahat, se = sebetahat)
+xf_ala <- sapply(xx, fval, x0 = betahat, beta = betahat, se = sebetahat)
+
+plot(xx, y, type = "l")
+lines(xx, xf, lty = 2)
+lines(xx, xf_ala, lty = 3)
+
+```
+
+When evaluating the value of the full integral, Laplace's method gives us
+
+\[
+\pi(D) \approx e^{-f(\tilde{\beta})}(2\pi)^{P/2}|H_{\tilde{\beta}}|^{-1/2},
+\]
+
+where $\tilde{\beta}$ is the global maximum of $f$, and $H_{\tilde{\beta}}$ is the Hessian of $f$ evaluated at $\tilde{\beta}$.
+
+In contrast, the approximate Laplace approximates the integral by
+
+\[
+\pi(D) \approx e^{-f(\beta_0) + \frac{1}{2}g_{\beta_0}^TH_{\beta_0}g_{\beta_0}}(2\pi)^{P/2}|H_{\beta_0}|^{-1/2},
+\]
+
+where $g_{\beta_0}$ and $H_{\beta_0}$ are the gradient and Hessian of $f$, respectively, evaluated at $\beta_0$.
+
+The downside of using the latter is that when computing the gradient $g$, we have to invert the linkage disequilibrium matrix $R$.
+However, this is still much faster than the optimisation of $f$.

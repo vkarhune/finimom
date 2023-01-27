@@ -27,6 +27,7 @@
 #' @param pip Are posterior inclusion probabilities returned?
 #' @param u Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.
 #' @param insampleLD Is in-sample LD used?
+#' @param ala Whether Approximate Laplace should be used?
 #'
 #' @return List.
 #' @export
@@ -41,7 +42,8 @@ finimom <- function(beta, se, eaf, R,
                     a0 = 1, b0 = NULL, u = NULL, inds0 = NULL, standardize = TRUE,
                     verbose = TRUE,
                     insampleLD = NULL,
-                    clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE){
+                    clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
+                    ala = NULL){
 
   # all checks here
   if(is.null(beta)) { stop("Effect sizes required") }
@@ -85,7 +87,7 @@ finimom <- function(beta, se, eaf, R,
   }
 
 
-
+if(is.null(ala) | ala == FALSE){
   samples <- posterior_samples(
     beta = beta, se = se, eaf = eaf, R = R,
     maxsize = maxsize, tau0 = tau0, r0 = r0, p = p,
@@ -93,6 +95,29 @@ finimom <- function(beta, se, eaf, R,
     a0 = a0, b0 = b0, inds0 = inds0, standardize = standardize,
     verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld
     )
+} else {
+  samples0 <- finimom::posterior(
+    dat = list(beta = beta, se = se, LDmat = R),
+    tau = rep(tau0, length(beta)),
+    r = r0, p = p, u = u,
+    lpriorval = lprior,
+    niter = niter,
+    maxsize = maxsize)
+  samples <- samples0[c("betavecmat","modsize","modindices","value")]
+  samples[["betavecmat"]] <- t(samples[["betavecmat"]])
+  samples[["modsize"]] <- as.numeric(samples[["modsize"]])
+  samples[["value"]] <- as.numeric(samples[["value"]])
+  # names(samples) <- NULL
+  samples <- c(samples, samples0[5])
+  samples[[3]] <- sapply(samples[[3]], function(x){gsub(" ", ",", x)})
+
+  if(excl.burnin){
+    samples <- list(samples[[1]][(burnin + 1):niter,],
+                    samples[[2]][(burnin + 1):niter],
+                    samples[[3]][(burnin + 1):niter],
+                    samples[[4]][(burnin + 1):niter])
+  }
+}
 
   ppcs <- prop.table(table(samples[[2]]))
 

@@ -23,8 +23,10 @@ logmyb <- function(x, se, tau, psi, r, k, R, gval){
     invS <- solve(S)
   }
 
+  dm <- matrix(0, nrow = length(x), ncol = length(x))
+  diag(dm) <- 6*tau*psi/x^4 - (r + 1)/x^2
 
-  hessian <- diag(6*tau*psi/x^4 - (r + 1)/x^2) + invS %*% R %*% invS
+  hessian <- dm + invS %*% R %*% invS
 
   logdeth <- determinant(hessian, logarithm = TRUE)$modulus
 
