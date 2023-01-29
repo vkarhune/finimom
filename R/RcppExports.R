@@ -2,30 +2,30 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 arma_setdiff <- function(x, y) {
-    .Call('_finimom_arma_setdiff', PACKAGE = 'finimom', x, y)
+    .Call(`_finimom_arma_setdiff`, x, y)
 }
 
 subset_vector <- function(x, pos) {
-    .Call('_finimom_subset_vector', PACKAGE = 'finimom', x, pos)
+    .Call(`_finimom_subset_vector`, x, pos)
 }
 
 set_vector_vals <- function(x, pos, vals) {
-    .Call('_finimom_set_vector_vals', PACKAGE = 'finimom', x, pos, vals)
+    .Call(`_finimom_set_vector_vals`, x, pos, vals)
 }
 
 subset_matrix <- function(x, pos) {
-    .Call('_finimom_subset_matrix', PACKAGE = 'finimom', x, pos)
+    .Call(`_finimom_subset_matrix`, x, pos)
 }
 
 LMarlik <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
-    .Call('_finimom_LMarlik', PACKAGE = 'finimom', beta, sematinv, z, tau, psi, r, d, LDmat, gval)
+    .Call(`_finimom_LMarlik`, beta, sematinv, z, tau, psi, r, d, LDmat, gval)
 }
 
 gfunc <- function(x, z, sematinv, LDmat, tau, r) {
-    .Call('_finimom_gfunc', PACKAGE = 'finimom', x, z, sematinv, LDmat, tau, r)
+    .Call(`_finimom_gfunc`, x, z, sematinv, LDmat, tau, r)
 }
 
-posterior <- function(dat, tau, maxsize, r, p, u, niter, lpriorval) {
-    .Call('_finimom_posterior', PACKAGE = 'finimom', dat, tau, maxsize, r, p, u, niter, lpriorval)
+posterior <- function(dat, tau, maxsize, r, p, niter, lpriorval) {
+    .Call(`_finimom_posterior`, dat, tau, maxsize, r, p, niter, lpriorval)
 }
 

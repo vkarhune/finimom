@@ -24,7 +24,8 @@ posterior_samples(
   verbose = TRUE,
   clump = TRUE,
   clump_r2 = 0.99^2,
-  check_ld = FALSE
+  check_ld = FALSE,
+  ala = NULL
 )
 }
 \arguments{
@@ -67,6 +68,8 @@ posterior_samples(
 \item{clump_r2}{Clumping threshold for extremely highly correlated variants.}
 
 \item{check_ld}{Should the Z-scores be checked for LD discrepancy?}
+
+\item{ala}{Whether Approximate Laplace should be used?}
 }
 \value{
 List.

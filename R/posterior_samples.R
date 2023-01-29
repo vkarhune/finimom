@@ -20,6 +20,7 @@
 #' @param clump Whether to clump extremely highly correlated variants.
 #' @param clump_r2 Clumping threshold for extremely highly correlated variants.
 #' @param check_ld Should the Z-scores be checked for LD discrepancy?
+#' @param ala Whether Approximate Laplace should be used?
 #'
 #' @return List.
 #' @export
@@ -28,7 +29,8 @@
 posterior_samples <- function(
     beta, se, eaf, R, maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     a0 = 1, b0 = NULL, inds0 = NULL, standardize = TRUE,
-    verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE){
+    verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
+    ala = NULL){
 
 
   if(0){
@@ -44,8 +46,10 @@ posterior_samples <- function(
     #p <- nrow(d)
     seed <- 456
     #n <- 1000
-    a0 <- 0.05
-    b0 <- 0.95
+    p <- length(beta)
+    u <- 1.5
+    a0 <- 1
+    b0 <- p^u
     inds0 <- NULL
     clump_r2 <- 0.99^2
   }
@@ -110,6 +114,34 @@ posterior_samples <- function(
   } else {
     inds <- inds0
   }
+
+  if(is.null(ala)) ala <- FALSE
+
+  if(ala){
+    set.seed(seed)
+
+    if(verbose){ cat(sprintf("Sampling from the posterior using approximate Laplace...\n")) }
+    prc <- proc.time()
+
+    out <- posterior(dat = list(beta = beta,
+                                se = se,
+                                LDmat = R),
+                     tau = rep(tau0, length(beta)),
+                     r = r0,
+                     p = p,
+                     lpriorval = lprior,
+                     niter = niter,
+                     maxsize = maxsize)
+
+    out <- out[c("betavecmat","modsize","modindices","value")]
+    out[[1]] <- t(out[[1]])
+    out[[2]] <- as.numeric(out[[2]])
+    out[[3]] <- sapply(out[[3]], function(x){gsub(" ", ",", x)})
+    out[[4]] <- as.numeric(out[[4]])
+
+    cat(sprintf("\n%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
+
+  } else {
 
 
 
@@ -262,6 +294,7 @@ posterior_samples <- function(
   }
   close(pb)
   cat(sprintf("\n%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
+  }
 
   if(excl.burnin){
     out <- list(out[[1]][(burnin + 1):niter,],

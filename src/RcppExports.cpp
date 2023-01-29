@@ -96,8 +96,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // posterior
-Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r, int p, double u, int niter, arma::vec lpriorval);
-RcppExport SEXP _finimom_posterior(SEXP datSEXP, SEXP tauSEXP, SEXP maxsizeSEXP, SEXP rSEXP, SEXP pSEXP, SEXP uSEXP, SEXP niterSEXP, SEXP lpriorvalSEXP) {
+Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r, int p, int niter, arma::vec lpriorval);
+RcppExport SEXP _finimom_posterior(SEXP datSEXP, SEXP tauSEXP, SEXP maxsizeSEXP, SEXP rSEXP, SEXP pSEXP, SEXP niterSEXP, SEXP lpriorvalSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -106,10 +106,9 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type maxsize(maxsizeSEXP);
     Rcpp::traits::input_parameter< double >::type r(rSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< double >::type u(uSEXP);
     Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type lpriorval(lpriorvalSEXP);
-    rcpp_result_gen = Rcpp::wrap(posterior(dat, tau, maxsize, r, p, u, niter, lpriorval));
+    rcpp_result_gen = Rcpp::wrap(posterior(dat, tau, maxsize, r, p, niter, lpriorval));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -121,7 +120,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_finimom_subset_matrix", (DL_FUNC) &_finimom_subset_matrix, 2},
     {"_finimom_LMarlik", (DL_FUNC) &_finimom_LMarlik, 9},
     {"_finimom_gfunc", (DL_FUNC) &_finimom_gfunc, 6},
-    {"_finimom_posterior", (DL_FUNC) &_finimom_posterior, 8},
+    {"_finimom_posterior", (DL_FUNC) &_finimom_posterior, 7},
     {NULL, NULL, 0}
 };
 

@@ -88,41 +88,14 @@ finimom <- function(beta, se, eaf, R,
 
 if(is.null(ala)) ala <- FALSE
 
-if(ala == FALSE){
-  samples <- posterior_samples(
-    beta = beta, se = se, eaf = eaf, R = R,
-    maxsize = maxsize, tau0 = tau0, r0 = r0, p = p,
-    niter = niter, burnin = burnin, seed = seed, excl.burnin = TRUE,
-    a0 = a0, b0 = b0, inds0 = inds0, standardize = standardize,
-    verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld
-    )
-} else {
-
-  lprior <- sapply(seq_len(maxsize), dbb, p = p, a = a0, b = b0)
-  lprior <- log(exp(lprior)/sum(exp(lprior)))
-
-  samples0 <- posterior(
-    dat = list(beta = beta, se = se, LDmat = R),
-    tau = rep(tau0, length(beta)),
-    r = r0, p = p, u = u,
-    lpriorval = lprior,
-    niter = niter,
-    maxsize = maxsize)
-  samples <- samples0[c("betavecmat","modsize","modindices","value")]
-  samples[["betavecmat"]] <- t(samples[["betavecmat"]])
-  samples[["modsize"]] <- as.numeric(samples[["modsize"]])
-  samples[["value"]] <- as.numeric(samples[["value"]])
-  # names(samples) <- NULL
-  samples <- c(samples, samples0[5])
-  samples[[3]] <- sapply(samples[[3]], function(x){gsub(" ", ",", x)})
-
-  if(excl.burnin){
-    samples <- list(samples[[1]][(burnin + 1):niter,],
-                    samples[[2]][(burnin + 1):niter],
-                    samples[[3]][(burnin + 1):niter],
-                    samples[[4]][(burnin + 1):niter])
-  }
-}
+samples <- posterior_samples(
+  beta = beta, se = se, eaf = eaf, R = R,
+  maxsize = maxsize, tau0 = tau0, r0 = r0, p = p,
+  niter = niter, burnin = burnin, seed = seed, excl.burnin = TRUE,
+  a0 = a0, b0 = b0, inds0 = inds0, standardize = standardize,
+  verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld,
+  ala = ala
+)
 
   ppcs <- prop.table(table(samples[[2]]))
 
