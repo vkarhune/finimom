@@ -5,9 +5,11 @@
 using namespace Rcpp;
 
 #include <RcppArmadilloExtensions/sample.h>
+#include <limits>
 
 #define pi        3.141592653589793238462643383280    /* pi */
 
+constexpr double minusinf = std::numeric_limits<double>::lowest();
 
 // https://github.com/oldregan/RcppNotes
 // [[Rcpp::export]]
@@ -59,10 +61,15 @@ inline arma::mat subset_matrix(arma::mat x, arma::uvec pos) {
 // [[Rcpp::export]]
 inline double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec z,
                        arma::vec tau, double psi, double r, int d, arma::mat LDmat, double gval) {
-  arma::mat hessian = sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta));
+  arma::mat hessian = abs(sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta)));
+
+  if(hessian.is_sympd()){
   arma::vec grad = (r + 1)/beta - 2*tau/pow(beta, 3) + sematinv*LDmat*sematinv*beta - sematinv*z;
 
   return -gval + 0.5*d*log(2*pi) - 0.5*log_det_sympd(hessian) + 0.5*arma::as_scalar(grad.t() * inv(hessian) * grad);
+  } else {
+    return minusinf;
+  }
   }
 
 // [[Rcpp::export]]
@@ -253,6 +260,7 @@ for(int i = 1; i < niter; ++i){
   LDmatprop = subset_matrix(LDmat, indsprop);
 
   if(LDmatprop.is_sympd()){
+  //if(arma::rank(LDmatprop) == modelsizeprop){
   // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
 
   gvalpar = arma::inv_sympd(subset_matrix(LDmat, indsprop))*beta.elem(indsprop);
