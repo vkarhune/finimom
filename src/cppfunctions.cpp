@@ -49,28 +49,27 @@ inline arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals) {
   return x;
 }
 
-// [[Rcpp::export]]
-inline arma::mat subset_matrix(arma::mat x, arma::uvec pos) {
-  arma::mat out = x.cols(pos);
-  out = out.rows(pos);
-  return out;
-}
 
 
 
 // [[Rcpp::export]]
-inline double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec z,
+double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec z,
                        arma::vec tau, double psi, double r, int d, arma::mat LDmat, double gval) {
   arma::mat hessian = abs(sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta)));
 
-  if(hessian.is_sympd()){
-  arma::vec grad = (r + 1)/beta - 2*tau/pow(beta, 3) + sematinv*LDmat*sematinv*beta - sematinv*z;
+  double logdeth;
+  bool success = log_det_sympd(logdeth, hessian);
 
-  return -gval + 0.5*d*log(2*pi) - 0.5*log_det_sympd(hessian) + 0.5*arma::as_scalar(grad.t() * inv(hessian) * grad);
+  if(success){
+    arma::vec grad = (r + 1)/beta - 2*tau/pow(beta, 3) + sematinv*LDmat*sematinv*beta - sematinv*z;
+
+    // return -gval + 0.5*d*log(2*pi) - 0.5*log_det_sympd(hessian) + 0.5*arma::as_scalar(grad.t() * inv(hessian) * grad);
+    // return -gval + 0.5*d*log(2*pi) - 0.5*logdeth + 0.5*arma::as_scalar(grad.t() * inv(hessian) * grad);
+    return -gval + 0.5*d*log(2*pi) - 0.5*logdeth + 0.5*arma::as_scalar(grad.t() * solve(hessian, grad));
   } else {
     return minusinf;
   }
-  }
+}
 
 // [[Rcpp::export]]
 inline double gfunc(arma::vec x, arma::vec z, arma::mat sematinv, arma::mat LDmat,
@@ -117,12 +116,15 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   arma::uvec indsplus;
   inds = index_max(abs(z));
 
-  arma::mat LDmatprop;
+  // arma::mat LDmatprop;
 
 
 
   double gval;
   arma::vec gvalpar;
+
+  bool issympd;
+  arma::mat LDmatinv;
 
   arma::mat sematinv;
   sematinv = arma::diagmat(1/se);
@@ -136,19 +138,21 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   int modelsize;
   modelsize = inds.size();
 
+  arma::mat LDmatinds = LDmat(inds, inds);
+  arma::mat sematinvinds = sematinv(inds, inds);
 
 
-  gvalpar = arma::inv_sympd(subset_matrix(LDmat, inds))*subset_vector(beta, inds);
+  gvalpar = arma::inv_sympd(LDmatinds)*subset_vector(beta, inds);
 
-  gval = gfunc(gvalpar, subset_vector(z, inds), subset_matrix(sematinv, inds), subset_matrix(LDmat, inds),
+  gval = gfunc(gvalpar, subset_vector(z, inds), sematinvinds, LDmatinds,
                subset_vector(tau, inds), r);
 
   double lm;
   double lp;
 
-  lm = LMarlik(gvalpar, subset_matrix(sematinv, inds), subset_vector(z, inds),
+  lm = LMarlik(gvalpar, sematinvinds, subset_vector(z, inds),
                subset_vector(tau, inds), 1, r, modelsize,
-               subset_matrix(LDmat, inds), gval);
+               LDmatinds, gval);
   lp = lm + lpriorval[modelsize - 1];
   val[0] = lm;
 
@@ -173,6 +177,9 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   double barker;
 
   arma::vec xtr;
+  xtr = beta - LDmat*betavec;
+
+  arma::vec pr;
   arma::vec probs(p);
   arma::vec swapindex(1);
   arma::vec addindex(1);
@@ -211,7 +218,7 @@ for(int i = 1; i < niter; ++i){
 
   if(add == 1){
 
-    xtr = beta - LDmat*betavec;
+    // xtr = beta - LDmat*betavec;
     zerovec = arma::zeros(inds.size());
 
     probs = set_vector_vals(arma::conv_to<arma::vec>::from(xtr), inds, zerovec);
@@ -228,7 +235,7 @@ for(int i = 1; i < niter; ++i){
 
       swapindex = Rcpp::RcppArmadillo::sample(arma::conv_to<arma::vec>::from(inds), 1, false);
 
-      xtr = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
+      pr = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
 
       zerovec = arma::zeros(inds.size());
 
@@ -257,20 +264,28 @@ for(int i = 1; i < niter; ++i){
   input = beta.elem(indsprop);
 
 
-  LDmatprop = subset_matrix(LDmat, indsprop);
+  arma::mat LDmatprop = LDmat(indsprop, indsprop);
 
-  if(LDmatprop.is_sympd()){
+  arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
+
+  // bool issympd;
+  // arma::mat LDmatinv;
+  issympd = arma::inv_sympd(LDmatinv, LDmatprop);
+
+
+  if(issympd){
   //if(arma::rank(LDmatprop) == modelsizeprop){
   // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
 
-  gvalpar = arma::inv_sympd(subset_matrix(LDmat, indsprop))*beta.elem(indsprop);
+  // gvalpar = LDmatinv*beta.elem(indsprop);
+  gvalpar = solve(LDmatprop, beta.elem(indsprop));
 
-  gval = gfunc(gvalpar, subset_vector(z, indsprop), subset_matrix(sematinv, indsprop), subset_matrix(LDmat, indsprop),
+  gval = gfunc(gvalpar, subset_vector(z, indsprop), sematinvindsprop, LDmatprop,
                subset_vector(tau, indsprop), r);
 
-  lmlnew = LMarlik(gvalpar, subset_matrix(sematinv, indsprop), subset_vector(z, indsprop),
+  lmlnew = LMarlik(gvalpar, sematinvindsprop, subset_vector(z, indsprop),
                    subset_vector(tau, indsprop), 1, r, modelsizeprop,
-                   subset_matrix(LDmat, indsprop), gval);
+                   LDmatprop, gval);
   lpnew = lmlnew + lpriorval[modelsizeprop - 1];
 
   betaprop = arma::zeros(p);
@@ -289,6 +304,7 @@ for(int i = 1; i < niter; ++i){
     modelsize = modelsizeprop;
     inds = indsprop;
     betavec = betaprop;
+    xtr = beta - LDmat*betavec;
   }
 
 

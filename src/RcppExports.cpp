@@ -48,20 +48,8 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// subset_matrix
-inline arma::mat subset_matrix(arma::mat x, arma::uvec pos);
-RcppExport SEXP _finimom_subset_matrix(SEXP xSEXP, SEXP posSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type pos(posSEXP);
-    rcpp_result_gen = Rcpp::wrap(subset_matrix(x, pos));
-    return rcpp_result_gen;
-END_RCPP
-}
 // LMarlik
-inline double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec z, arma::vec tau, double psi, double r, int d, arma::mat LDmat, double gval);
+double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec z, arma::vec tau, double psi, double r, int d, arma::mat LDmat, double gval);
 RcppExport SEXP _finimom_LMarlik(SEXP betaSEXP, SEXP sematinvSEXP, SEXP zSEXP, SEXP tauSEXP, SEXP psiSEXP, SEXP rSEXP, SEXP dSEXP, SEXP LDmatSEXP, SEXP gvalSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -117,7 +105,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_finimom_arma_setdiff", (DL_FUNC) &_finimom_arma_setdiff, 2},
     {"_finimom_subset_vector", (DL_FUNC) &_finimom_subset_vector, 2},
     {"_finimom_set_vector_vals", (DL_FUNC) &_finimom_set_vector_vals, 3},
-    {"_finimom_subset_matrix", (DL_FUNC) &_finimom_subset_matrix, 2},
     {"_finimom_LMarlik", (DL_FUNC) &_finimom_LMarlik, 9},
     {"_finimom_gfunc", (DL_FUNC) &_finimom_gfunc, 6},
     {"_finimom_posterior", (DL_FUNC) &_finimom_posterior, 7},

@@ -13,10 +13,6 @@ set_vector_vals <- function(x, pos, vals) {
     .Call(`_finimom_set_vector_vals`, x, pos, vals)
 }
 
-subset_matrix <- function(x, pos) {
-    .Call(`_finimom_subset_matrix`, x, pos)
-}
-
 LMarlik <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
     .Call(`_finimom_LMarlik`, beta, sematinv, z, tau, psi, r, d, LDmat, gval)
 }
