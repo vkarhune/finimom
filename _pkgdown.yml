@@ -12,3 +12,5 @@ navbar:
         href: nonlocalpriors.html
       - text: 'Prior for model dimension'
         href: betabinprior.html
+development:
+  mode: auto
