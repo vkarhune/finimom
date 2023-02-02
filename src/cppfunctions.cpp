@@ -471,7 +471,11 @@ for(int i = 1; i < niter; ++i){
 
     arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
 
-    if(arma::rank(LDmatprop) == modelsizeprop){
+    arma::mat LDmatinv;
+    bool invertible = inv_sympd(LDmatinv, LDmatprop);
+
+    if(invertible){
+    //if(arma::rank(LDmatprop) == modelsizeprop){
       // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
 
       // gvalpar = LDmatinv*beta.elem(indsprop);
@@ -491,6 +495,7 @@ for(int i = 1; i < niter; ++i){
       barker = 1/(1+exp(lp - lpnew));
     } else {
       // hybrid sampling!
+      // NOTE: does not really work as well as hoped...
       // barker = -1;
 
       parsinit["tau"] = subset_vector(tau, indsprop);
