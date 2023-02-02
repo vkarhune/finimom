@@ -58,7 +58,7 @@ R <- exampledata$insampleLD
 # run finimom
 res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
                insampleLD = TRUE,
-               verbose = FALSE) # set 'verbose = TRUE' for a progress bar 
+               verbose = TRUE)
 
 # output: credible sets
 res$sets

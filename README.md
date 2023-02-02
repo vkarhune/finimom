@@ -55,20 +55,22 @@ R <- exampledata$insampleLD
 # run finimom
 res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
                insampleLD = TRUE,
-               verbose = FALSE) # set 'verbose = TRUE' for a progress bar 
+               verbose = TRUE)
 #> Clumping variants at r2=0.98
+#> Sampling from the posterior...
 #> 
-#> 
-#> 12500 iterations done in 44.43 seconds
+#> 12500 iterations done in 3.70 seconds
 
 # output: credible sets
 res$sets
 #> [[1]]
-#>  [1] 167 169 172 174 177 179 180 183 186 187 188 190 193 194 208 209
+#>  [1] 167 169 172 174 177 179 180 183 185 186 187 188 190 193 194 197 206 208 209
+#> [20] 245 279
 #> 
 #> [[2]]
 #>  [1] 168 175 178 181 189 195 196 200 201 202 204 205 210 211 212 213 214 215 216
-#> [20] 218 219 220 221 223 224 227 230 232 234 235 238 239 240 241 242 248 251 254
+#> [20] 218 219 220 221 223 224 227 229 230 232 234 235 238 239 240 241 242 248 251
+#> [39] 254
 
 # compare with the true causal variants
 exampledata$causals
