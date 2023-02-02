@@ -13,15 +13,23 @@ set_vector_vals <- function(x, pos, vals) {
     .Call(`_finimom_set_vector_vals`, x, pos, vals)
 }
 
-LMarlik <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
-    .Call(`_finimom_LMarlik`, beta, sematinv, z, tau, psi, r, d, LDmat, gval)
+LMarlik <- function(beta, sematinv, tau, psi, r, d, LDmat, gval) {
+    .Call(`_finimom_LMarlik`, beta, sematinv, tau, psi, r, d, LDmat, gval)
 }
 
-gfunc <- function(x, z, sematinv, LDmat, tau, r) {
-    .Call(`_finimom_gfunc`, x, z, sematinv, LDmat, tau, r)
+LMarlikApprox <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
+    .Call(`_finimom_LMarlikApprox`, beta, sematinv, z, tau, psi, r, d, LDmat, gval)
 }
 
-posterior <- function(dat, tau, maxsize, r, p, niter, lpriorval) {
-    .Call(`_finimom_posterior`, dat, tau, maxsize, r, p, niter, lpriorval)
+gf <- function(x, z, sematinv, LDmat, tau, k, r) {
+    .Call(`_finimom_gf`, x, z, sematinv, LDmat, tau, k, r)
+}
+
+opt_nm <- function(initval, pars) {
+    .Call(`_finimom_opt_nm`, initval, pars)
+}
+
+posterior <- function(dat, tau, maxsize, r, p, niter, lpriorval, approx) {
+    .Call(`_finimom_posterior`, dat, tau, maxsize, r, p, niter, lpriorval, approx)
 }
 

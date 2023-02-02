@@ -11,6 +11,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
     Rcpp,
+    roptim,
     stats
 URL: https://vkarhune.github.io/finimom
 Suggests: 
@@ -22,4 +23,5 @@ Depends:
 LazyData: true
 LinkingTo: 
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    roptim

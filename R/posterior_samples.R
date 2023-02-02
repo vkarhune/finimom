@@ -117,10 +117,11 @@ posterior_samples <- function(
 
   if(is.null(ala)) ala <- FALSE
 
-  if(ala){
+  if(TRUE){
     set.seed(seed)
 
-    if(verbose){ cat(sprintf("Sampling from the posterior using approximate Laplace...\n")) }
+    #if(verbose){ cat(sprintf("Sampling from the posterior using approximate Laplace...\n")) }
+    if(verbose){ cat(sprintf("Sampling from the posterior...\n")) }
     prc <- proc.time()
 
     out <- posterior(dat = list(beta = beta,
@@ -131,7 +132,8 @@ posterior_samples <- function(
                      p = p,
                      lpriorval = lprior,
                      niter = niter,
-                     maxsize = maxsize)
+                     maxsize = maxsize,
+                     approx = ala*1)
 
     out <- out[c("betavecmat","modsize","modindices","value")]
     out[[1]] <- t(out[[1]])
