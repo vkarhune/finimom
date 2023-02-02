@@ -490,7 +490,35 @@ for(int i = 1; i < niter; ++i){
 
       barker = 1/(1+exp(lp - lpnew));
     } else {
-      barker = -1;
+      // hybrid sampling!
+      // barker = -1;
+
+      parsinit["tau"] = subset_vector(tau, indsprop);
+      parsinit["z"] = subset_vector(z, indsprop);
+
+      arma::mat tmpmat1 = sematinv(indsprop, indsprop);
+      parsinit["sematinv"] = tmpmat1;
+
+      arma::mat tmpmat2 = LDmat(indsprop, indsprop);
+      parsinit["LDmat"] = tmpmat2;
+      // r is the same all the time
+
+      input = beta.elem(indsprop);
+
+      funlist = opt_nm(input, parsinit);
+      gval = funlist["value"];
+      gvalpar = as<arma::vec>(funlist["par"]);
+
+      // NOTE: makes more sense to pre-calculate Lprior, and then give as input
+      lmlnew = LMarlik(gvalpar, parsinit["sematinv"], parsinit["tau"], 1, r, modelsizeprop,
+                       parsinit["LDmat"], gval);
+      lpnew = lmlnew + lpriorval[modelsizeprop - 1];
+
+      betaprop = arma::zeros(p);
+      betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
+
+      barker = 1/(1+exp(lp - lpnew));
+
     }
   }
 
