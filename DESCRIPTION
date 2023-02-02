@@ -13,7 +13,8 @@ Imports:
     Rcpp,
     roptim,
     stats
-URL: https://vkarhune.github.io/finimom
+URL: https://vkarhune.github.io/finimom,
+    https://vkarhune.github.io/finimom/
 Suggests: 
     rmarkdown,
     knitr

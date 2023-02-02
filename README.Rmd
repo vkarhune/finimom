@@ -58,7 +58,7 @@ R <- exampledata$insampleLD
 # run finimom
 res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
                insampleLD = TRUE,
-               verbose = TRUE)
+               verbose = TRUE) # set ala = TRUE for approximate Laplace
 
 # output: credible sets
 res$sets

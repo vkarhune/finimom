@@ -55,11 +55,11 @@ R <- exampledata$insampleLD
 # run finimom
 res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
                insampleLD = TRUE,
-               verbose = TRUE)
+               verbose = TRUE) # set ala = TRUE for approximate Laplace
 #> Clumping variants at r2=0.98
 #> Sampling from the posterior...
 #> 
-#> 12500 iterations done in 3.70 seconds
+#> 12500 iterations done in 3.50 seconds
 
 # output: credible sets
 res$sets
