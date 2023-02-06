@@ -66,24 +66,6 @@ double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec tau,
 }
 
 
-// [[Rcpp::export]]
-double LMarlikApprox(arma::vec beta, arma::mat sematinv, arma::vec z, arma::vec tau,
-                     double psi, double r, int d, arma::mat LDmat, double gval) {
-
-  arma::mat hessian = sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta));
-
-  double logdeth;
-  bool success = log_det_sympd(logdeth, hessian);
-
-  if(success){
-  //if(arma::rank(hessian) == beta.size()){
-    arma::vec gr = (r + 1)/beta - 2*tau/pow(beta, 3) + sematinv*LDmat*sematinv*beta - sematinv*z;
-
-    return -gval + 0.5*d*log(2*pi) - 0.5*logdeth + 0.5*arma::as_scalar(gr.t()*inv(hessian)*gr);
-  } else {
-    return minusinf;
-  }
-}
 
 // [[Rcpp::export]]
 double gf(arma::vec x, arma::vec z, arma::mat sematinv, arma::mat LDmat, arma::vec tau, int k, int r){
@@ -159,6 +141,52 @@ Rcpp::List opt_nm(arma::vec &initval, Rcpp::List &pars) {
   return out;
 
 }
+
+
+
+// [[Rcpp::export]]
+double LMarlikApprox(arma::vec beta, arma::mat sematinv, arma::vec z, arma::vec tau,
+                     double psi, double r, int d, arma::mat LDmat, double gval) {
+
+  arma::mat hessian = sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta));
+
+  double logdeth;
+  bool success = log_det_sympd(logdeth, hessian);
+
+  if(success){
+    //if(arma::rank(hessian) == beta.size()){
+    arma::vec gr = (r + 1)/beta - 2*tau/pow(beta, 3) + sematinv*LDmat*sematinv*beta - sematinv*z;
+
+    return -gval + 0.5*d*log(2*pi) - 0.5*logdeth + 0.5*arma::as_scalar(gr.t()*inv(hessian)*gr);
+  } else {
+
+    Rcpp::List parsinit;
+    Rcpp::List funlist;
+
+    parsinit["tau"] = tau;
+    parsinit["z"] = z;
+    parsinit["LDmat"] = LDmat;
+    parsinit["sematinv"] = sematinv;
+    parsinit["r"] = r;
+
+    funlist = opt_nm(beta, parsinit);
+
+    double gval;
+    gval = funlist["value"];
+
+    arma::vec gvalpar;
+    gvalpar = as<arma::vec>(funlist["par"]);
+
+    double out;
+    out = LMarlik(gvalpar, parsinit["sematinv"], parsinit["tau"], 1, r, gvalpar.size(),
+                  parsinit["LDmat"], gval);
+
+    return out;
+    // return minusinf;
+  }
+}
+
+
 
 // [[Rcpp::export]]
 Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,

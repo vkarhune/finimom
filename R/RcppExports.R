@@ -17,16 +17,16 @@ LMarlik <- function(beta, sematinv, tau, psi, r, d, LDmat, gval) {
     .Call(`_finimom_LMarlik`, beta, sematinv, tau, psi, r, d, LDmat, gval)
 }
 
-LMarlikApprox <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
-    .Call(`_finimom_LMarlikApprox`, beta, sematinv, z, tau, psi, r, d, LDmat, gval)
-}
-
 gf <- function(x, z, sematinv, LDmat, tau, k, r) {
     .Call(`_finimom_gf`, x, z, sematinv, LDmat, tau, k, r)
 }
 
 opt_nm <- function(initval, pars) {
     .Call(`_finimom_opt_nm`, initval, pars)
+}
+
+LMarlikApprox <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
+    .Call(`_finimom_LMarlikApprox`, beta, sematinv, z, tau, psi, r, d, LDmat, gval)
 }
 
 posterior <- function(dat, tau, maxsize, r, p, niter, lpriorval, approx) {
