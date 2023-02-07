@@ -150,14 +150,16 @@ double LMarlikApprox(arma::vec beta, arma::mat sematinv, arma::vec z, arma::vec 
 
   arma::mat hessian = sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta));
 
-  double logdeth;
-  bool success = log_det_sympd(logdeth, hessian);
+  // double logdeth;
+  // bool success = log_det_sympd(logdeth, hessian);
+  bool success = hessian.is_sympd();
 
   if(success){
     //if(arma::rank(hessian) == beta.size()){
     arma::vec gr = (r + 1)/beta - 2*tau/pow(beta, 3) + sematinv*LDmat*sematinv*beta - sematinv*z;
 
-    return -gval + 0.5*d*log(2*pi) - 0.5*logdeth + 0.5*arma::as_scalar(gr.t()*inv(hessian)*gr);
+    // return -gval + 0.5*d*log(2*pi) - 0.5*logdeth + 0.5*arma::as_scalar(gr.t()*inv(hessian)*gr);
+    return -gval + 0.5*d*log(2*pi) - 0.5*log_det_sympd(hessian) + 0.5*arma::as_scalar(gr.t()*inv(hessian)*gr);
   } else {
 
     Rcpp::List parsinit;
