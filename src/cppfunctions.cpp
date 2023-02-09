@@ -502,15 +502,21 @@ for(int i = 1; i < niter; ++i){
 
     arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
 
-    arma::mat LDmatinv;
-    bool invertible = inv_sympd(LDmatinv, LDmatprop);
+    arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
+    double mval = LDmatupper.max();
+    // NOTE: this crashes
+    // arma::mat LDmatinv;
+    // bool invertible = inv_sympd(LDmatinv, LDmatprop, arma::inv_opts::allow_approx);
+    // bool invertible = arma::pinv(LDmatinv, LDmatprop);
 
-    if(invertible){
+    if(mval <= 0.99){
+    // if(invertible){
     //if(arma::rank(LDmatprop) == modelsizeprop){
       // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
 
       // gvalpar = LDmatinv*beta.elem(indsprop);
-      gvalpar = solve(LDmatprop, beta.elem(indsprop));
+      // gvalpar = solve(LDmatprop, beta.elem(indsprop));
+      gvalpar = solve(LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
 
       gval = gf(gvalpar, subset_vector(z, indsprop), sematinvindsprop, LDmatprop,
                    subset_vector(tau, indsprop), modelsizeprop, r);
