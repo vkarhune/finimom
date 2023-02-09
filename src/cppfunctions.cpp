@@ -468,6 +468,7 @@ for(int i = 1; i < niter; ++i){
 
   modelsizeprop = indsprop.size();
 
+  bool useala;
 
   if(approx == 0){
     parsinit["tau"] = subset_vector(tau, indsprop);
@@ -502,14 +503,27 @@ for(int i = 1; i < niter; ++i){
 
     arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
 
-    arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
-    double mval = LDmatupper.max();
-    // NOTE: this crashes
+    // boolean useala;
+
+    if(modelsizeprop == 1){
+      useala = true;
+    } else{
+
+      arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
+      double mval = LDmatupper.max();
+
+      if(mval <= 0.99){
+        useala = true;
+      } else {
+        useala = false;
+      }
+
+    }
     // arma::mat LDmatinv;
     // bool invertible = inv_sympd(LDmatinv, LDmatprop, arma::inv_opts::allow_approx);
     // bool invertible = arma::pinv(LDmatinv, LDmatprop);
 
-    if(mval <= 0.99){
+    if(useala){
     // if(invertible){
     //if(arma::rank(LDmatprop) == modelsizeprop){
       // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
