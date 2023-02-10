@@ -11,6 +11,13 @@ This R package implements a method for fine-mapping summarised genetic
 data using product inverse-moment prior for the effect sizes, and a
 beta-binomial prior for the model dimension.
 
+The method is described in a pre-print:
+
+Karhunen V, Launonen I, Jarvelin MR, Sebert S, Sillanpaa MJ. Genetic
+fine-mapping from summary data using a non-local prior improves
+detection of multiple causal variants. *bioRxiv*. 2022:2022-12.
+[doi:10.1101/2022.12.02.518898](https://doi.org/10.1101/2022.12.02.518898).
+
 ## Installation
 
 You can install `finimom` from [GitHub](https://github.com/) with:
@@ -59,7 +66,7 @@ res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 #> Clumping variants at r2=0.98
 #> Sampling from the posterior...
 #> 
-#> 12500 iterations done in 3.50 seconds
+#> 12500 iterations done in 1.89 seconds
 
 # output: credible sets
 res$sets
