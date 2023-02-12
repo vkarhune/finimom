@@ -346,9 +346,13 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   double barker;
 
   arma::vec xtr = beta - LDmat*betavec;
+  arma::vec xtrprop;
   arma::vec pr;
   // arma::mat xtr;
   arma::vec probs(p);
+
+  arma::vec probsback(p);
+
   // arma::vec probs2;
   // arma::uvec swapindex(1);
   arma::vec swapindex(1);
@@ -362,6 +366,7 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   // arma::vec B;
 
   arma::vec zerovec;
+  arma::vec zerovecback;
 
   std::ostringstream ss;
 
@@ -376,6 +381,15 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   std::string s2 = s1.substr(0, (s1.size() > 0) ? (s1.size()-1) : 0);
   modindices[0] = s2;
 
+  double pforward; // a-d-s probability
+  double pbackward; // probability of going backwards
+
+  double pforward2;
+  double pbackward2;
+
+  double lqcurrprop;
+  double lqpropcurr;
+
 for(int i = 1; i < niter; ++i){
 
   // current = theta[i-1] + rnorm(1,0, 1)[0];
@@ -388,11 +402,14 @@ for(int i = 1; i < niter; ++i){
   // randomly pick add = 1, delete = 0, swap = 2
   if(modelsize == 1){
     add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmin, 1, false));
+    pforward = 1/seqvecmin.size();
   } else {
     if(modelsize != maxsize){
       add = as_scalar(Rcpp::RcppArmadillo::sample(seqvec, 1, false));
+      pforward = 1/seqvec.size();
     } else {
       add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmax, 1, false));
+      pforward = 1/seqvecmax.size();
     }
   }
 
@@ -413,10 +430,16 @@ for(int i = 1; i < niter; ++i){
 
     swapindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
     indsprop1 = arma::join_cols(arma::conv_to<arma::vec>::from(inds), swapindex);
+
+    pforward2 = probs(arma::conv_to<arma::uword>::from(swapindex)); //NOTE: check that indexing goes correctly!
     // indsprop1 = indsprop1(sort_index(indsprop1));
     // indsprop = arma::conv_to<arma::uvec>::from(indsprop1);
 
     indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
+
+    // probability of delete backwards
+    pbackward2 = 1/indsprop.size();
+
 
   } else{
     if(add == 2){
@@ -436,20 +459,14 @@ for(int i = 1; i < niter; ++i){
       probs = probs/arma::accu(probs);
 
       addindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
-
-
-      // this works:
-      // indsprop1 = arma::join_cols(arma::conv_to<arma::vec>::from(inds), addindex);
-      // indsprop1 = arma_setdiff(indsprop1, swapindex);
-      // indsprop1 = indsprop1(sort_index(indsprop1));
-      // indsprop = arma::conv_to<arma::uvec>::from(indsprop1);
+      pforward2 = probs(arma::conv_to<arma::uword>::from(addindex)); //NOTE: check that indexing goes correctly!!!
 
       indsprop1 = arma::join_cols(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex), addindex);
 
-      // indsprop1 = indsprop1(sort_index(indsprop1));
-      // indsprop = arma::conv_to<arma::uvec>::from(indsprop1);
-
       indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
+
+      // probability of swap backwards, trivial
+      pbackward2 = pforward2;
 
     } else {
       // outtemp[i] = add;
@@ -457,16 +474,25 @@ for(int i = 1; i < niter; ++i){
       swapindex = Rcpp::RcppArmadillo::sample(arma::conv_to<arma::vec>::from(inds), 1, false);
 
       indsprop = arma::conv_to<arma::uvec>::from(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex));
-      // indsprop1 = arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex);
-      // indsprop = arma::conv_to<arma::uvec>::from(indsprop1);
 
-      // indsprop = arma::conv_to<arma::uvec>::from(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex));
-      // swapindex <- sample2(which(betavec != 0), 1)
-      // indsprop <- setdiff(which(betavec != 0), swapindex)
+      pforward2 = 1/inds.size();
+
+
     }
   }
 
+
   modelsizeprop = indsprop.size();
+
+  if(modelsizeprop == 1){
+    pbackward = 1/seqvecmin.size();
+  } else {
+    if(modelsizeprop != maxsize){
+      pbackward = 1/seqvec.size();
+    } else {
+      pbackward = 1/seqvecmax.size();
+    }
+  }
 
   bool useala;
 
@@ -495,7 +521,25 @@ for(int i = 1; i < niter; ++i){
     betaprop = arma::zeros(p);
     betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
 
-    barker = 1/(1+exp(lp - lpnew));
+    // need to calculate residuals of the proposed model;
+    xtrprop = beta - LDmat*betaprop;
+
+    if(add == 0){
+
+      zerovecback = arma::zeros(modelsizeprop);
+
+      probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+      probsback = arma::square(probsback);
+      probsback = probsback/arma::accu(probsback);
+
+      pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+    }
+
+    lqcurrprop = log(pforward) + log(pforward2);
+    lqpropcurr = log(pbackward) + log(pbackward2);
+
+    //barker = 1/(1+exp(lp - lpnew));
+    barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
 
   } else {
 
@@ -590,7 +634,8 @@ for(int i = 1; i < niter; ++i){
     modelsize = modelsizeprop;
     inds = indsprop;
     betavec = betaprop;
-    xtr = beta - LDmat*betavec;
+    // xtr = beta - LDmat*betavec;
+    xtr = xtrprop;
 
   }
 
