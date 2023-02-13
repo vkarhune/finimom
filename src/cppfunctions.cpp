@@ -196,7 +196,7 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
                      int p, int niter, arma::vec lpriorval, int approx){
 
   Rcpp::List out;
-  // arma::vec theta(niter);
+
   arma::vec val(niter);
   arma::vec outmodsize(niter);
   // arma::vec outtemp(niter);
@@ -402,14 +402,14 @@ for(int i = 1; i < niter; ++i){
   // randomly pick add = 1, delete = 0, swap = 2
   if(modelsize == 1){
     add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmin, 1, false));
-    pforward = 1/seqvecmin.size();
+    pforward = 1/(1.0*seqvecmin.size());
   } else {
     if(modelsize != maxsize){
       add = as_scalar(Rcpp::RcppArmadillo::sample(seqvec, 1, false));
-      pforward = 1/seqvec.size();
+      pforward = 1/(1.0*seqvec.size());
     } else {
       add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmax, 1, false));
-      pforward = 1/seqvecmax.size();
+      pforward = 1/(1.0*seqvecmax.size());
     }
   }
 
@@ -435,11 +435,11 @@ for(int i = 1; i < niter; ++i){
     // indsprop1 = indsprop1(sort_index(indsprop1));
     // indsprop = arma::conv_to<arma::uvec>::from(indsprop1);
 
+
     indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
 
     // probability of delete backwards
-    pbackward2 = 1/indsprop.size();
-
+    pbackward2 = 1/(1.0*indsprop.size());
 
   } else{
     if(add == 2){
@@ -475,7 +475,7 @@ for(int i = 1; i < niter; ++i){
 
       indsprop = arma::conv_to<arma::uvec>::from(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex));
 
-      pforward2 = 1/inds.size();
+      pforward2 = 1/(1.0*inds.size());
 
 
     }
@@ -485,12 +485,12 @@ for(int i = 1; i < niter; ++i){
   modelsizeprop = indsprop.size();
 
   if(modelsizeprop == 1){
-    pbackward = 1/seqvecmin.size();
+    pbackward = 1/(1.0*seqvecmin.size());
   } else {
     if(modelsizeprop != maxsize){
-      pbackward = 1/seqvec.size();
+      pbackward = 1/(1.0*seqvec.size());
     } else {
-      pbackward = 1/seqvecmax.size();
+      pbackward = 1/(1.0*seqvecmax.size());
     }
   }
 
@@ -533,12 +533,13 @@ for(int i = 1; i < niter; ++i){
       probsback = probsback/arma::accu(probsback);
 
       pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+
     }
 
     lqcurrprop = log(pforward) + log(pforward2);
     lqpropcurr = log(pbackward) + log(pbackward2);
 
-    //barker = 1/(1+exp(lp - lpnew));
+    // barker = 1/(1+exp(lp - lpnew));
     barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
 
   } else {
@@ -587,7 +588,29 @@ for(int i = 1; i < niter; ++i){
       betaprop = arma::zeros(p);
       betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
 
-      barker = 1/(1+exp(lp - lpnew));
+      // need to calculate residuals of the proposed model;
+      xtrprop = beta - LDmat*betaprop;
+
+      if(add == 0){
+
+        zerovecback = arma::zeros(modelsizeprop);
+
+        probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+        probsback = arma::square(probsback);
+        probsback = probsback/arma::accu(probsback);
+
+        pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+
+      }
+
+      lqcurrprop = log(pforward) + log(pforward2);
+      lqpropcurr = log(pbackward) + log(pbackward2);
+
+
+
+      // barker = 1/(1+exp(lp - lpnew));
+      barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+
     } else {
       // hybrid sampling!
       // NOTE: does not really work as well as hoped...
@@ -617,7 +640,26 @@ for(int i = 1; i < niter; ++i){
       betaprop = arma::zeros(p);
       betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
 
-      barker = 1/(1+exp(lp - lpnew));
+      // need to calculate residuals of the proposed model;
+      xtrprop = beta - LDmat*betaprop;
+
+      if(add == 0){
+
+        zerovecback = arma::zeros(modelsizeprop);
+
+        probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+        probsback = arma::square(probsback);
+        probsback = probsback/arma::accu(probsback);
+
+        pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+
+      }
+
+      lqcurrprop = log(pforward) + log(pforward2);
+      lqpropcurr = log(pbackward) + log(pbackward2);
+
+      // barker = 1/(1+exp(lp - lpnew));
+      barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
 
     }
   }
@@ -674,8 +716,6 @@ for(int i = 1; i < niter; ++i){
  // out["betavec"] = betavec;
  // out["sematinv"] = parsinit["sematinv"];
  // out["LDmat"] = parsinit["LDmat"];
-
-
 
  return out;
 }
