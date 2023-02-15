@@ -341,12 +341,16 @@ Rcpp::List posterior(Rcpp::List dat, arma::vec tau, int maxsize, double r,
 
   arma::vec betaprop(p);
 
+  arma::vec betadiff(p);
+  arma::uvec betanonzero(p);
+  arma::vec betanonzero1(p);
+
   double lmlnew;
   double lpnew;
   double barker;
 
-  //arma::vec xtr = beta - LDmat*betavec;
-  //arma::vec xtrprop;
+  arma::vec xtr = beta - LDmat*betavec;
+  arma::vec xtrprop;
   arma::vec pr;
   // arma::mat xtr;
   arma::vec probs(p);
@@ -423,11 +427,11 @@ for(int i = 1; i < niter; ++i){
     // xtr = beta - LDmat*betavec; // this moved to end
     zerovec = arma::zeros(inds.size());
 
-    //probs = set_vector_vals(arma::conv_to<arma::vec>::from(xtr), inds, zerovec);
-    //probs = arma::square(probs);
-    //probs = probs/arma::accu(probs);
-    probs.fill(1.0/(p - inds.size()));
-    probs = set_vector_vals(probs, inds, zerovec);
+    probs = set_vector_vals(arma::conv_to<arma::vec>::from(xtr), inds, zerovec);
+    probs = arma::square(probs);
+    probs = probs/arma::accu(probs);
+    //probs.fill(1.0/(p - inds.size()));
+    //probs = set_vector_vals(probs, inds, zerovec);
 
     swapindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
     indsprop1 = arma::join_cols(arma::conv_to<arma::vec>::from(inds), swapindex);
@@ -523,19 +527,22 @@ for(int i = 1; i < niter; ++i){
     betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
 
     // need to calculate residuals of the proposed model;
-    //scalacheck
-    //xtrprop = beta - LDmat*betaprop;
+    // xtrprop = beta - LDmat*betaprop;
+    betadiff = betaprop - betavec;
+    betanonzero1 = unique(arma::join_cols(arma::conv_to<arma::vec>::from(inds), arma::conv_to<arma::vec>::from(indsprop)));
+    betanonzero = arma::conv_to<arma::uvec>::from(betanonzero1(sort_index(betanonzero1)));
+    xtrprop = xtr - LDmat.cols(betanonzero)*betadiff(betanonzero);
 
     if(add == 0){
 
       zerovecback = arma::zeros(modelsizeprop);
 
-      //scalacheckprobsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
-      //scalacheckprobsback = arma::square(probsback);
-      //scalacheckprobsback = probsback/arma::accu(probsback);
+      probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+      probsback = arma::square(probsback);
+      probsback = probsback/arma::accu(probsback);
 
-      //scalacheckpbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
-      pbackward2 = 1.0/(p - modelsizeprop);
+      pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+      //pbackward2 = 1.0/(p - modelsizeprop);
 
     }
 
@@ -592,18 +599,22 @@ for(int i = 1; i < niter; ++i){
       betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
 
       // need to calculate residuals of the proposed model;
-      //scalacheckxtrprop = beta - LDmat*betaprop;
+      // xtrprop = beta - LDmat*betaprop;
+      betadiff = betaprop - betavec;
+      betanonzero1 = unique(arma::join_cols(arma::conv_to<arma::vec>::from(inds), arma::conv_to<arma::vec>::from(indsprop)));
+      betanonzero = arma::conv_to<arma::uvec>::from(betanonzero1(sort_index(betanonzero1)));
+      xtrprop = xtr - LDmat.cols(betanonzero)*betadiff(betanonzero);
 
       if(add == 0){
 
         zerovecback = arma::zeros(modelsizeprop);
 
-        //scalacheckprobsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
-        //scalacheckprobsback = arma::square(probsback);
-        //scalacheckprobsback = probsback/arma::accu(probsback);
+        probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+        probsback = arma::square(probsback);
+        probsback = probsback/arma::accu(probsback);
 
-        //scalacheckpbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
-        pbackward2 = 1.0/(p - modelsizeprop);
+        pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+        // pbackward2 = 1.0/(p - modelsizeprop);
 
       }
 
@@ -645,18 +656,22 @@ for(int i = 1; i < niter; ++i){
       betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
 
       // need to calculate residuals of the proposed model;
-      //scalacheckxtrprop = beta - LDmat*betaprop;
+      // xtrprop = beta - LDmat*betaprop;
+      betadiff = betaprop - betavec;
+      betanonzero1 = unique(arma::join_cols(arma::conv_to<arma::vec>::from(inds), arma::conv_to<arma::vec>::from(indsprop)));
+      betanonzero = arma::conv_to<arma::uvec>::from(betanonzero1(sort_index(betanonzero1)));
+      xtrprop = xtr - LDmat.cols(betanonzero)*betadiff(betanonzero);
 
       if(add == 0){
 
         zerovecback = arma::zeros(modelsizeprop);
 
-        //scalacheckprobsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
-        //scalacheckprobsback = arma::square(probsback);
-        //scalacheckprobsback = probsback/arma::accu(probsback);
+        probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+        probsback = arma::square(probsback);
+        probsback = probsback/arma::accu(probsback);
 
-        //scalacheckpbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
-        pbackward2 = 1.0/(p - modelsizeprop);
+        pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+        // pbackward2 = 1.0/(p - modelsizeprop);
 
       }
 
@@ -682,8 +697,7 @@ for(int i = 1; i < niter; ++i){
     inds = indsprop;
     betavec = betaprop;
     // xtr = beta - LDmat*betavec;
-    //scalacheckxtr = xtrprop;
-    // xtr = beta - LDmat*betavec;
+    xtr = xtrprop;
 
   }
 
