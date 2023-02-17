@@ -62,7 +62,16 @@ inline arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals) {
 double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec tau,
                double psi, double r, int d, arma::mat LDmat, double gval) {
   arma::mat hessian = sematinv*LDmat*sematinv + arma::diagmat(6*tau/pow(beta, 4) - (r + 1)/square(beta));
-  return -gval + 0.5*d*log(2*pi) - 0.5*log_det_sympd(hessian);
+
+  double logdeth;
+  bool success = log_det_sympd(logdeth, hessian);
+
+  if(success){
+    // return -gval + 0.5*d*log(2*pi) - 0.5*log_det_sympd(hessian);
+    return -gval + 0.5*d*log(2*pi) - 0.5*logdeth;
+  } else {
+    return minusinf;
+  }
 }
 
 
