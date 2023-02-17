@@ -100,6 +100,10 @@ posterior_samples <- function(
 
   }
 
+  if(maxsize > p){
+    cat(sprintf("Note: maximum model size set to %i\n", p))
+    maxsize <- p
+  }
 
   msprior <- "complexity"
 

@@ -585,6 +585,14 @@ for(int i = 1; i < niter; ++i){
 
       // gvalpar = LDmatinv*beta.elem(indsprop);
       // gvalpar = solve(LDmatprop, beta.elem(indsprop));
+      bool status = solve(gvalpar, LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
+      if(status == false){
+        useala = false;
+      }
+
+    }
+
+    if(useala){
       gvalpar = solve(LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
 
       gval = gf(gvalpar, subset_vector(z, indsprop), sematinvindsprop, LDmatprop,
@@ -627,9 +635,7 @@ for(int i = 1; i < niter; ++i){
       barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
 
     } else {
-      // hybrid sampling!
-      // NOTE: does not really work as well as hoped...
-      // barker = -1;
+      // hybrid sampling
 
       parsinit["tau"] = subset_vector(tau, indsprop);
       parsinit["z"] = subset_vector(z, indsprop);
