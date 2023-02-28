@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // arma_setdiff
-inline arma::vec arma_setdiff(arma::vec x, arma::vec y);
+arma::vec arma_setdiff(arma::vec x, arma::vec y);
 RcppExport SEXP _finimom_arma_setdiff(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -24,7 +24,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // subset_vector
-inline arma::vec subset_vector(arma::vec x, arma::uvec pos);
+arma::vec subset_vector(arma::vec x, arma::uvec pos);
 RcppExport SEXP _finimom_subset_vector(SEXP xSEXP, SEXP posSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -36,7 +36,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // set_vector_vals
-inline arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals);
+arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals);
 RcppExport SEXP _finimom_set_vector_vals(SEXP xSEXP, SEXP posSEXP, SEXP valsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

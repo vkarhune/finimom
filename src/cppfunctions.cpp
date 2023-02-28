@@ -18,7 +18,7 @@ constexpr double minusinf = std::numeric_limits<double>::lowest();
 
 // https://github.com/oldregan/RcppNotes
 // [[Rcpp::export]]
-inline arma::vec arma_setdiff(arma::vec x, arma::vec y){
+arma::vec arma_setdiff(arma::vec x, arma::vec y){
   arma::vec x1 = arma::unique(x);
   arma::vec y1 = arma::unique(y);
   //Rcout<<"x1:"<<x1<<endl;
@@ -45,12 +45,12 @@ inline arma::vec arma_setdiff(arma::vec x, arma::vec y){
 }
 
 // [[Rcpp::export]]
-inline arma::vec subset_vector(arma::vec x, arma::uvec pos) {
+arma::vec subset_vector(arma::vec x, arma::uvec pos) {
   return x.elem(pos);
 }
 
 // [[Rcpp::export]]
-inline arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals) {
+arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals) {
   x.elem(pos) = vals;
   return x;
 }
@@ -559,7 +559,8 @@ for(int i = 1; i < niter; ++i){
     lqpropcurr = log(pbackward) + log(pbackward2);
 
     // barker = 1/(1+exp(lp - lpnew));
-    barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+    // barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+    barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
 
   } else {
 
@@ -641,7 +642,8 @@ for(int i = 1; i < niter; ++i){
 
 
       // barker = 1/(1+exp(lp - lpnew));
-      barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+      // barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+      barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
 
     } else {
       // hybrid sampling
@@ -694,7 +696,8 @@ for(int i = 1; i < niter; ++i){
       lqpropcurr = log(pbackward) + log(pbackward2);
 
       // barker = 1/(1+exp(lp - lpnew));
-      barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+      // barker = 1/(1 + exp(lp + lqpropcurr - (lpnew + lqcurrprop))); // double-check that goes the correct way!
+      barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
 
     }
   }
