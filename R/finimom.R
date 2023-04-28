@@ -68,7 +68,11 @@ finimom <- function(beta, se, eaf, R,
 
   if(is.null(n) & is.null(tau)) { stop("Please provide n to calculate tau, or tau directly.") }
 
-  if(!(is.null(n)) & is.null(tau)) { cat("Calculating tau based on the sample size.\n") } # should not be a warning
+  if(!(is.null(n)) & is.null(tau)) {
+    cat("Calculating tau based on the sample size.\n")
+
+    tau <- estimate_tau(n = n)
+  }
 
   if(!(is.null(b0)) & !(is.null(u))) { warning("Both b0 and u given - using p^u for beta-binomial hyperparameter") }
 
