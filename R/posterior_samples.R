@@ -54,7 +54,7 @@ posterior_samples <- function(
     clump_r2 <- 0.99^2
   }
 
-  if(is.null(b0)) { b0 <- p^1.5 }
+  #if(is.null(b0)) { b0 <- p^1.5 }
 
   if(standardize){
     beta <- beta*sqrt(2*eaf*(1-eaf))

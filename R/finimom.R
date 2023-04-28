@@ -6,12 +6,13 @@
 #' @param se Standard errors.
 #' @param eaf Effect allele frequencies.
 #' @param R LD-matrix.
+#' @param n GWAS sample size. If provided, then tau is calculated based on n.
 #' @param cs Are credible sets returned?
 #' @param cs_num How many credible sets? The default is to use the posterior mode.
 #' @param cs_level Credible set level.
 #' @param maxsize Maximum model size.
-#' @param tau0 Prior parameter tau.
-#' @param r0 Prior parameter r.
+#' @param tau Prior parameter tau.
+#' @param r Prior parameter r.
 #' @param niter Number of iterations.
 #' @param burnin Number of burn-in iterations.
 #' @param seed Random seed.
@@ -34,11 +35,12 @@
 #'
 #' @examples
 finimom <- function(beta, se, eaf, R,
+                    n = NULL,
                     cs = TRUE,
                     cs_num = NULL,
                     cs_level = 0.95,
                     pip = FALSE,
-                    maxsize = 10, tau0 = 0.0083, r0 = 1, niter = 12500, burnin = 2500, seed = 456, excl.burnin = TRUE,
+                    maxsize = 10, tau = NULL, r = 1, niter = 12500, burnin = 2500, seed = 456, excl.burnin = TRUE,
                     a0 = 1, b0 = NULL, u = NULL, inds0 = NULL, standardize = TRUE,
                     verbose = TRUE,
                     insampleLD = NULL,
@@ -64,7 +66,14 @@ finimom <- function(beta, se, eaf, R,
     standardize <- FALSE
   }
 
+  if(is.null(n) & is.null(tau)) { stop("Please provide n to calculate tau, or tau directly.") }
+
+  if(!(is.null(n)) & is.null(tau)) { cat("Calculating tau based on the sample size.\n") } # should not be a warning
+
   if(!(is.null(b0)) & !(is.null(u))) { warning("Both b0 and u given - using p^u for beta-binomial hyperparameter") }
+
+  default_u_insampleLD <- 2
+  default_u_refLD <- 2.25
 
   # define input params to workhorse function
 
@@ -75,13 +84,13 @@ finimom <- function(beta, se, eaf, R,
   if(insampleLD){
     if(is.null(check_ld)){ check_ld <- FALSE }
     if(is.null(u)) {
-      u <- 1.5
+      u <- default_u_insampleLD
       b0 <- p^u
     }
   } else {
     if(is.null(check_ld)){ check_ld <- TRUE }
     if(is.null(u)) {
-      u <- 1.75
+      u <- default_u_refLD
       b0 <- p^u
     }
   }
@@ -90,7 +99,7 @@ if(is.null(ala)) ala <- FALSE
 
 samples <- posterior_samples(
   beta = beta, se = se, eaf = eaf, R = R,
-  maxsize = maxsize, tau0 = tau0, r0 = r0, p = p,
+  maxsize = maxsize, tau0 = tau, r0 = r, p = p,
   niter = niter, burnin = burnin, seed = seed, excl.burnin = TRUE,
   a0 = a0, b0 = b0, inds0 = inds0, standardize = standardize,
   verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld,

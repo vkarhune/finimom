@@ -9,13 +9,14 @@ finimom(
   se,
   eaf,
   R,
+  n = NULL,
   cs = TRUE,
   cs_num = NULL,
   cs_level = 0.95,
   pip = FALSE,
   maxsize = 10,
-  tau0 = 0.0083,
-  r0 = 1,
+  tau = NULL,
+  r = 1,
   niter = 12500,
   burnin = 2500,
   seed = 456,
@@ -42,6 +43,8 @@ finimom(
 
 \item{R}{LD-matrix.}
 
+\item{n}{GWAS sample size. If provided, then tau is calculated based on n.}
+
 \item{cs}{Are credible sets returned?}
 
 \item{cs_num}{How many credible sets? The default is to use the posterior mode.}
@@ -52,9 +55,9 @@ finimom(
 
 \item{maxsize}{Maximum model size.}
 
-\item{tau0}{Prior parameter tau.}
+\item{tau}{Prior parameter tau.}
 
-\item{r0}{Prior parameter r.}
+\item{r}{Prior parameter r.}
 
 \item{niter}{Number of iterations.}
 
