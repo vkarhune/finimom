@@ -39,11 +39,11 @@ library(finimom)
 # example data:
 str(exampledata)
 #> List of 9
-#>  $ betahat   : num [1:363] -0.1326 -0.13 -0.1328 0.0096 -0.0422 ...
-#>  $ sebetahat : num [1:363] 0.0601 0.0594 0.0967 0.028 0.0276 ...
+#>  $ betahat   : num [1:363] 0.0804 0.0927 -0.0253 -0.0165 -0.0128 ...
+#>  $ sebetahat : num [1:363] 0.0601 0.0595 0.0968 0.028 0.0276 ...
 #>  $ allelefreq: num [1:363] 0.0527 0.0541 0.0194 0.3751 0.4224 ...
 #>  $ truebetas : num [1:363] 0 0 0 0 0 0 0 0 0 0 ...
-#>  $ causals   : num [1:3] 14 179 195
+#>  $ causals   : num [1:3] 95 314 329
 #>  $ n         : int 2763
 #>  $ n_ref     : int 2637
 #>  $ insampleLD: num [1:363, 1:363] 1 0.971 0.545 0.288 0.244 ...
@@ -68,22 +68,25 @@ res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 #> Clumping variants at r2=0.98
 #> Sampling from the posterior...
 #> 
-#> 12500 iterations done in 0.69 seconds
+#> 12500 iterations done in 0.73 seconds
 
 # output: credible sets
 res$sets
 #> [[1]]
-#>  [1] 167 169 172 174 177 178 179 180 183 185 186 187 188 190 193 194 197 206 208
-#> [20] 209 211 215 223 234 241 245 279
+#>  [1] 295 300 301 309 310 314 315 316 317 322 327 330 342 345 351 353
 #> 
 #> [[2]]
-#>  [1] 168 175 178 181 189 195 196 200 201 202 204 205 210 211 212 213 214 215 216
-#> [20] 218 219 220 221 223 224 227 229 230 232 234 235 238 239 240 241 242 248 251
-#> [39] 254
+#>  [1] 313 320 321 323 325 326 329 331 333 337 339 340 341 343 344 348 350 352 355
+#> [20] 360 362
+#> 
+#> [[3]]
+#>  [1]  39  55  63  68  69  72  73  74  75  76  77  78  79  81  82  83  85  86  87
+#> [20]  88  90  92  93  94  95  96  97  99 114 116 117 118 124 126 128 129 131 133
+#> [39] 136 147 149 150 151 159
 
 # compare with the true causal variants
 exampledata$causals
-#> [1]  14 179 195
+#> [1]  95 314 329
 
 # check whether the true causals were captured in the credible sets
 lapply(res$sets, function(x) exampledata$causals %in% x)
@@ -92,6 +95,9 @@ lapply(res$sets, function(x) exampledata$causals %in% x)
 #> 
 #> [[2]]
 #> [1] FALSE FALSE  TRUE
+#> 
+#> [[3]]
+#> [1]  TRUE FALSE FALSE
 ```
 
 ## Further details
