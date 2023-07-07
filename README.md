@@ -13,7 +13,7 @@ beta-binomial prior for the model dimension.
 
 The method is described in:
 
-Karhunen V, Launonen I, Jarvelin MR, Sebert S, Sillanpaa MJ. Genetic
+Karhunen V, Launonen I, Järvelin MR, Sebert S, Sillanpää MJ. Genetic
 fine-mapping from summary data using a nonlocal prior improves detection
 of multiple causal variants. *Bioinformatics*.
 [doi:10.1093/bioinformatics/btad396](https://doi.org/10.1093/bioinformatics/btad396).
