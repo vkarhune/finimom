@@ -64,6 +64,8 @@
 <!-- badges: start -->
 <!-- badges: end -->
 <p>This R package implements a method for fine-mapping summarised genetic data using product inverse-moment prior for the effect sizes, and a beta-binomial prior for the model dimension.</p>
+<p>The method is described in a pre-print:</p>
+<p>Karhunen V, Launonen I, Jarvelin MR, Sebert S, Sillanpaa MJ. Genetic fine-mapping from summary data using a non-local prior improves detection of multiple causal variants. <em>bioRxiv</em>. 2022:2022-12. <a href="https://doi.org/10.1101/2022.12.02.518898" class="external-link">doi:10.1101/2022.12.02.518898</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -106,18 +108,20 @@
 <span></span>
 <span><span class="co"># run finimom</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/finimom.html">finimom</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="va">beta</span>, se <span class="op">=</span> <span class="va">se</span>, eaf <span class="op">=</span> <span class="va">eaf</span>, R <span class="op">=</span> <span class="va">R</span>,</span>
+<span>               n <span class="op">=</span> <span class="va">exampledata</span><span class="op">$</span><span class="va">n</span>,</span>
 <span>               insampleLD <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>               verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># set ala = TRUE for approximate Laplace</span></span>
+<span>               verbose <span class="op">=</span> <span class="cn">TRUE</span>, ala <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># set ala = TRUE for approximate Laplace</span></span>
+<span><span class="co">#&gt; Calculating tau based on the sample size.</span></span>
 <span><span class="co">#&gt; Clumping variants at r2=0.98</span></span>
 <span><span class="co">#&gt; Sampling from the posterior...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 12500 iterations done in 3.50 seconds</span></span>
+<span><span class="co">#&gt; 12500 iterations done in 0.72 seconds</span></span>
 <span></span>
 <span><span class="co"># output: credible sets</span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">sets</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 167 169 172 174 177 179 180 183 185 186 187 188 190 193 194 197 206 208 209</span></span>
-<span><span class="co">#&gt; [20] 245 279</span></span>
+<span><span class="co">#&gt;  [1] 167 169 172 174 177 178 179 180 183 185 186 187 188 190 193 194 197 206 208</span></span>
+<span><span class="co">#&gt; [20] 209 211 215 223 234 241 245 279</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt;  [1] 168 175 178 181 189 195 196 200 201 202 204 205 210 211 212 213 214 215 216</span></span>

@@ -55,13 +55,14 @@
 <span>  <span class="va">se</span>,</span>
 <span>  <span class="va">eaf</span>,</span>
 <span>  <span class="va">R</span>,</span>
+<span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  cs_num <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cs_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  pip <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  maxsize <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  tau0 <span class="op">=</span> <span class="fl">0.0083</span>,</span>
-<span>  r0 <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  tau <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  r <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  niter <span class="op">=</span> <span class="fl">12500</span>,</span>
 <span>  burnin <span class="op">=</span> <span class="fl">2500</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">456</span>,</span>
@@ -98,6 +99,10 @@
 <dd><p>LD-matrix.</p></dd>
 
 
+<dt>n</dt>
+<dd><p>GWAS sample size. If provided, then tau is calculated based on n.</p></dd>
+
+
 <dt>cs</dt>
 <dd><p>Are credible sets returned?</p></dd>
 
@@ -118,11 +123,11 @@
 <dd><p>Maximum model size.</p></dd>
 
 
-<dt>tau0</dt>
+<dt>tau</dt>
 <dd><p>Prior parameter tau.</p></dd>
 
 
-<dt>r0</dt>
+<dt>r</dt>
 <dd><p>Prior parameter r.</p></dd>
 
 

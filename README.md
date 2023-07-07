@@ -61,18 +61,20 @@ R <- exampledata$insampleLD
 
 # run finimom
 res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
+               n = exampledata$n,
                insampleLD = TRUE,
-               verbose = TRUE) # set ala = TRUE for approximate Laplace
+               verbose = TRUE, ala = TRUE) # set ala = TRUE for approximate Laplace
+#> Calculating tau based on the sample size.
 #> Clumping variants at r2=0.98
 #> Sampling from the posterior...
 #> 
-#> 12500 iterations done in 1.89 seconds
+#> 12500 iterations done in 0.72 seconds
 
 # output: credible sets
 res$sets
 #> [[1]]
-#>  [1] 167 169 172 174 177 179 180 183 185 186 187 188 190 193 194 197 206 208 209
-#> [20] 245 279
+#>  [1] 167 169 172 174 177 178 179 180 183 185 186 187 188 190 193 194 197 206 208
+#> [20] 209 211 215 223 234 241 245 279
 #> 
 #> [[2]]
 #>  [1] 168 175 178 181 189 195 196 200 201 202 204 205 210 211 212 213 214 215 216
