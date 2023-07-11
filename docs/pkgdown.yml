@@ -5,7 +5,8 @@ articles:
   betabinprior: betabinprior.html
   nonlocalpriors: nonlocalpriors.html
   taylorlaplace: taylorlaplace.html
-last_built: 2023-07-07T09:51Z
+  tutorial: tutorial.html
+last_built: 2023-07-11T16:36Z
 urls:
   reference: https://vkarhune.github.io/finimom/reference
   article: https://vkarhune.github.io/finimom/articles

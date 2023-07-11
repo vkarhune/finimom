@@ -1,0 +1,244 @@
+---
+title: "Tutorial"
+author: "Ville Karhunen"
+date: "`r format(Sys.Date(), '%d.%m.%Y')`"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r workinprogress, echo = FALSE, out.width = '20%' }
+
+knitr::include_graphics("work-in-progress.png")
+
+```
+
+
+This is a step-by-step tutorial for conducting genetic fine-mapping on summary data using *finimom* package.
+
+# Package installation and load
+
+Make sure that you are using the most recent version of the package.
+
+```{r setup, echo = FALSE}
+
+# load required package
+library(finimom)
+
+```
+
+
+```{r setup1, eval = FALSE}
+
+# install package
+# if needed, install also 'remotes' package via 'install.packages("remotes")'
+remotes::install_packages("vkarhune/finimom")
+
+# load required package
+library(finimom)
+
+```
+
+## Input data
+
+For the input data, the method requires
+
+1. The **effect sizes** and their **standard errors** of variant-phenotype associations within the genetic region of interest from a genome-wide association study (*source GWAS*).
+
+2. The **linkage disequilibrium (LD) matrix** of the variants within the genetic region.
+
+Additionally, it is recommended to have the **effect allele frequencies**, **source GWAS sample size**, and **variance of the phenotype** (in the source GWAS).
+If the phenotype variance $\neq$ 1, then please scale the effect sizes and standard errors to correspond to standard-deviation units.
+
+If you have only Z-scores available, please see the corresponding section below.
+
+### Example data
+
+The R package comes with a simulated example dataset of 363 genetic variants:
+
+```{r toy}
+
+str(exampledata)
+
+
+```
+
+The object `exampledata` is a list, which has information on
+
+1. GWAS estimated effect sizes (`betahat`),
+
+2. the standard errors (`sebetahat`),
+
+3. allele frequencies (`allelefreqs`),
+
+4. true causal effect sizes (`truebetas`; this is a simulated dataset so these are known),
+
+5. indices of the true causal variants (`causals`),
+
+6. GWAS source sample size (`n`)
+
+7. LD reference sample size (`n_ref`)
+
+8. in-sample LD matrix (`insampleLD`)
+
+9. reference, or out-of-sample, LD matrix (`refLD`)
+
+```{r varcreation}
+
+# effect size estimates and their standard errors
+beta <- exampledata$betahat
+se <- exampledata$sebetahat
+
+# Z-scores
+zscores <- beta/se
+
+# p-values
+pvals <- 2*pnorm(abs(zscores), lower.tail = FALSE)
+
+# allele frequencies
+eaf <- exampledata$allelefreq
+
+# LD matrix
+R <- exampledata$insampleLD
+
+# Source GWAS sample size
+n <- exampledata$n
+
+```
+
+
+The summary statistics can be visualised via a Manhattan plot.
+In the following figure, the true causal variants are also highlighted.
+
+
+```{r manhattan1}
+
+plot(-log10(pvals), pch = 16, xlab = "Genetic position", ylab = bquote(-log[10](italic(p))))
+points(exampledata$causals, -log10(pvals[exampledata$causals]), col = "red", pch = 16)
+legend("topleft", legend = c("Causal", "Non-causal"), col = c("red", "black"), pch = 16)
+
+
+
+```
+
+The aim of fine-mapping is to identify the true causal variants (i.e. those in red in the above figure).
+In FiniMOM, this problem is answered by *credible sets* of causal signals.
+
+## Selecting hyperparameters
+
+Two main hyperparameters need to be selected: $\tau$, which controls the prior for the detectable effect sizes, and $u$, which controls the prior for the number of causal variants.
+By default, $\tau$ is estimated based on the sample size, and $u = 2$ for in-sample LD matrix, and $u = 2.25$ for out-of-sample LD matrix.
+See the manuscript and its supplement for further details.
+
+## Running finimom
+
+```{r finimom1}
+
+out <- finimom(beta = beta, se = se, eaf = eaf, R = R,
+               n = n,
+               insampleLD = TRUE,
+               verbose = TRUE,
+               ala = TRUE)
+
+```
+
+The output is a list, where the first element (`samples`) has information on the Markov Chain Monte Carlo samples, and the second element is a list of the obtained 95\% credible sets.
+
+```{r output1}
+
+names(out)
+
+
+out$sets
+
+```
+
+To obtain the variant-wise posterior inclusion probabilities, run
+
+```{r pips}
+
+pips <- get_pips(out$samples)
+
+```
+
+### Visualising results
+
+One can extract the credible sets and visualise results e.g. as follows:
+
+```{r visualise}
+
+
+plot(-log10(pvals), pch = 16, xlab = "Genetic position", ylab = bquote(-log[10](italic(p))))
+points(exampledata$causals, -log10(pvals[exampledata$causals]), col = "red", pch = 16)
+points(out$sets[[1]], -log10(pvals[out$sets[[1]]]), col = "dodgerblue", pch = 1, lwd = 2)
+points(out$sets[[2]], -log10(pvals[out$sets[[2]]]), col = "orange", pch = 1, lwd = 2)
+points(out$sets[[3]], -log10(pvals[out$sets[[3]]]), col = "darkolivegreen", pch = 1, lwd = 2)
+legend("topleft", legend = c("Causal", "Non-causal", "Credible set 1", "Credible set 2", "Credible set 3"),
+ col = c("red", "black", "dodgerblue", "orange", "darkolivegreen"), pch = c(16, 16, 1, 1, 1))
+
+
+
+```
+
+
+### Using out-of-sample LD matrix
+
+If using LD matrix from a reference panel, set `insampleLD = FALSE`:
+
+
+```{r finimom2}
+
+R_ref <- exampledata$refLD
+
+out_refld <- finimom(beta = beta, se = se, eaf = eaf, R = R_ref,
+               n = n,
+               insampleLD = FALSE,
+               verbose = TRUE,
+               ala = TRUE)
+
+out_refld$sets
+
+
+```
+
+
+
+### Using Z scores {#using-z-scores}
+
+If only Z-scores are available (i.e. no information on the effect sizes and their standard errors), then for a standardized (mean = 0, standard deviation = 1) genetic variant and phenotype, $\text{SE}(\hat{\beta}) \approx 1/\sqrt{n}$.
+As these are (approximately) on the standardized scale, use option `standardize = FALSE` for avoiding the standardization that is done by default.
+
+```{r zscores}
+
+
+
+approx_se <- rep(1/sqrt(n), length(zscores))
+
+approx_beta <- zscores*approx_se
+
+out_zscore_only <- finimom(beta = approx_beta, se = approx_se,
+                           eaf = NULL,
+                           R = exampledata$insampleLD,
+                           n = exampledata$n,
+                           standardize = FALSE, # <--- use this option for Z-scores
+                           insampleLD = TRUE,
+                           ala = TRUE)
+
+out_zscore_only$sets
+
+
+```
+
+
+
+# Session information
+
+```{r sessioninfo}
+
+sessionInfo()
+
+```

@@ -7,7 +7,7 @@ navbar:
       text: 'Articles'
       menu:
       - text: 'Tutorial'
-        href: articles/minimal-example.html
+        href: articles/tutorial.html
       - text: 'Non-local priors for effect size'
         href: articles/nonlocalpriors.html
       - text: 'Prior for model dimension'
