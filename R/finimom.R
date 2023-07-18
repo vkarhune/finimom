@@ -29,6 +29,7 @@
 #' @param u Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.
 #' @param insampleLD Is in-sample LD used?
 #' @param ala Whether Approximate Laplace should be used?
+#' @param purity Credible set purity, defined as the minimum absolute correlation between the variants in a credible set.
 #'
 #' @return List.
 #' @export
@@ -45,7 +46,7 @@ finimom <- function(beta, se, eaf, R,
                     verbose = TRUE,
                     insampleLD = NULL,
                     clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
-                    ala = NULL){
+                    ala = NULL, purity = NULL){
 
   # all checks here
   if(is.null(beta)) { stop("Effect sizes required") }
@@ -123,7 +124,7 @@ samples <- posterior_samples(
   out <- list("samples" = samples)
 
   if(cs){
-    sets <- get_credible_sets(samples = samples, num_signals = cs_num, level = cs_level)
+    sets <- get_credible_sets(samples = samples, num_signals = cs_num, level = cs_level, purity = purity)
     out <- c(out, "sets" = list(sets))
   }
 

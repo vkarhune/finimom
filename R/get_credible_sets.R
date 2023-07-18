@@ -3,12 +3,13 @@
 #' @param samples Posterior samples from posterior_samples() function.
 #' @param num_signals Number of signals.
 #' @param level Probability level, default = 0.95.
+#' @param purity Credible set purity.
 #'
 #' @return List of credible sets.
 #' @export
 #'
 #' @examples
-get_credible_sets <- function(samples, num_signals, level = 0.95){
+get_credible_sets <- function(samples, num_signals, level = 0.95, purity = purity){
 
   ctable <- sort(table(samples[[3]][samples[[2]] %in% num_signals]), decreasing = T)
   csind <- ctable |> prop.table() |> cumsum() |> (\(.) min(which(. > level)))()
@@ -48,11 +49,33 @@ get_credible_sets <- function(samples, num_signals, level = 0.95){
 
   }), "[", x))) })
 
+if(!(is.null(purity))){
+  credible_sets <- lapply(all_cs, function(cs){
 
+    indices <- unlist(samples[[5]][as.numeric(cs)])
+
+    Rcs <- R[indices,indices,drop = F]
+    Rcs[upper.tri(Rcs)] <- 1
+
+    arrinds <- unique(which(abs(Rcs) < purity, arr.ind = T)[,1])
+
+    if(length(arrinds) == 0){
+      sort(indices)
+    } else
+      {
+        sort(indices[-arrinds])
+      }
+
+  })
+
+} else {
 
   credible_sets <- lapply(all_cs, function(x){
     sort(unlist(samples[[5]][as.numeric(x)]))
   })
+
+
+}
 
 
 }

@@ -31,7 +31,8 @@ finimom(
   clump = TRUE,
   clump_r2 = 0.99^2,
   check_ld = FALSE,
-  ala = NULL
+  ala = NULL,
+  purity = NULL
 )
 }
 \arguments{
@@ -88,6 +89,8 @@ finimom(
 \item{check_ld}{Should LD discrepancy check be performed?}
 
 \item{ala}{Whether Approximate Laplace should be used?}
+
+\item{purity}{Credible set purity, defined as the minimum absolute correlation between the variants in a credible set.}
 }
 \value{
 List.
