@@ -124,7 +124,7 @@ samples <- posterior_samples(
   out <- list("samples" = samples)
 
   if(cs){
-    sets <- get_credible_sets(samples = samples, num_signals = cs_num, level = cs_level, purity = purity)
+    sets <- get_credible_sets(samples = samples, num_signals = cs_num, level = cs_level, purity = purity, R = R)
     out <- c(out, "sets" = list(sets))
   }
 
