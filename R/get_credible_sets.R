@@ -4,12 +4,13 @@
 #' @param num_signals Number of signals.
 #' @param level Probability level, default = 0.95.
 #' @param purity Credible set purity.
+#' @param R Correlation matrix.
 #'
 #' @return List of credible sets.
 #' @export
 #'
 #' @examples
-get_credible_sets <- function(samples, num_signals, level = 0.95, purity = purity){
+get_credible_sets <- function(samples, num_signals, level = 0.95, purity = purity, R = R){
 
   ctable <- sort(table(samples[[3]][samples[[2]] %in% num_signals]), decreasing = T)
   csind <- ctable |> prop.table() |> cumsum() |> (\(.) min(which(. > level)))()
