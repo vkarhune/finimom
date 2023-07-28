@@ -121,7 +121,7 @@ samples <- posterior_samples(
     if(cs_num != cs_best) { warning("The requested number of credible sets is not the same as the posterior mode") }
   }
 
-  out <- list("samples" = samples)
+  out <- list("samples" = samples, "signals" = ppcs)
 
   if(cs){
     sets <- get_credible_sets(samples = samples, num_signals = cs_num, level = cs_level, purity = purity, R = R)
