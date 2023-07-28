@@ -230,7 +230,7 @@ out_refld2$sets
 ```
 
 
-# Using Z scores {#using-z-scores}
+# Using Z scores
 
 If only Z-scores are available (i.e. no information on the effect sizes and their standard errors), then for a standardized (mean = 0, standard deviation = 1) genetic variant and phenotype, $\text{SE}(\hat{\beta}) \approx 1/\sqrt{n}$.
 As these are (approximately) on the standardized scale, use option `standardize = FALSE` for avoiding the standardization that is done by default.
