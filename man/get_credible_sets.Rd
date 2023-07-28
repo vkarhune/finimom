@@ -4,7 +4,7 @@
 \alias{get_credible_sets}
 \title{Obtain credible sets from the posterior samples.}
 \usage{
-get_credible_sets(samples, num_signals, level = 0.95, purity = purity)
+get_credible_sets(samples, num_signals, level = 0.95, purity = purity, R = R)
 }
 \arguments{
 \item{samples}{Posterior samples from posterior_samples() function.}
@@ -14,6 +14,8 @@ get_credible_sets(samples, num_signals, level = 0.95, purity = purity)
 \item{level}{Probability level, default = 0.95.}
 
 \item{purity}{Credible set purity.}
+
+\item{R}{Correlation matrix.}
 }
 \value{
 List of credible sets.

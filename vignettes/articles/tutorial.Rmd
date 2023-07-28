@@ -36,14 +36,14 @@ library(finimom)
 
 # install package
 # if needed, install also 'remotes' package via 'install.packages("remotes")'
-remotes::install_packages("vkarhune/finimom")
+remotes::install_github("vkarhune/finimom")
 
 # load required package
 library(finimom)
 
 ```
 
-## Input data
+# Input data
 
 For the input data, the method requires
 
@@ -56,7 +56,7 @@ If the phenotype variance $\neq$ 1, then please scale the effect sizes and stand
 
 If you have only Z-scores available, please see the corresponding section below.
 
-### Example data
+## Example data
 
 The R package comes with a simulated example dataset of 363 genetic variants:
 
@@ -128,13 +128,13 @@ legend("topleft", legend = c("Causal", "Non-causal"), col = c("red", "black"), p
 The aim of fine-mapping is to identify the true causal variants (i.e. those in red in the above figure).
 In FiniMOM, this problem is answered by *credible sets* of causal signals.
 
-## Selecting hyperparameters
+# Selecting hyperparameters
 
 Two main hyperparameters need to be selected: $\tau$, which controls the prior for the detectable effect sizes, and $u$, which controls the prior for the number of causal variants.
 By default, $\tau$ is estimated based on the sample size, and $u = 2$ for in-sample LD matrix, and $u = 2.25$ for out-of-sample LD matrix.
 See the manuscript and its supplement for further details.
 
-## Running finimom
+# Running finimom
 
 ```{r finimom1}
 
@@ -146,13 +146,17 @@ out <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 
 ```
 
-The output is a list, where the first element (`samples`) has information on the Markov Chain Monte Carlo samples, and the second element is a list of the obtained 95\% credible sets.
+The output is a list, where the first element (`samples`) has information on the Markov Chain Monte Carlo samples, the second element (`signals`) is the posterior distribution for the number of signals (or credible sets), and the third element is a list of the obtained 95\% credible sets.
+
 
 ```{r output1}
 
 names(out)
 
+# posterior distribution for the number of signals
+out$signals
 
+# credible sets
 out$sets
 
 ```
@@ -165,7 +169,7 @@ pips <- get_pips(out$samples)
 
 ```
 
-### Visualising results
+# Visualising results
 
 One can extract the credible sets and visualise results e.g. as follows:
 
@@ -185,9 +189,9 @@ legend("topleft", legend = c("Causal", "Non-causal", "Credible set 1", "Credible
 ```
 
 
-### Using out-of-sample LD matrix
+# Using out-of-sample LD matrix
 
-If using LD matrix from a reference panel, set `insampleLD = FALSE`:
+If using LD matrix from a reference panel, set `insampleLD = FALSE`. In addition, it is recommended to check for any LD discrepancies by `check_ld = TRUE`.
 
 
 ```{r finimom2}
@@ -197,6 +201,7 @@ R_ref <- exampledata$refLD
 out_refld <- finimom(beta = beta, se = se, eaf = eaf, R = R_ref,
                n = n,
                insampleLD = FALSE,
+               check_ld = TRUE,
                verbose = TRUE,
                ala = TRUE)
 
@@ -205,9 +210,27 @@ out_refld$sets
 
 ```
 
+In this case, some variants are in multiple credible sets.
+This behaviour can be mitigated by selecting a desired purity level for the credible sets (minimum absolute correlation for the variants within a credible set) by using option `purity`:
 
 
-### Using Z scores {#using-z-scores}
+```{r finimom3}
+
+out_refld2 <- finimom(beta = beta, se = se, eaf = eaf, R = R_ref,
+               n = n,
+               insampleLD = FALSE,
+               check_ld = TRUE,
+               verbose = TRUE,
+               ala = TRUE,
+               purity = 0.5)
+
+out_refld2$sets
+
+
+```
+
+
+# Using Z scores {#using-z-scores}
 
 If only Z-scores are available (i.e. no information on the effect sizes and their standard errors), then for a standardized (mean = 0, standard deviation = 1) genetic variant and phenotype, $\text{SE}(\hat{\beta}) \approx 1/\sqrt{n}$.
 As these are (approximately) on the standardized scale, use option `standardize = FALSE` for avoiding the standardization that is done by default.
