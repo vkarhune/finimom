@@ -33,28 +33,6 @@ posterior_samples <- function(
     ala = NULL){
 
 
-  if(0){
-    R <- LDmat
-    beta <- summarystats[,1]
-    se <- summarystats[,2]
-    eaf <- eafs
-    maxsize <- 10
-    tau0 <- 0.0083
-    r0 <- 1
-    niter <- 2500
-    burnin <- 500
-    #p <- nrow(d)
-    seed <- 456
-    #n <- 1000
-    p <- length(beta)
-    u <- 1.5
-    a0 <- 1
-    b0 <- p^u
-    inds0 <- NULL
-    clump_r2 <- 0.99^2
-  }
-
-  #if(is.null(b0)) { b0 <- p^1.5 }
 
   if(standardize){
     beta <- beta*sqrt(2*eaf*(1-eaf))

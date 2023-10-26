@@ -11,7 +11,6 @@ finimom(
   R,
   n = NULL,
   cs = TRUE,
-  cs_num = NULL,
   cs_level = 0.95,
   pip = FALSE,
   maxsize = 10,
@@ -48,8 +47,6 @@ finimom(
 
 \item{cs}{Are credible sets returned?}
 
-\item{cs_num}{How many credible sets? The default is to use the posterior mode.}
-
 \item{cs_level}{Credible set level.}
 
 \item{pip}{Are posterior inclusion probabilities returned?}
@@ -72,7 +69,7 @@ finimom(
 
 \item{b0}{Hyperparameter b for the model size prior (but preferably use parameter u).}
 
-\item{u}{Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.}
+\item{u}{Hyperparameter for model size prior. Defaults to 2 for in-sample LD matrix and 2.25 for out-of-sample LD matrix.}
 
 \item{inds0}{Indices for the starting model.}
 

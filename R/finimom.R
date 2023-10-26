@@ -8,7 +8,6 @@
 #' @param R LD-matrix.
 #' @param n GWAS sample size. If provided, then tau is calculated based on n.
 #' @param cs Are credible sets returned?
-#' @param cs_num How many credible sets? The default is to use the posterior mode.
 #' @param cs_level Credible set level.
 #' @param maxsize Maximum model size.
 #' @param tau Prior parameter tau.
@@ -26,7 +25,7 @@
 #' @param clump_r2 Clumping threshold for extremely highly-correlated variants.
 #' @param check_ld Should LD discrepancy check be performed?
 #' @param pip Are posterior inclusion probabilities returned?
-#' @param u Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.
+#' @param u Hyperparameter for model size prior. Defaults to 2 for in-sample LD matrix and 2.25 for out-of-sample LD matrix.
 #' @param insampleLD Is in-sample LD used?
 #' @param ala Whether Approximate Laplace should be used?
 #' @param purity Credible set purity, defined as the minimum absolute correlation between the variants in a credible set.
@@ -38,7 +37,6 @@
 finimom <- function(beta, se, eaf, R,
                     n = NULL,
                     cs = TRUE,
-                    cs_num = NULL,
                     cs_level = 0.95,
                     pip = FALSE,
                     maxsize = 10, tau = NULL, r = 1, niter = 12500, burnin = 2500, seed = 456, excl.burnin = TRUE,
@@ -102,6 +100,20 @@ finimom <- function(beta, se, eaf, R,
 
 if(is.null(ala)) ala <- FALSE
 
+  if(maxsize == 1){
+    cat("Maximum number of causal variants set to 1 - calculating credible sets via Bayes factors.\n")
+
+    sets <- get_csbf(beta = beta, se = se, tau = tau, r = r, level = cs_level)
+    out <- list("samples" = NA, "signals" = table(1), "sets" = sets)
+
+    if(pip){
+      lbf <- finimom:::bf(beta = beta, se = se, tau = tau, r = r)
+      pp <- exp(lbf)/sum(exp(lbf))
+      out <- c(out, "pip" = list(pp))
+    }
+
+  } else {
+
 samples <- posterior_samples(
   beta = beta, se = se, eaf = eaf, R = R,
   maxsize = maxsize, tau0 = tau, r0 = r, p = p,
@@ -115,11 +127,7 @@ samples <- posterior_samples(
 
   cs_best <- as.numeric(names(which.max(ppcs)))
 
-  if(is.null(cs_num)) {
-    cs_num <- cs_best
-  } else {
-    if(cs_num != cs_best) { warning("The requested number of credible sets is not the same as the posterior mode") }
-  }
+  cs_num <- cs_best
 
   out <- list("samples" = samples, "signals" = ppcs)
 
@@ -131,6 +139,8 @@ samples <- posterior_samples(
   if(pip){
     pip <- get_pips(samples = samples)
     out <- c(out, "pip" = list(pip[,2]))
+  }
+
   }
 
   # out <- list(samples, sets)
