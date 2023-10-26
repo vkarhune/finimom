@@ -1,6 +1,6 @@
 Package: finimom
 Title: Fine-mapping Using Inverse-Moment Prior
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Ville", "Karhunen", , "ville.karhunen@oulu.fi", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6064-1588"))
