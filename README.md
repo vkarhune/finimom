@@ -68,7 +68,7 @@ res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 #> Clumping variants at r2=0.98
 #> Sampling from the posterior...
 #> 
-#> 12500 iterations done in 0.71 seconds
+#> 12500 iterations done in 0.76 seconds
 
 # output: credible sets
 res$sets
@@ -102,4 +102,5 @@ lapply(res$sets, function(x) exampledata$causals %in% x)
 
 ## Further details
 
-Further examples are given in the articles.
+Further examples are given in the articles. Please report any bugs or
+unexpected behaviour to <ville.karhunen@oulu.fi>.

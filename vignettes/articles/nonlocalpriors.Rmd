@@ -68,6 +68,7 @@ The key differences between the two distributions are that (i) the non-local pri
 Due to (i), non-local priors apply a strong penalty when any of its components are close to zero, therefore making them suitable for variable selection.
 As for (ii), the Cauchy-like tails protect from over-shrinkage of true large effects.
 
+Note that the above example with $\tau = 0.0083$ is for illustrative purposes only -- it is recommended to let $\tau$ be estimated based on the data (please see Karhunen et al. (2023) for details).
 
 # References
 
@@ -76,6 +77,8 @@ Giambartolomei et al. (2014). Bayesian Test for Colocalisation between Pairs of 
 Johnson, Rossell (2010). On the use of non-local prior densities in Bayesian hypothesis tests. *J. R. Statist. Soc. B*.
 
 Johnson, Rossell (2012). Bayesian Model Selection in High-Dimensional Settings. *J Am Stat Assoc*.
+
+Karhunen et al. (2023). Genetic fine-mapping from summary data using a nonlocal prior improves the detection of multiple causal variants. *Bioinformatics*.
 
 Sanyal et al. (2019). GWASinlps: non-local prior based iterative SNP selection tool for genome-wide association studies. *Bioinformatics*.
 

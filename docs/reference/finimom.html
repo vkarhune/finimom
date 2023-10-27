@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">finimom</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Unreleased version">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,6 +28,9 @@
     <a class="dropdown-item" href="../articles/nonlocalpriors.html">Non-local priors for effect size</a>
     <a class="dropdown-item" href="../articles/betabinprior.html">Prior for model dimension</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -57,7 +60,6 @@
 <span>  <span class="va">R</span>,</span>
 <span>  n <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  cs_num <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cs_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  pip <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  maxsize <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -108,10 +110,6 @@
 <dd><p>Are credible sets returned?</p></dd>
 
 
-<dt>cs_num</dt>
-<dd><p>How many credible sets? The default is to use the posterior mode.</p></dd>
-
-
 <dt>cs_level</dt>
 <dd><p>Credible set level.</p></dd>
 
@@ -157,7 +155,7 @@
 
 
 <dt>u</dt>
-<dd><p>Hyperparameter for model size prior. Defaults to 1.5 for in-sample LD matrix and 1.75 for out-of-sample LD matrix.</p></dd>
+<dd><p>Hyperparameter for model size prior. Defaults to 2 for in-sample LD matrix and 2.25 for out-of-sample LD matrix.</p></dd>
 
 
 <dt>inds0</dt>

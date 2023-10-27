@@ -31,7 +31,7 @@ The parameter $u$ here controls the amount of prior density for smaller models, 
 
 Using a linkage disequilibrium (LD) matrix from an external dataset tend to increase the false positive rate.
 In our formulation, parameter $u$ provides a flexible way to adjust for this.
-The default values are $u = 1.5$ when using in-sample LD matrix, and $u = 1.75$ when using out-of-sample LD matrix.
+The default values are $u = 2$ when using in-sample LD matrix, and $u = 2.25$ when using out-of-sample LD matrix.
 
 We demonstrate the prior for model dimension using the example dataset:
 
@@ -60,7 +60,7 @@ And for different values of $u$:
 
 ```{r compareu}
 
-us <- c(1.01, 1.25, 1.5, 1.75)
+us <- c(1.05, 1.5, 2, 2.25)
 
 vals <- lapply(us, function(u){
   b <- p^u
