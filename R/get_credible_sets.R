@@ -12,6 +12,8 @@
 #' @examples
 get_credible_sets <- function(samples, num_signals, level = 0.95, purity = purity, R = R){
 
+  if(length(samples) == 1 & is.na(samples)) { stop("Make sure you are using the correct object, or that maxsize > 1") }
+
   if(all(is.na(samples))) { stop("Make sure you are using the correct object, or that maxsize > 1") }
 
   if(!(num_signals %in% unique(samples[[2]]))) {
