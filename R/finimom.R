@@ -104,7 +104,7 @@ if(is.null(ala)) ala <- FALSE
     cat("Maximum number of causal variants set to 1 - calculating credible sets via Bayes factors.\n")
 
     sets <- get_csbf(beta = beta, se = se, tau = tau, r = r, level = cs_level)
-    out <- list("samples" = NA, "signals" = table(1), "sets" = sets)
+    out <- list("samples" = NA, "signals" = table(1), "sets" = order(sets))
 
     if(pip){
       lbf <- finimom:::bf(beta = beta, se = se, tau = tau, r = r)
@@ -134,6 +134,10 @@ samples <- posterior_samples(
   if(cs){
     sets <- get_credible_sets(samples = samples, num_signals = cs_num, level = cs_level, purity = purity, R = R)
     out <- c(out, "sets" = list(sets))
+
+    if(any(sapply(sets, function(x) all(abs((beta/se)[unlist(x)]) < 2)))){
+      warning("There are credible sets where |z|<2 for all variants - if using out-of-sample LD matrix, consider increasing parameter u")
+    }
   }
 
   if(pip){
