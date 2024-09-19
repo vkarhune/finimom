@@ -5,59 +5,49 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="finimom">
 <title>Taylor approximation and Laplace's method • finimom</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Taylor approximation and Laplace's method">
-<meta property="og:description" content="finimom">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Taylor approximation and Laplace's method">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">finimom</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/tutorial.html">Tutorial</a>
-    <a class="dropdown-item" href="../articles/nonlocalpriors.html">Non-local priors for effect size</a>
-    <a class="dropdown-item" href="../articles/betabinprior.html">Prior for model dimension</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/tutorial.html">Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/nonlocalpriors.html">Non-local priors for effect size</a></li>
+    <li><a class="dropdown-item" href="../articles/betabinprior.html">Prior for model dimension</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav"></ul>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+      </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -66,13 +56,14 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Taylor approximation and Laplace's method</h1>
+
+      <h1>Taylor approximation and Laplace's method</h1>
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">27.10.2023</h4>
+            <h4 data-toc-skip class="date">19.09.2024</h4>
       
-      
+
       <div class="d-none name"><code>taylorlaplace.Rmd</code></div>
     </div>
 
@@ -80,28 +71,43 @@ Karhunen</h4>
     
 <p>Consider the scenario where we want to evaluate the marginal
 likelihood of the data, that is, the integral</p>
-<p><span class="math display">\[
-\pi_{m}(D) = \int
-\pi(\hat{\beta}|\beta_{m})\pi_{\beta}(\beta_m)d\beta_{m} = \int
-e^{-f(\beta_{m})}d\beta_{m}.
-\]</span></p>
-<p>The subscript <span class="math inline">\(m\)</span> refers to a
-specific model (or causal configuration), and we drop this index from
-further notation for simplicity. A second order Taylor approximation of
-<span class="math inline">\(f\)</span> at <span class="math inline">\(\beta_0\)</span> is:</p>
-<p><span class="math display">\[
-\pi(D) \approx \int e^{-(f(\beta_0) + (\beta - \beta_{0})f'(\beta_0)
-+ \frac{1}{2}(\beta - \beta_{0})^2f''(\beta_0))}d\beta
-\]</span></p>
-<p>The standard Laplace’s method would use the global maximum of <span class="math inline">\(f\)</span> as <span class="math inline">\(\beta_0\)</span>, in which case <span class="math inline">\(f'(\beta_0) = 0\)</span> and the first order
-term of the approximation vanishes. However, this requires optimising
-<span class="math inline">\(f\)</span>, which can be costly.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mi>m</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>∫</mo><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">|</mo><msub><mi>β</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>π</mi><mi>β</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><msub><mi>β</mi><mi>m</mi></msub><mo>=</mo><mo>∫</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><mi>d</mi><msub><mi>β</mi><mi>m</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\pi_{m}(D) = \int \pi(\hat{\beta}|\beta_{m})\pi_{\beta}(\beta_m)d\beta_{m} = \int e^{-f(\beta_{m})}d\beta_{m}.
+</annotation></semantics></math></p>
+<p>The subscript
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+refers to a specific model (or causal configuration), and we drop this
+index from further notation for simplicity. A second order Taylor
+approximation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math>
+is:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mo>∫</mo><msup><mi>e</mi><mrow><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo>−</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>β</mi><mo>−</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mi>f</mi><mi>″</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><mi>d</mi><mi>β</mi></mrow><annotation encoding="application/x-tex">
+\pi(D) \approx \int e^{-(f(\beta_0) + (\beta - \beta_{0})f'(\beta_0) + \frac{1}{2}(\beta - \beta_{0})^2f''(\beta_0))}d\beta
+</annotation></semantics></math></p>
+<p>The standard Laplace’s method would use the global maximum of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math>,
+in which case
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mi>′</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">f'(\beta_0) = 0</annotation></semantics></math>
+and the first order term of the approximation vanishes. However, this
+requires optimising
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>,
+which can be costly.</p>
 <p>Alternatively, we can apply <em>approximate Laplace’s
 approximation</em> (Rossell et al. 2021) to evaluate the Taylor
-approximation at some <span class="math inline">\(\beta_0\)</span>,
-which is not necessarily the global maximum. Note that as <span class="math inline">\(\beta\)</span> is small, we can safely assume that
-this point will be in the vicinity of the global maximum.</p>
-<p>Let’s consider an example with <span class="math inline">\(\hat{\beta} = 0.049\)</span> and <span class="math inline">\(\text{SE}(\hat{\beta}) = 0.007\)</span>:</p>
+approximation at some
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math>,
+which is not necessarily the global maximum. Note that as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
+is small, we can safely assume that this point will be in the vicinity
+of the global maximum.</p>
+<p>Let’s consider an example with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo>=</mo><mn>0.049</mn></mrow><annotation encoding="application/x-tex">\hat{\beta} = 0.049</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">SE</mtext><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>β</mi><mo accent="true">̂</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>0.007</mn></mrow><annotation encoding="application/x-tex">\text{SE}(\hat{\beta}) = 0.007</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vkarhune.github.io/finimom">finimom</a></span><span class="op">)</span></span>
 <span></span>
@@ -131,8 +137,9 @@ approximation:</p>
 <code class="sourceCode R"><span><span class="va">opt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></span><span class="op">(</span><span class="va">betahat</span>, <span class="va">f</span>, beta <span class="op">=</span> <span class="va">betahat</span>, se <span class="op">=</span> <span class="va">sebetahat</span>, method <span class="op">=</span> <span class="st">"Nelder-Mead"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>fnscale <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, warn.1d.NelderMead <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">opt</span><span class="op">$</span><span class="va">par</span></span>
 <span><span class="co">#&gt; [1] 0.05269893</span></span></code></pre></div>
-<p>The curves of the true <span class="math inline">\(f\)</span> and its
-approxmations:</p>
+<p>The curves of the true
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+and its approxmations:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">xf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">xx</span>, <span class="va">fval_laplace</span>, x0 <span class="op">=</span> <span class="va">opt</span><span class="op">$</span><span class="va">par</span>, beta <span class="op">=</span> <span class="va">betahat</span>, se <span class="op">=</span> <span class="va">sebetahat</span><span class="op">)</span></span>
@@ -144,46 +151,57 @@ approxmations:</p>
 <p><img src="taylorlaplace_files/figure-html/curves-1.png" width="700"></p>
 <p>When evaluating the value of the full integral, Laplace’s method
 gives us</p>
-<p><span class="math display">\[
-\pi(D) \approx
-e^{-f(\tilde{\beta})}(2\pi)^{P/2}|H_{\tilde{\beta}}|^{-1/2},
-\]</span></p>
-<p>where <span class="math inline">\(\tilde{\beta}\)</span> is the
-global maximum of <span class="math inline">\(f\)</span>, and <span class="math inline">\(H_{\tilde{\beta}}\)</span> is the Hessian of <span class="math inline">\(f\)</span> evaluated at <span class="math inline">\(\tilde{\beta}\)</span>.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>β</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>P</mi><mi>/</mi><mn>2</mn></mrow></msup><msup><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>H</mi><mover><mi>β</mi><mo accent="true">̃</mo></mover></msub><mo stretchy="true" form="postfix">|</mo></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\pi(D) \approx e^{-f(\tilde{\beta})}(2\pi)^{P/2}|H_{\tilde{\beta}}|^{-1/2},
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>β</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\beta}</annotation></semantics></math>
+is the global maximum of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><mover><mi>β</mi><mo accent="true">̃</mo></mover></msub><annotation encoding="application/x-tex">H_{\tilde{\beta}}</annotation></semantics></math>
+is the Hessian of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
+evaluated at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>β</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\beta}</annotation></semantics></math>.</p>
 <p>In contrast, the approximate Laplace approximates the integral by</p>
-<p><span class="math display">\[
-\pi(D) \approx e^{-f(\beta_0) +
-\frac{1}{2}g_{\beta_0}^TH_{\beta_0}g_{\beta_0}}(2\pi)^{P/2}|H_{\beta_0}|^{-1/2},
-\]</span></p>
-<p>where <span class="math inline">\(g_{\beta_0}\)</span> and <span class="math inline">\(H_{\beta_0}\)</span> are the gradient and Hessian
-of <span class="math inline">\(f\)</span>, respectively, evaluated at
-<span class="math inline">\(\beta_0\)</span>.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>π</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>D</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><msup><mi>e</mi><mrow><mo>−</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msubsup><mi>g</mi><msub><mi>β</mi><mn>0</mn></msub><mi>T</mi></msubsup><msub><mi>H</mi><msub><mi>β</mi><mn>0</mn></msub></msub><msub><mi>g</mi><msub><mi>β</mi><mn>0</mn></msub></msub></mrow></msup><msup><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mi>π</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mi>P</mi><mi>/</mi><mn>2</mn></mrow></msup><msup><mrow><mo stretchy="true" form="prefix">|</mo><msub><mi>H</mi><msub><mi>β</mi><mn>0</mn></msub></msub><mo stretchy="true" form="postfix">|</mo></mrow><mrow><mo>−</mo><mn>1</mn><mi>/</mi><mn>2</mn></mrow></msup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\pi(D) \approx e^{-f(\beta_0) + \frac{1}{2}g_{\beta_0}^TH_{\beta_0}g_{\beta_0}}(2\pi)^{P/2}|H_{\beta_0}|^{-1/2},
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>g</mi><msub><mi>β</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">g_{\beta_0}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>H</mi><msub><mi>β</mi><mn>0</mn></msub></msub><annotation encoding="application/x-tex">H_{\beta_0}</annotation></semantics></math>
+are the gradient and Hessian of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>,
+respectively, evaluated at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math>.</p>
 <p>The downside of using the latter is that when computing the gradient
-<span class="math inline">\(g\)</span>, we have to invert the linkage
-disequilibrium matrix <span class="math inline">\(R\)</span>. However,
-this is still much faster than the optimisation of <span class="math inline">\(f\)</span>.</p>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>,
+we have to invert the linkage disequilibrium matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>R</mi><annotation encoding="application/x-tex">R</annotation></semantics></math>.
+However, this is still much faster than the optimisation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>.</p>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Ville Karhunen.</p>
+  <p>Developed by Ville Karhunen.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
