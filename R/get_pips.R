@@ -8,7 +8,7 @@
 #' @examples
 get_pips <- function(samples){
 
-    if(is.na(samples[[1]])) { stop(
+    if(sum(is.na(samples[[1]])) > 0) { stop(
       "Make sure you are using the correct object.\nIf you are sure this is the correct object, use the main function with option 'pip = TRUE'.")
       }
 
