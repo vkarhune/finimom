@@ -104,7 +104,7 @@ if(is.null(ala)) ala <- FALSE
     cat("Maximum number of causal variants set to 1 - calculating credible sets via Bayes factors.\n")
 
     sets <- get_csbf(beta = beta, se = se, tau = tau, r = r, level = cs_level)
-    out <- list("samples" = NA, "signals" = table(1), "sets" = order(sets))
+    out <- list("samples" = NA, "signals" = table(1), "sets" = sort(sets))
 
     if(pip){
       lbf <- finimom:::bf(beta = beta, se = se, tau = tau, r = r)
