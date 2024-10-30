@@ -22,6 +22,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
+> **_NEW: MULTI-TRAIT FINE-MAPPING_** -- see [tutorial](https://vkarhune.github.io/finimom/articles/multitrait.html).
+
 This R package implements a method for fine-mapping summarised genetic data using product inverse-moment prior for the effect sizes, and a beta-binomial prior for the model dimension.
 
 The method is described in:

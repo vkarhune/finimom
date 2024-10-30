@@ -1,0 +1,67 @@
+---
+title: "Multi-trait fine-mapping"
+author: "Ville Karhunen"
+date: "`r format(Sys.Date(), '%d.%m.%Y')`"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r workinprogress, echo = FALSE, out.width = '20%' }
+
+knitr::include_graphics("work-in-progress.png")
+
+```
+
+
+This is a tutorial for multi-trait fine-mapping.
+
+# Package installation and load
+
+Make sure that you are using the most recent version of the package.
+
+```{r setup, echo = FALSE}
+
+# load required package
+library(finimom)
+
+```
+
+
+```{r setup1, eval = FALSE}
+
+# install package
+# if needed, install also 'remotes' package via 'install.packages("remotes")'
+remotes::install_github("vkarhune/finimom")
+
+# load required package
+library(finimom)
+
+```
+
+# Input data
+
+For the input data, the method requires
+
+1. The **effect sizes** and their **standard errors** of variant-phenotype associations within the genetic region of interest from a genome-wide association study (*source GWAS*).
+
+2. The **linkage disequilibrium (LD) matrix** of the variants within the genetic region.
+
+Additionally, it is recommended to have the **effect allele frequencies**, **source GWAS sample size**, and **variance of the phenotype** (in the source GWAS).
+If the phenotype variance $\neq$ 1, then please scale the effect sizes and standard errors to correspond to standard-deviation units.
+
+## Example data
+
+
+
+# Session information
+
+```{r sessioninfo}
+
+sessionInfo()
+
+```

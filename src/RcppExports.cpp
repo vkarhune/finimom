@@ -48,6 +48,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ltotprior
+double ltotprior(arma::vec lpval, arma::vec msvec, int k, int maxs);
+RcppExport SEXP _finimom_ltotprior(SEXP lpvalSEXP, SEXP msvecSEXP, SEXP kSEXP, SEXP maxsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type lpval(lpvalSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type msvec(msvecSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< int >::type maxs(maxsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ltotprior(lpval, msvec, k, maxs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lmultinom
+double lmultinom(arma::vec gammavec, arma::vec probs);
+RcppExport SEXP _finimom_lmultinom(SEXP gammavecSEXP, SEXP probsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type gammavec(gammavecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type probs(probsSEXP);
+    rcpp_result_gen = Rcpp::wrap(lmultinom(gammavec, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
 // LMarlik
 double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec tau, double psi, double r, int d, arma::mat LDmat, double gval);
 RcppExport SEXP _finimom_LMarlik(SEXP betaSEXP, SEXP sematinvSEXP, SEXP tauSEXP, SEXP psiSEXP, SEXP rSEXP, SEXP dSEXP, SEXP LDmatSEXP, SEXP gvalSEXP) {
@@ -132,16 +158,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// posteriormv
+Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r, int p, int niter, arma::vec lpriorval, int approx, int k, arma::vec omega);
+RcppExport SEXP _finimom_posteriormv(SEXP datSEXP, SEXP tauSEXP, SEXP maxsizeSEXP, SEXP rSEXP, SEXP pSEXP, SEXP niterSEXP, SEXP lpriorvalSEXP, SEXP approxSEXP, SEXP kSEXP, SEXP omegaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type dat(datSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tau(tauSEXP);
+    Rcpp::traits::input_parameter< int >::type maxsize(maxsizeSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type niter(niterSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lpriorval(lpriorvalSEXP);
+    Rcpp::traits::input_parameter< int >::type approx(approxSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type omega(omegaSEXP);
+    rcpp_result_gen = Rcpp::wrap(posteriormv(dat, tau, maxsize, r, p, niter, lpriorval, approx, k, omega));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_finimom_arma_setdiff", (DL_FUNC) &_finimom_arma_setdiff, 2},
     {"_finimom_subset_vector", (DL_FUNC) &_finimom_subset_vector, 2},
     {"_finimom_set_vector_vals", (DL_FUNC) &_finimom_set_vector_vals, 3},
+    {"_finimom_ltotprior", (DL_FUNC) &_finimom_ltotprior, 4},
+    {"_finimom_lmultinom", (DL_FUNC) &_finimom_lmultinom, 2},
     {"_finimom_LMarlik", (DL_FUNC) &_finimom_LMarlik, 8},
     {"_finimom_gf", (DL_FUNC) &_finimom_gf, 7},
     {"_finimom_opt_nm", (DL_FUNC) &_finimom_opt_nm, 2},
     {"_finimom_LMarlikApprox", (DL_FUNC) &_finimom_LMarlikApprox, 9},
     {"_finimom_posterior", (DL_FUNC) &_finimom_posterior, 8},
+    {"_finimom_posteriormv", (DL_FUNC) &_finimom_posteriormv, 10},
     {NULL, NULL, 0}
 };
 

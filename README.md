@@ -7,6 +7,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
+> ***NEW: MULTI-TRAIT FINE-MAPPING*** – see
+> [tutorial](https://vkarhune.github.io/finimom/articles/multitrait.html).
+
 This R package implements a method for fine-mapping summarised genetic
 data using product inverse-moment prior for the effect sizes, and a
 beta-binomial prior for the model dimension.
@@ -68,7 +71,7 @@ res <- finimom(beta = beta, se = se, eaf = eaf, R = R,
 #> Clumping variants at r2=0.98
 #> Sampling from the posterior...
 #> 
-#> 12500 iterations done in 0.76 seconds
+#> 12500 iterations done in 1.21 seconds
 
 # output: credible sets
 res$sets

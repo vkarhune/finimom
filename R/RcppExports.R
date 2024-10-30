@@ -13,6 +13,14 @@ set_vector_vals <- function(x, pos, vals) {
     .Call(`_finimom_set_vector_vals`, x, pos, vals)
 }
 
+ltotprior <- function(lpval, msvec, k, maxs) {
+    .Call(`_finimom_ltotprior`, lpval, msvec, k, maxs)
+}
+
+lmultinom <- function(gammavec, probs) {
+    .Call(`_finimom_lmultinom`, gammavec, probs)
+}
+
 LMarlik <- function(beta, sematinv, tau, psi, r, d, LDmat, gval) {
     .Call(`_finimom_LMarlik`, beta, sematinv, tau, psi, r, d, LDmat, gval)
 }
@@ -31,5 +39,9 @@ LMarlikApprox <- function(beta, sematinv, z, tau, psi, r, d, LDmat, gval) {
 
 posterior <- function(dat, tau, maxsize, r, p, niter, lpriorval, approx) {
     .Call(`_finimom_posterior`, dat, tau, maxsize, r, p, niter, lpriorval, approx)
+}
+
+posteriormv <- function(dat, tau, maxsize, r, p, niter, lpriorval, approx, k, omega) {
+    .Call(`_finimom_posteriormv`, dat, tau, maxsize, r, p, niter, lpriorval, approx, k, omega)
 }
 
