@@ -3,10 +3,11 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   articles/betabinprior: betabinprior.html
+  articles/multitrait: multitrait.html
   articles/nonlocalpriors: nonlocalpriors.html
   articles/taylorlaplace: taylorlaplace.html
   articles/tutorial: tutorial.html
-last_built: 2024-09-19T15:30Z
+last_built: 2024-10-30T15:09Z
 urls:
   reference: https://vkarhune.github.io/finimom/reference
   article: https://vkarhune.github.io/finimom/articles
