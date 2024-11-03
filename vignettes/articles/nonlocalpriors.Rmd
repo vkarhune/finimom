@@ -11,12 +11,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r workinprogress, echo = FALSE, out.width = '20%' }
-
-knitr::include_graphics("work-in-progress.png")
-
-```
-
 
 
 

@@ -80,5 +80,5 @@ lapply(res$sets, function(x) exampledata$causals %in% x)
 
 ## Further details
 
-Further examples are given in the articles. Please report any bugs or unexpected behaviour to ville.karhunen@oulu.fi.
+Further examples are given in the articles. Please report any bugs or unexpected behaviour to ville.karhunen@mrc-bsu.cam.ac.uk.
 
