@@ -18,7 +18,10 @@ knitr::include_graphics("work-in-progress.png")
 ```
 
 
-This is a tutorial for multi-trait fine-mapping.
+This is a short tutorial for multi-trait fine-mapping.
+Please note that the current implementation is tested for only two traits, and other number of traits may return an error.
+
+Please report any unexpected behaviour to: ville dot karhunen at mrc-bsu.cam.ac.uk.
 
 # Package installation and load
 
@@ -43,20 +46,39 @@ library(finimom)
 
 ```
 
-# Input data
 
-For the input data, the method requires
-
-1. The **effect sizes** and their **standard errors** of variant-phenotype associations within the genetic region of interest from a genome-wide association study (*source GWAS*).
-
-2. The **linkage disequilibrium (LD) matrix** of the variants within the genetic region.
-
-Additionally, it is recommended to have the **effect allele frequencies**, **source GWAS sample size**, and **variance of the phenotype** (in the source GWAS).
-If the phenotype variance $\neq$ 1, then please scale the effect sizes and standard errors to correspond to standard-deviation units.
 
 ## Example data
 
+```{r load exampledata}
 
+load(url("https://github.com/vkarhune/finimomData/raw/main/multi-finimom_example.RData"))
+
+ls()
+
+# betas
+beta <- list(summarystats_y1[,1], summarystats_y2[,1])
+se <- list(summarystats_y1[,2], summarystats_y2[,2])
+
+```
+
+## Fine-mapping
+
+```{r multitrait}
+
+res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
+                    n = 50000, k = 2, omega = NULL,
+                    niter = 62500, burnin = 12500,
+                    standardize = TRUE,
+                    verbose = TRUE,
+                    insampleLD = FALSE,
+                    clump = TRUE, clump_r2 = 0.995^2, check_ld = TRUE,
+                    u = 1.05,
+                    purity = 0.5)
+
+res$sets
+
+```
 
 # Session information
 

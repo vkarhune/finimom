@@ -11,11 +11,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r workinprogress, echo = FALSE, out.width = '20%' }
-
-knitr::include_graphics("work-in-progress.png")
-
-```
 
 
 This is a step-by-step tutorial for conducting genetic fine-mapping on summary data using *finimom* package.
