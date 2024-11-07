@@ -62,7 +62,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">03.11.2024</h4>
+            <h4 data-toc-skip class="date">07.11.2024</h4>
       
 
       <div class="d-none name"><code>multitrait.Rmd</code></div>
@@ -72,8 +72,9 @@ Karhunen</h4>
     
 <p><img src="work-in-progress.png" width="20%"></p>
 <p>This is a short tutorial for multi-trait fine-mapping. Please note
-that the current implementation is tested for only two traits, and other
-number of traits may return an error.</p>
+that the multi-trait implementation is under constant development –
+moreover, the current implementation is tested for only two traits, and
+other number of traits may return an error.</p>
 <p>Please report any unexpected behaviour to: ville dot karhunen at
 mrc-bsu.cam.ac.uk.</p>
 <div class="section level2">
@@ -89,9 +90,13 @@ package.</p>
 <span></span>
 <span><span class="co"># load required package</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vkarhune.github.io/finimom">finimom</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
-</h3>
+</div>
+<div class="section level2">
+<h2 id="example-data">Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
+</h2>
+<p>The example data are summary statistics for two simulated traits for
+842 variants within 50,000 individuals. Both traits have two causal
+variants, one of which is shared with both traits.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html" class="external-link">load</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">url</a></span><span class="op">(</span><span class="st">"https://github.com/vkarhune/finimomData/raw/main/multi-finimom_example.RData"</span><span class="op">)</span><span class="op">)</span></span>
@@ -100,14 +105,56 @@ package.</p>
 <span><span class="co">#&gt; [1] "causals_y1"      "causals_y2"      "LDmat"           "mafs"           </span></span>
 <span><span class="co">#&gt; [5] "summarystats_y1" "summarystats_y2"</span></span>
 <span></span>
-<span><span class="co"># betas</span></span>
-<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">summarystats_y1</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">summarystats_y2</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">summarystats_y1</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, <span class="va">summarystats_y2</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="fine-mapping">Fine-mapping<a class="anchor" aria-label="anchor" href="#fine-mapping"></a>
-</h3>
+<span><span class="co"># summary statistics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">summarystats_y1</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              beta          se</span></span>
+<span><span class="co">#&gt; [1,] -0.012283147 0.010012730</span></span>
+<span><span class="co">#&gt; [2,] -0.022047978 0.011903286</span></span>
+<span><span class="co">#&gt; [3,] -0.007153627 0.010388402</span></span>
+<span><span class="co">#&gt; [4,]  0.002569805 0.007193564</span></span>
+<span><span class="co">#&gt; [5,]  0.002972988 0.016465898</span></span>
+<span><span class="co">#&gt; [6,] -0.012660130 0.009985195</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">summarystats_y2</span><span class="op">)</span></span>
+<span><span class="co">#&gt;               beta          se</span></span>
+<span><span class="co">#&gt; [1,]  0.0061683619 0.010012843</span></span>
+<span><span class="co">#&gt; [2,] -0.0478840719 0.011901768</span></span>
+<span><span class="co">#&gt; [3,] -0.0495203583 0.010386090</span></span>
+<span><span class="co">#&gt; [4,]  0.0005496849 0.007193573</span></span>
+<span><span class="co">#&gt; [5,] -0.0352351055 0.016465150</span></span>
+<span><span class="co">#&gt; [6,]  0.0067814593 0.009985310</span></span>
+<span></span>
+<span><span class="co"># causal variants</span></span>
+<span><span class="va">causals_y1</span></span>
+<span><span class="co">#&gt; [1] 201 318</span></span>
+<span><span class="va">causals_y2</span></span>
+<span><span class="co">#&gt; [1] 201 590</span></span></code></pre></div>
+<p>The linkage disequilibrium (LD) reference used is an out-of-sample
+reference, calculated based on 10,000 individuals. The allele
+frequencies for the variants are provided in object ‘mafs’.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># LD matrix</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">LDmat</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  num [1:842, 1:842] 1 -0.0993 -0.1146 -0.2146 -0.0627 ...</span></span>
+<span></span>
+<span><span class="co"># allele frequencies</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mafs</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  num [1:842] 0.1128 0.0762 0.1031 0.2632 0.0385 ...</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="fine-mapping">Fine-mapping<a class="anchor" aria-label="anchor" href="#fine-mapping"></a>
+</h2>
+<p>The input data for multi-trait fine-mapping are given as lists:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="co"># betas</span></span>
+<span><span class="va">beta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">summarystats_y1</span><span class="op">[</span>,<span class="st">"beta"</span><span class="op">]</span>, <span class="va">summarystats_y2</span><span class="op">[</span>,<span class="st">"beta"</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># standard errors</span></span>
+<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">summarystats_y1</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span>, <span class="va">summarystats_y2</span><span class="op">[</span>,<span class="st">"se"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>Multi-trait fine-mapping can be run as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multi_finimom.html">multi_finimom</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="va">beta</span>, se <span class="op">=</span> <span class="va">se</span>, eaf <span class="op">=</span> <span class="va">mafs</span>, R <span class="op">=</span> <span class="va">LDmat</span>,</span>
 <span>                    n <span class="op">=</span> <span class="fl">50000</span>, k <span class="op">=</span> <span class="fl">2</span>, omega <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -121,7 +168,7 @@ package.</p>
 <span><span class="co">#&gt; Clumping variants at r2=0.99</span></span>
 <span><span class="co">#&gt; Sampling from the posterior...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 62500 iterations done in 20.90 seconds</span></span>
+<span><span class="co">#&gt; 62500 iterations done in 20.68 seconds</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">sets</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
@@ -139,11 +186,32 @@ package.</p>
 <span><span class="co">#&gt; [[2]][[2]]</span></span>
 <span><span class="co">#&gt; [1]  84 201 288</span></span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="choosing-the-tuning-parameter-u">Choosing the tuning parameter u<a class="anchor" aria-label="anchor" href="#choosing-the-tuning-parameter-u"></a>
+</h2>
+<p>Multi-FiniMOM requires the tuning parameter <em>u</em> as an input.
+This parameter controls the prior distribution for the number of causal
+variants. In particular, <em>u</em> can be used to counter a potential
+mismatch between the summary statistics and the LD matrix, in that
+larger values of <em>u</em> protect against false positives when using
+an out-of-sample LD reference.</p>
+<p>In the example, we have used <em>u=1.05</em>. However, in the
+presence of severe LD mismatch (particularly if using a small LD
+reference panel, such as 1000Genomes), one might require <em>u</em>
+values up to 20 or 30 to provide reasonable fine-mapping results. A
+rough rule-of-thumb is to increase <em>u</em> until there are no
+credible sets for which
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">|</mo><mi>z</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo>&lt;</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">|z|&lt;2</annotation></semantics></math>
+for all of the variants within the set.</p>
+<p>It should be noted that due to the different model formulation of the
+univariate and multi-trait implementations, the <em>u</em> values for
+the univariate and multi-trait fine-mapping are not directly
+comparable.</p>
 </div>
 <div class="section level2">
 <h2 id="session-information">Session information<a class="anchor" aria-label="anchor" href="#session-information"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.4.2 (2024-10-31)</span></span>
@@ -172,10 +240,10 @@ package.</p>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.37     desc_1.4.3        R6_2.5.1          fastmap_1.2.0    </span></span>
 <span><span class="co">#&gt;  [5] xfun_0.49         cachem_1.1.0      knitr_1.48        htmltools_0.5.8.1</span></span>
-<span><span class="co">#&gt;  [9] rmarkdown_2.28    lifecycle_1.0.4   cli_3.6.3         sass_0.4.9       </span></span>
+<span><span class="co">#&gt;  [9] rmarkdown_2.29    lifecycle_1.0.4   cli_3.6.3         sass_0.4.9       </span></span>
 <span><span class="co">#&gt; [13] pkgdown_2.1.1     textshaping_0.4.0 jquerylib_0.1.4   systemfonts_1.1.0</span></span>
 <span><span class="co">#&gt; [17] compiler_4.4.2    highr_0.11        tools_4.4.2       ragg_1.3.3       </span></span>
-<span><span class="co">#&gt; [21] evaluate_1.0.1    bslib_0.8.0       Rcpp_1.0.13       yaml_2.3.10      </span></span>
+<span><span class="co">#&gt; [21] evaluate_1.0.1    bslib_0.8.0       Rcpp_1.0.13-1     yaml_2.3.10      </span></span>
 <span><span class="co">#&gt; [25] jsonlite_1.8.9    rlang_1.1.4       fs_1.6.5</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
