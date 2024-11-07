@@ -19,7 +19,7 @@ knitr::include_graphics("work-in-progress.png")
 
 
 This is a short tutorial for multi-trait fine-mapping.
-Please note that the current implementation is tested for only two traits, and other number of traits may return an error.
+Please note that the multi-trait implementation is under constant development -- moreover, the current implementation is tested for only two traits, and other number of traits may return an error.
 
 Please report any unexpected behaviour to: ville dot karhunen at mrc-bsu.cam.ac.uk.
 
@@ -48,7 +48,10 @@ library(finimom)
 
 
 
-## Example data
+# Example data
+
+The example data are summary statistics for two simulated traits for 842 variants within 50,000 individuals.
+Both traits have two causal variants, one of which is shared with both traits.
 
 ```{r load exampledata}
 
@@ -56,13 +59,51 @@ load(url("https://github.com/vkarhune/finimomData/raw/main/multi-finimom_example
 
 ls()
 
-# betas
-beta <- list(summarystats_y1[,1], summarystats_y2[,1])
-se <- list(summarystats_y1[,2], summarystats_y2[,2])
+# summary statistics
+head(summarystats_y1)
+head(summarystats_y2)
+
+# causal variants
+causals_y1
+causals_y2
 
 ```
 
-## Fine-mapping
+The linkage disequilibrium (LD) reference used is an out-of-sample reference, calculated based on 10,000 individuals.
+The allele frequencies for the variants are provided in object 'mafs'.
+
+
+```{r refld}
+
+# LD matrix
+str(LDmat)
+
+# allele frequencies
+str(mafs)
+
+
+```
+
+
+
+
+# Fine-mapping
+
+The input data for multi-trait fine-mapping are given as lists:
+
+```{r inputdata}
+
+
+# betas
+beta <- list(summarystats_y1[,"beta"], summarystats_y2[,"beta"])
+
+# standard errors
+se <- list(summarystats_y1[,"se"], summarystats_y2[,"se"])
+
+
+```
+
+Multi-trait fine-mapping can be run as follows:
 
 ```{r multitrait}
 
@@ -79,6 +120,18 @@ res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
 res$sets
 
 ```
+
+# Choosing the tuning parameter u
+
+Multi-FiniMOM requires the tuning parameter *u* as an input.
+This parameter controls the prior distribution for the number of causal variants.
+In particular, *u* can be used to counter a potential mismatch between the summary statistics and the LD matrix, in that larger values of *u* protect against false positives when using an out-of-sample LD reference.
+
+In the example, we have used *u=1.05*.
+However, in the presence of severe LD mismatch (particularly if using a small LD reference panel, such as 1000Genomes), one might require *u* values up to 20 or 30 to provide reasonable fine-mapping results.
+A rough rule-of-thumb is to increase *u* until there are no credible sets for which $|z|<2$ for all of the variants within the set.
+
+It should be noted that due to the different model formulation of the univariate and multi-trait implementations, the *u* values for the univariate and multi-trait fine-mapping are not directly comparable.
 
 # Session information
 
