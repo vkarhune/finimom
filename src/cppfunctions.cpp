@@ -85,7 +85,15 @@ double lmultinom(arma::vec gammavec, arma::vec probs){
   // return *REAL(dm(gammavec, Named("prob") = probs, Named("log") = "TRUE"));
 }
 
+// [[Rcpp::export]]
+double lvarspecp(arma::vec nonz, int globalmodelsize, arma::vec vprobs){
+  arma::vec probs(globalmodelsize);
 
+  for(int j = 1; j <= globalmodelsize; ++j){
+    probs(j - 1) = vprobs(nonz(j - 1) - 1);
+  }
+  return arma::accu(probs);
+}
 
 // [[Rcpp::export]]
 double LMarlik(arma::vec beta, arma::mat sematinv, arma::vec tau,
@@ -791,8 +799,8 @@ for(int i = 1; i < niter; ++i){
 
 // [[Rcpp::export]]
 Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
-                       int p, int niter, arma::vec lpriorval, int approx, int k,
-                       arma::vec omega){
+                       int p, int niter, arma::vec lpriorval, int k,
+                       arma::vec omega, arma::vec vsprobs, double collinear, double zeta, arma::vec h2cap){
 
   Rcpp::List out;
 
@@ -800,7 +808,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   arma::vec outmodsize(niter);
   // arma::vec outtemp(niter);
   arma::vec indexvec = arma::linspace(0, p-1, p);
-  arma::mat betavecmat(p, niter);
+  // arma::mat betavecmat(p, niter);
   // double current;
   double thresh;
 
@@ -829,25 +837,34 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   // Rcpp::List modelsizelist(k);
   arma::vec phenoindexvec = arma::linspace(0, k - 1, k);
   int pheno;
+  int modelsize;
+  int fullmodelsize;
   int fullmodelsizeprop;
+  int globalmodelsize;
+  int globalmodelsizeprop;
   arma::mat modelsizemat(k, niter);
   arma::vec modelsizevec(k);
   arma::vec fullgammavec(p); // arma::vec ldmultinomvec(k);
 
-  arma::vec phenovec(niter);
-  arma::vec addvec(niter);
-  arma::mat testmat(p, niter);
+  // arma::vec phenovec(niter);
+  // arma::vec addvec(niter);
+  // arma::mat testmat(p, niter);
+  // arma::vec testvec(niter);
 
-  arma::uvec tempinds;
   arma::vec ztemp;
 
   arma::vec tmpi;
   arma::vec helper(1);
 
   int singlep = p/k;
+  arma::mat gammamat(singlep, k);
+
   arma::vec chooseswapindex;
 
   arma::vec gammavec(singlep);
+
+  arma::uvec globalinds;
+  arma::vec globalnums(singlep);
 
   for(int j = 1; j <= k; ++j){
 
@@ -860,10 +877,10 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
     modelsizevec(j - 1) = tmpi.size();
 
     gammavec = set_vector_vals(arma::zeros(singlep), arma::conv_to<arma::uvec>::from(tmpi), arma::ones(tmpi.size()));
+    gammamat.col(j - 1) = gammavec;
 
     // fullgammavec = set_vector_vals(); SEE LINE 946 and 982// ldmultinomvec(j - 1) = lmultinom(gammavec, omega.subvec(singlep*(j - 1), j*singlep - 1));
 
-    //inds = tempinds;
     // inds = {7};
 
     if(j == 1){
@@ -877,6 +894,12 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   }
 
   // inds = index_max(abs(z));
+  // globalinds = arma::clamp(sum(gammamat, 1), 0, 1);
+  globalnums = sum(gammamat, 1);
+  globalinds = find(globalnums);
+  globalmodelsize = globalinds.size();
+  // globalinds = arma::clamp(globalnums, 0, 1);
+  // globalmodelsize = arma::accu(globalinds); // globalmodelsize = arma::accu(globalnums != 0);
 
   double gval;
   arma::vec gvalpar;
@@ -892,6 +915,10 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   arma::mat LDmat;
   // arma::mat LDmat = {{1.00000000, -0.08843057}, {-0.08843057, 1.00000000}};
   LDmat = as<arma::mat>(dat["LDmat"]);
+
+  arma::mat LDglobal;
+  LDglobal = as<arma::mat>(dat["LDglobal"]);
+
 
   // input[0] = 0;
 
@@ -930,55 +957,61 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   // arma::mat LDmattmp = {{1.00000000, -0.08843057}, {-0.08843057, 1.00000000}};
   // parsinit["LDmat"] = LDmattmp;
 
-  int modelsize;
-  modelsize = inds.size();
+  fullmodelsize = inds.size();
 
   fullgammavec.zeros();
-  fullgammavec = set_vector_vals(fullgammavec, arma::conv_to<arma::uvec>::from(inds), arma::ones(modelsize));
+  fullgammavec = set_vector_vals(fullgammavec, arma::conv_to<arma::uvec>::from(inds), arma::ones(fullmodelsize));
 
 
-  int phenonum;
-  phenonum = dat["npheno"];
+  // int phenonum;
+  // phenonum = dat["npheno"];
 
   double lm;
   double lp;
 
-  if(approx == 0){
-    // optimise using proposed indices
-    funlist = opt_nm(input, parsinit);
+  //  if(approx == 0){
+  // optimise using proposed indices
+  //    funlist = opt_nm(input, parsinit);
 
-    gval = funlist["value"];
-    gvalpar = as<arma::vec>(funlist["par"]);
+  //    gval = funlist["value"];
+  //    gvalpar = as<arma::vec>(funlist["par"]);
 
-    // theta[0] = gval;
-
-
-    lm = LMarlik(gvalpar, parsinit["sematinv"], parsinit["tau"], 1, r, modelsize,
-                 parsinit["LDmat"], gval);
-  } else {
+  //    lm = LMarlik(gvalpar, parsinit["sematinv"], parsinit["tau"], 1, r, fullmodelsize,
+  //                 parsinit["LDmat"], gval);
+  //  } else {
 
 
-    gvalpar = subset_vector(beta, inds);
-    gval = gf(gvalpar, subset_vector(z, inds),
-              parsinit["sematinv"], parsinit["LDmat"], parsinit["tau"],
-                                                               modelsize, r);
+  // gvalpar = subset_vector(beta, inds);
+  gvalpar = solve(LDmat(inds,inds), beta.elem(inds), arma::solve_opts::no_approx);
 
-    lm = LMarlikApprox(gvalpar, parsinit["sematinv"], subset_vector(z, inds),
-                       parsinit["tau"], 1, r, modelsize, parsinit["LDmat"], gval);
-  }
+  gval = gf(gvalpar, subset_vector(z, inds),
+            parsinit["sematinv"], parsinit["LDmat"], parsinit["tau"],
+                                                             fullmodelsize, r);
+
+  lm = LMarlikApprox(gvalpar, parsinit["sematinv"], subset_vector(z, inds),
+                     parsinit["tau"], 1, r, fullmodelsize, parsinit["LDmat"], gval);
+  //  }
 
   // lp = lm + lpriorval[modelsize - 1];
 
-  // lp = lm + ltotprior(lpriorval, modelsizevec) + arma::accu(ldmultinomvec);
-  lp = lm + ltotprior(lpriorval, modelsizevec, k, maxsize) + lmultinom(fullgammavec, omega); // lp = lm + ltotprior(lpriorval, modelsizevec, k, maxsize) + arma::accu(ldmultinomvec);
-
+  // lp = lm + ltotprior(lpriorval, modelsizevec, k, maxsize) + lmultinom(fullgammavec, omega); // lp = lm + ltotprior(lpriorval, modelsizevec, k, maxsize) + arma::accu(ldmultinomvec);
+  // lp = lm + lpriorval[globalmodelsize - 1] + lmultinom(arma::clamp(globalnums, 0, 1), omega) + lvectruncbinomial(globalnums, globalmodelsize, k, tbprob);
+  lp = lm + lpriorval[globalmodelsize - 1] + lmultinom(arma::clamp(globalnums, 0, 1), omega) + lvarspecp(arma::nonzeros(globalnums), globalmodelsize, vsprobs);
 
   val[0] = lm;
 
+  // out["gval"] = gval;
+  // out["gvalpar"] = gvalpar;
+
+  // int modelsize;
+  // modelsize = inds.size();
+
+  // arma::vec betavec(p, arma::fill::zeros);
   arma::vec betavec(p);
 
+  // betavec[inds] <- gvalpar
   betavec = set_vector_vals(betavec, inds, gvalpar);
-  betavecmat.col(0) = betavec;
+  // betavecmat.col(0) = betavec;
   modelsizemat.col(0) = modelsizevec;
 
   arma::uvec indsprop;
@@ -992,7 +1025,16 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   arma::vec seqvecmin = {1, 2};
   arma::vec seqvecmax = {0, 2};
 
+  arma::mat gammamatprop(singlep, k);
+  arma::vec globalnumsprop(singlep);
+  arma::uvec globalindsprop;
+  // globalmodelsizeprop defined earlier
+
   arma::vec indsproppheno;
+  // arma::vec ldmultinomvecprop(k);
+
+  // testing for now:
+  // indsprop = inds;
 
   arma::vec betaprop(p);
 
@@ -1012,10 +1054,17 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
 
   arma::vec probsback(p);
 
+  // arma::vec probs2;
+  // arma::uvec swapindex(1);
   arma::vec swapindex(1);
   arma::vec addindex(1);
+  // arma::mat outbeta; ?!
 
   outmodsize[0] = 1;
+  // outtemp[0] = 0;
+
+  // arma::mat A;
+  // arma::vec B;
 
   arma::vec zerovec;
   arma::vec zerovecback;
@@ -1033,6 +1082,8 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   std::string s2 = s1.substr(0, (s1.size() > 0) ? (s1.size()-1) : 0);
   modindices[0] = s2;
 
+  arma::vec h2vec(k);
+
   double pforward; // a-d-s probability
   double pbackward; // probability of going backwards
 
@@ -1042,170 +1093,374 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   double lqcurrprop;
   double lqpropcurr;
 
+  double pforward0; // global jump probability
+  double pbackward0;
 
+  arma::vec probtemp;
+
+  arma::vec globallocal = {0, 1};
+  arma::vec mixprobs = {1 - zeta, zeta};
+
+  arma::vec probsg(singlep);
+
+  arma::vec shared;
+
+  int global;
 
   for(int i = 1; i < niter; ++i){
 
-    // randomly pick one of the outcomes
-    pheno = as_scalar(Rcpp::RcppArmadillo::sample(phenoindexvec, 1, false));
+    // current = theta[i-1] + rnorm(1,0, 1)[0];
+    // theta[i] = current;
 
-    // arma::uvec indsphenohelp = indslist[pheno];
-    // inds = indsphenohelp;
-    // int modsizehelp = modelsizelist[pheno];
-    // modelsize = modsizehelp;
-    modelsize = modelsizevec[pheno];
+    // input[i] = current;
+    // tau = tau + 1;
+    // pars["tau"] = tau;
 
-    modelsizevecprop = modelsizevec;
+    // if any shared causals, randomly pick global vs. local jump from Bernoulli(zeta)
+    if(max(globalnums) > 1){
+      global = as_scalar(Rcpp::RcppArmadillo::sample(globallocal, 1, false, mixprobs));
 
-
-
-    // randomly pick add = 1, delete = 0, swap = 2
-    if(modelsize == 1){
-      add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmin, 1, false));
-      pforward = 1.0/seqvecmin.size();
-    } else {
-      if(modelsize != maxsize){
-        add = as_scalar(Rcpp::RcppArmadillo::sample(seqvec, 1, false));
-        pforward = 1.0/seqvec.size();
+      if(global == 1){
+        pforward0 = zeta;
       } else {
-        add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmax, 1, false));
-        pforward = 1.0/seqvecmax.size();
+        pforward0 = (1.0 - zeta)/k;
       }
+
+    } else {
+      global = 0;
+      pforward0 = 1.0/k;
     }
 
-    if(add == 1){
 
-      modelsizeprop = modelsize + 1;
 
-      probs = xtr;
+    if(global == 1){
+      add = 2;
 
-      for(int j = 1; j <= k; ++j){
-        if(j == pheno + 1){
-          zerovec = arma::zeros(inds.size());
-          // zero probabilities for indices existing in the model
-          probs = set_vector_vals(probs, inds, zerovec);
-        }
-        else {
-          zerovec = arma::zeros(singlep);
-          probs = set_vector_vals(probs, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovec);
-        }
-      }
-      // zerovec = arma::zeros(inds.size());
+      modelsizeprop = modelsize;
 
-      // probs = set_vector_vals(arma::conv_to<arma::vec>::from(xtr), inds, zerovec);
+      chooseswapindex = arma::conv_to<arma::vec>::from(find(globalnums > 1));
+      //chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (singlep*pheno) )));
+      //chooseswapindex = chooseswapindex.elem(arma::find(chooseswapindex <= singlep*(pheno + 1) - 1));
+
+      swapindex = Rcpp::RcppArmadillo::sample(chooseswapindex, 1, false);
+
+      // probs = LDglobal.col(arma::conv_to<arma::uword>::from(swapindex));
+      probs = arma::join_cols(LDglobal.col(arma::conv_to<arma::uword>::from(swapindex)), arma::zeros(singlep*(k - 1)));
+
+      // zero probabilities for indices existing in the model
+      zerovec = arma::zeros(globalmodelsize);
+      probs = set_vector_vals(probs, globalinds, zerovec);
+
       probs = arma::square(probs);
       probs = probs/arma::accu(probs);
-      //probs.fill(1.0/(p - inds.size()));
-      //probs = set_vector_vals(probs, inds, zerovec);
 
-      swapindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
-      indsprop1 = arma::join_cols(arma::conv_to<arma::vec>::from(inds), swapindex);
+      probsg = probs.elem(arma::conv_to<arma::uvec>::from(arma::linspace(0, singlep - 1, singlep)));
 
-      pforward2 = probs(arma::conv_to<arma::uword>::from(swapindex));
+      addindex = Rcpp::RcppArmadillo::sample(arma::linspace(0, singlep - 1, singlep), 1, false, probsg);
+      pforward2 = probsg(arma::conv_to<arma::uword>::from(addindex));
 
-      indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
+      //
+      gammamatprop = gammamat;
+      gammamatprop.row(arma::conv_to<arma::uword>::from(addindex)) = gammamatprop.row(arma::conv_to<arma::uword>::from(swapindex));
+      gammamatprop.row(arma::conv_to<arma::uword>::from(swapindex)) = arma::zeros<arma::rowvec>(k);
+      fullgammavecprop = gammamatprop.as_col();
+      indsprop = find(fullgammavecprop);
 
-      fullgammavecprop = set_vector_vals(arma::zeros(p), indsprop, arma::ones(indsprop.size()));
+      //// define the proposed indices on the level of local vars
+      //indsprop1 = arma::join_cols(arma_setdiff(arma::conv_to<arma::vec>::from(inds), as_scalar(swapindex) + singlep*phenoindexvec), as_scalar(addindex) + singlep*phenoindexvec);
+      ////indsprop1 = arma::join_cols(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex), addindex);
 
-      // probability of delete backwards
-      // pbackward2 = 1.0/indsprop.size();
-      pbackward2 = 1.0/(modelsize + 1.0);
+      //indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
 
-    } else{
-      if(add == 2){
+      //fullgammavecprop = set_vector_vals(arma::zeros(p), indsprop, arma::ones(indsprop.size()));
 
-        modelsizeprop = modelsize;
+      //for(int j = 1; j <= k; ++j){
+      //  gammamatprop.col(j - 1) = fullgammavecprop.subvec(singlep*(j - 1), j*singlep - 1);
+      //}
 
-        // outtemp[i] = add + 1;
-        // chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (pheno-1)*singlep)));
+      globalnumsprop = sum(gammamatprop, 1);
+      globalindsprop = arma::find(globalnumsprop);
+      globalmodelsizeprop = globalindsprop.size();
 
-        chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (singlep*pheno) )));
-        chooseswapindex = chooseswapindex.elem(arma::find(chooseswapindex <= singlep*(pheno + 1) - 1));
+      // probability of swap backwards
+      probsback = arma::join_cols(LDglobal.col(arma::conv_to<arma::uword>::from(addindex)), arma::zeros(singlep));
 
-        swapindex = Rcpp::RcppArmadillo::sample(chooseswapindex, 1, false);
-        // swapindex = Rcpp::RcppArmadillo::sample(arma::conv_to<arma::vec>::from(inds), 1, false);
+      // zero probabilities for indices existing in the model
+      zerovec = arma::zeros(globalmodelsizeprop);
+      probsback = set_vector_vals(probsback, globalindsprop, zerovec);
 
-        // probs = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
-        // pr = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
-        probs = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
+      probsback = arma::square(probsback);
+      probsback = probsback/arma::accu(probsback);
+      pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
 
-        for(int j = 1; j <= k; j++){
+      modelsizevecprop = modelsizevec;
+
+    } else {
+
+
+      // randomly pick one of the outcomes
+      pheno = as_scalar(Rcpp::RcppArmadillo::sample(phenoindexvec, 1, false));
+
+
+      // arma::uvec indsphenohelp = indslist[pheno];
+      // inds = indsphenohelp;
+      // int modsizehelp = modelsizelist[pheno];
+      // modelsize = modsizehelp;
+      modelsize = modelsizevec[pheno];
+
+      modelsizevecprop = modelsizevec;
+      gammamatprop = gammamat;
+
+
+      // randomly pick add = 1, delete = 0, swap = 2
+      if(modelsize == 1){
+        add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmin, 1, false));
+        pforward = 1.0/seqvecmin.size();
+      } else {
+        if(modelsize != maxsize){
+          add = as_scalar(Rcpp::RcppArmadillo::sample(seqvec, 1, false));
+          pforward = 1.0/seqvec.size();
+        } else {
+          // addition 5/25: if maxsize for trait and global, then delete only
+          if(globalmodelsize == maxsize){
+            add = 0;
+            pforward = 1.0;
+          } else {
+            // end addition
+
+            add = as_scalar(Rcpp::RcppArmadillo::sample(seqvecmax, 1, false));
+            pforward = 1.0/seqvecmax.size();
+          } // addition bracket
+        }
+      }
+
+
+
+      if(add == 1){
+
+        modelsizeprop = modelsize + 1;
+
+        probs = xtr;
+
+        // addition 5/25: if maxsize, then add to only selected
+        // and if all probs are zero, then pick one uniformly
+        if(globalmodelsize == maxsize){
+          probtemp = arma::zeros(singlep);
+          probtemp = set_vector_vals(probtemp, globalinds,
+                                     subset_vector(probs, pheno*singlep + globalinds));
+
+          if(all(probtemp == 0)){
+            probtemp = set_vector_vals(probtemp, globalinds,
+                                       arma::ones(globalinds.size()));
+          }
+
+          probs = set_vector_vals(probs, arma::linspace<arma::uvec>(pheno*singlep, (pheno + 1)*singlep - 1, singlep), probtemp);
+
+        }
+        // end addition
+
+        for(int j = 1; j <= k; ++j){
           if(j == pheno + 1){
+
             zerovec = arma::zeros(inds.size());
+            // zero probabilities for indices existing in the model
             probs = set_vector_vals(probs, inds, zerovec);
           }
           else {
             zerovec = arma::zeros(singlep);
             probs = set_vector_vals(probs, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovec);
           }
-
         }
         // zerovec = arma::zeros(inds.size());
-        // probs = set_vector_vals(pr, inds, zerovec);
 
 
+        // probs = set_vector_vals(arma::conv_to<arma::vec>::from(xtr), inds, zerovec);
         probs = arma::square(probs);
         probs = probs/arma::accu(probs);
+        //probs.fill(1.0/(p - inds.size()));
+        //probs = set_vector_vals(probs, inds, zerovec);
 
-        addindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
-        pforward2 = probs(arma::conv_to<arma::uword>::from(addindex)); //NOTE: check that indexing goes correctly!!!
+        swapindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
+        indsprop1 = arma::join_cols(arma::conv_to<arma::vec>::from(inds), swapindex);
 
-        indsprop1 = arma::join_cols(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex), addindex);
+        pforward2 = probs(arma::conv_to<arma::uword>::from(swapindex));
 
         indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
+
         fullgammavecprop = set_vector_vals(arma::zeros(p), indsprop, arma::ones(indsprop.size()));
+        // addition 5/25: proposals
+        gammamatprop.col(pheno) = fullgammavecprop.subvec(singlep*pheno, (pheno + 1)*singlep - 1);
 
-        // probability of swap backwards
-        // pbackward2 = pforward2;
-        probsback = LDmat.col(arma::conv_to<arma::uword>::from(addindex));
+        globalnumsprop = sum(gammamatprop, 1);
+        globalindsprop = arma::find(globalnumsprop);
+        globalmodelsizeprop = globalindsprop.size();
+        // end addition
 
-        for(int j = 1; j <= k; j++){
-          if(j == pheno + 1){
-            zerovec = arma::zeros(indsprop.size());
-            probsback = set_vector_vals(probsback, indsprop, zerovec);
-          }
-          else {
-            zerovec = arma::zeros(singlep);
-            probsback = set_vector_vals(probsback, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovec);
-          }
+        // probability of delete backwards
+        // pbackward2 = 1.0/indsprop.size();
+
+        // check for backwards probability if any shared variants
+        if(max(globalnumsprop) > 1){
+          pbackward2 = (1.0 - zeta)/(k*(modelsize + 1.0));
+        } else {
+          pbackward2 = 1.0/(k*(modelsize + 1.0));
         }
 
-        probsback = arma::square(probsback);
-        probsback = probsback/arma::accu(probsback);
-        pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+      } else{
+        if(add == 2){
 
-      } else {
-        // outtemp[i] = add;
+          modelsizeprop = modelsize;
 
-        modelsizeprop = modelsize - 1;
+          // outtemp[i] = add + 1;
+          // chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (pheno-1)*singlep)));
 
-        chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (singlep*pheno) )));
-        chooseswapindex = chooseswapindex.elem(arma::find(chooseswapindex < singlep*(pheno + 1) ));
+          chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (singlep*pheno) )));
+          chooseswapindex = chooseswapindex.elem(arma::find(chooseswapindex <= singlep*(pheno + 1) - 1));
+
+          swapindex = Rcpp::RcppArmadillo::sample(chooseswapindex, 1, false);
+          // swapindex = Rcpp::RcppArmadillo::sample(arma::conv_to<arma::vec>::from(inds), 1, false);
+
+          // probs = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
+          // pr = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
+          probs = LDmat.col(arma::conv_to<arma::uword>::from(swapindex));
+
+          // addition 5/25:
+          // if maxsize and swapped is shared across multiple traits, then swap to only selected
+          if(globalmodelsize == maxsize){
+
+            int singleswapi = swapindex(0) - singlep*pheno;
+
+            if(globalnums(singleswapi) > 1){
+              probtemp = arma::zeros(singlep);
+              probtemp = set_vector_vals(probtemp, globalinds,
+                                         subset_vector(probs, pheno*singlep + globalinds));
+              probs = set_vector_vals(probs, arma::linspace<arma::uvec>(pheno*singlep, (pheno + 1)*singlep - 1, singlep), probtemp);
+            }
+          }
+          // end addition
+
+          for(int j = 1; j <= k; j++){
+            if(j == pheno + 1){
+              zerovec = arma::zeros(inds.size());
+              probs = set_vector_vals(probs, inds, zerovec);
+            }
+            else {
+              zerovec = arma::zeros(singlep);
+              probs = set_vector_vals(probs, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovec);
+            }
+
+          }
+          // zerovec = arma::zeros(inds.size());
+          // probs = set_vector_vals(pr, inds, zerovec);
 
 
-        swapindex = Rcpp::RcppArmadillo::sample(chooseswapindex, 1, false);
+          probs = arma::square(probs);
+          probs = probs/arma::accu(probs);
 
-        indsprop = arma::conv_to<arma::uvec>::from(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex));
-        fullgammavecprop = set_vector_vals(arma::zeros(p), indsprop, arma::ones(indsprop.size()));
+          addindex = Rcpp::RcppArmadillo::sample(indexvec, 1, false, probs);
+          pforward2 = probs(arma::conv_to<arma::uword>::from(addindex)); //NOTE: check that indexing goes correctly!!!
 
-        // pforward2 = 1.0/inds.size();
-        pforward2 = 1.0/modelsize;
+          indsprop1 = arma::join_cols(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex), addindex);
 
+          indsprop = arma::conv_to<arma::uvec>::from(indsprop1(sort_index(indsprop1)));
+          fullgammavecprop = set_vector_vals(arma::zeros(p), indsprop, arma::ones(indsprop.size()));
+          // addition 5/25: proposals
+          gammamatprop.col(pheno) = fullgammavecprop.subvec(singlep*pheno, (pheno + 1)*singlep - 1);
+
+          globalnumsprop = sum(gammamatprop, 1);
+          globalindsprop = arma::find(globalnumsprop);
+          globalmodelsizeprop = globalindsprop.size();
+          // end addition
+
+          // probability of swap backwards
+          // pbackward2 = pforward2;
+          probsback = LDmat.col(arma::conv_to<arma::uword>::from(addindex));
+
+          // addition 5/25:
+          // if maxsize and swapped is shared across multiple traits, then swap to only selected
+          if(globalmodelsizeprop == maxsize){
+
+            int singleswapi = addindex(0) - singlep*pheno;
+
+            if(globalnumsprop(singleswapi) > 1){
+              probtemp = arma::zeros(singlep);
+              probtemp = set_vector_vals(probtemp, globalindsprop,
+                                         subset_vector(probs, pheno*singlep + globalindsprop));
+              probsback = set_vector_vals(probsback,
+                                          arma::linspace<arma::uvec>(pheno*singlep, (pheno + 1)*singlep - 1, singlep),
+                                          probtemp);
+            }
+          }
+          // end addition
+
+
+          for(int j = 1; j <= k; j++){
+            if(j == pheno + 1){
+              zerovec = arma::zeros(indsprop.size());
+              probsback = set_vector_vals(probsback, indsprop, zerovec);
+
+            }
+            else {
+              zerovec = arma::zeros(singlep);
+              probsback = set_vector_vals(probsback, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovec);
+            }
+          }
+
+          probsback = arma::square(probsback);
+          probsback = probsback/arma::accu(probsback);
+          pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
+
+          // check for backwards probability if any shared variants
+          if(max(globalnumsprop) > 1){
+            pbackward2 = (1.0 - zeta)*pbackward2/k;
+          } else {
+            pbackward2 = pbackward2/k;
+          }
+
+        } else {
+          // outtemp[i] = add;
+
+          modelsizeprop = modelsize - 1;
+
+          chooseswapindex = arma::conv_to<arma::vec>::from(inds.elem(arma::find(inds >= (singlep*pheno) )));
+          chooseswapindex = chooseswapindex.elem(arma::find(chooseswapindex < singlep*(pheno + 1) ));
+
+
+          swapindex = Rcpp::RcppArmadillo::sample(chooseswapindex, 1, false);
+
+          indsprop = arma::conv_to<arma::uvec>::from(arma_setdiff(arma::conv_to<arma::vec>::from(inds), swapindex));
+          fullgammavecprop = set_vector_vals(arma::zeros(p), indsprop, arma::ones(indsprop.size()));
+
+          // addition 5/25: proposals
+          gammamatprop.col(pheno) = fullgammavecprop.subvec(singlep*pheno, (pheno + 1)*singlep - 1);
+
+          globalnumsprop = sum(gammamatprop, 1);
+          globalindsprop = arma::find(globalnumsprop);
+          globalmodelsizeprop = globalindsprop.size();
+          // end addition
+
+          // pforward2 = 1.0/inds.size();
+          pforward2 = 1.0/modelsize;
+
+        }
       }
+
+
+
+      modelsizevecprop(pheno) = modelsizeprop;
+
+      fullmodelsizeprop = indsprop.size();
+
+      indsproppheno = arma::conv_to<arma::vec>::from(indsprop.elem(arma::find(indsprop >= (singlep*pheno) )));
+      indsproppheno = indsproppheno.elem(arma::find(indsproppheno <= singlep*(pheno + 1) - 1)) - singlep*pheno;
+
+      // gammavec = set_vector_vals(arma::zeros(singlep), arma::conv_to<arma::uvec>::from(indsproppheno), arma::ones(modelsizeprop));
+      // ldmultinomvecprop(pheno) = lmultinom(gammavec, omega.subvec(singlep*pheno, (pheno + 1)*singlep - 1));
+
     }
+    // from here onwards, the jump may have been either global or local
+    // for global, add = 2 (and make sure 'pheno' is handled properly)
 
-
-    // modelsizeprop = indsprop.size();
-    // this within a/d/s ifelse statements
-
-    modelsizevecprop(pheno) = modelsizeprop;
-
-    fullmodelsizeprop = indsprop.size();
-
-    indsproppheno = arma::conv_to<arma::vec>::from(indsprop.elem(arma::find(indsprop >= (singlep*pheno) )));
-    indsproppheno = indsproppheno.elem(arma::find(indsproppheno <= singlep*(pheno + 1) - 1)) - singlep*pheno;
-
-    gammavec = set_vector_vals(arma::zeros(singlep), arma::conv_to<arma::uvec>::from(indsproppheno), arma::ones(modelsizeprop));
 
 
     if(modelsizeprop == 1){
@@ -1214,32 +1469,64 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
       if(modelsizeprop != maxsize){
         pbackward = 1.0/seqvec.size();
       } else {
-        pbackward = 1.0/seqvecmax.size();
+        // pbackward = 1.0/seqvecmax.size();
+        pbackward = 1.0; // if modelsizeprop == maxsize, then globalprop=max, in which case only delete
       }
     }
 
     bool useala;
 
-    if(approx == 0){
-      parsinit["tau"] = subset_vector(tau, indsprop);
-      parsinit["z"] = subset_vector(z, indsprop);
 
-      arma::mat tmpmat1 = sematinv(indsprop, indsprop);
-      parsinit["sematinv"] = tmpmat1;
+    arma::mat LDmatprop = LDmat(indsprop, indsprop);
 
-      arma::mat tmpmat2 = LDmat(indsprop, indsprop);
-      parsinit["LDmat"] = tmpmat2;
-      // r is the same all the time
+    arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
 
-      input = beta.elem(indsprop);
+    // boolean useala;
 
-      funlist = opt_nm(input, parsinit);
-      gval = funlist["value"];
-      gvalpar = as<arma::vec>(funlist["par"]);
+    if(k == 1 && modelsizeprop == 1){
+      useala = true;
+    } else{
 
-      lmlnew = LMarlik(gvalpar, parsinit["sematinv"], parsinit["tau"], 1, r, fullmodelsizeprop,
-                       parsinit["LDmat"], gval);
-      lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k, maxsize) + lmultinom(fullgammavecprop, omega);
+      arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
+      double mval = LDmatupper.max();
+
+      if(mval <= collinear){
+        useala = true;
+      } else {
+        useala = false;
+      }
+
+    }
+    // arma::mat LDmatinv;
+    // bool invertible = inv_sympd(LDmatinv, LDmatprop, arma::inv_opts::allow_approx);
+    // bool invertible = arma::pinv(LDmatinv, LDmatprop);
+
+    if(useala){
+      // if(invertible){
+      //if(arma::rank(LDmatprop) == modelsizeprop){
+      // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
+
+      // gvalpar = LDmatinv*beta.elem(indsprop);
+      // gvalpar = solve(LDmatprop, beta.elem(indsprop));
+      bool status = solve(gvalpar, LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
+      if(status == false){
+        useala = false;
+      }
+
+    }
+
+    if(useala){
+      gvalpar = solve(LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
+
+      gval = gf(gvalpar, subset_vector(z, indsprop), sematinvindsprop, LDmatprop,
+                subset_vector(tau, indsprop), fullmodelsizeprop, r);
+
+      lmlnew = LMarlikApprox(gvalpar, sematinvindsprop, subset_vector(z, indsprop),
+                             subset_vector(tau, indsprop), 1, r, fullmodelsizeprop,
+                             LDmatprop, gval);
+      // lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k, maxsize) + lmultinom(fullgammavecprop, omega);
+      // lpnew = lmlnew + lpriorval[globalmodelsizeprop - 1] + lmultinom(arma::clamp(globalnumsprop, 0, 1), omega) + lvectruncbinomial(globalnumsprop, globalmodelsizeprop, k, tbprob);
+      lpnew = lmlnew + lpriorval[globalmodelsizeprop - 1] + lmultinom(arma::clamp(globalnumsprop, 0, 1), omega) + lvarspecp(arma::nonzeros(globalnumsprop), globalmodelsizeprop, vsprobs);
 
       betaprop = arma::zeros(p);
       betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
@@ -1253,7 +1540,28 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
 
       if(add == 0){
 
+        // zerovecback = arma::zeros(modelsizeprop);
+        // probsback = set_vector_vals(arma::conv_to<arma::vec>::from(xtrprop), indsprop, zerovecback);
+
         probsback = xtrprop;
+
+        // addition 5/25: if maxsizeprop, then add (backwards) to only selected
+        // and if all probs are zero, then pick one uniformly
+        if(globalmodelsizeprop == maxsize){
+          probtemp = arma::zeros(singlep);
+          probtemp = set_vector_vals(probtemp, globalindsprop,
+                                     subset_vector(probsback, pheno*singlep + globalindsprop));
+
+          if(all(probtemp == 0)){
+            probtemp = set_vector_vals(probtemp, globalindsprop,
+                                       arma::ones(globalindsprop.size()));
+          }
+
+          probsback = set_vector_vals(probsback, arma::linspace<arma::uvec>(pheno*singlep, (pheno + 1)*singlep - 1, singlep), probtemp);
+
+        }
+        // end addition
+
 
         for(int j = 1; j <= k; ++j){
           if(j == pheno + 1){
@@ -1271,168 +1579,49 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
         probsback = probsback/arma::accu(probsback);
 
         pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
-        //pbackward2 = 1.0/(p - modelsizeprop);
+        // pbackward2 = 1.0/(p - modelsizeprop);
+
+        // check for backwards probability if any shared variants
+        if(max(globalnumsprop) > 1){
+          pbackward2 = (1.0 - zeta)*pbackward2/k;
+        } else {
+          pbackward2 = pbackward2/k;
+        }
+
 
       }
 
-      lqcurrprop = log(pforward) + log(pforward2);
+      lqcurrprop = log(pforward0) + log(pforward) + log(pforward2);
       lqpropcurr = log(pbackward) + log(pbackward2);
 
-      barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
+      arma::uvec tmpind;
+      arma::vec btemp;
+      arma::mat Rtemp;
+
+      if(all(h2cap == 0)){
+        h2vec = arma::zeros(k);
+      } else {
+        for(int q = 1; q <= k; ++q){
+          tmpind = find(gammamatprop.col(q - 1)) + singlep*(q - 1);
+          btemp = beta.elem(tmpind);
+          Rtemp = LDmat(tmpind, tmpind);
+
+          h2vec(q - 1) = arma::as_scalar(btemp.t() * inv(Rtemp) * btemp);
+        }
+        // h2vec = arma::zeros(k);
+      }
+
+      if( arma::any(h2vec > h2cap) ){
+        barker = minusinf;
+      } else {
+        barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
+      }
+
 
     } else {
 
-      arma::mat LDmatprop = LDmat(indsprop, indsprop);
+      barker = minusinf;
 
-      arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
-
-      // boolean useala;
-
-      if(k == 1 && modelsizeprop == 1){
-        useala = true;
-      } else{
-
-        arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
-        double mval = LDmatupper.max();
-
-        if(mval <= 0.99){
-          useala = true;
-        } else {
-          useala = false;
-        }
-
-      }
-
-      if(useala){
-        // if(invertible){
-        //if(arma::rank(LDmatprop) == modelsizeprop){
-        // see script used in: https://github.com/RcppCore/RcppArmadillo/issues/257
-
-        bool status = solve(gvalpar, LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
-        if(status == false){
-          useala = false;
-        }
-
-      }
-
-      if(useala){
-        gvalpar = solve(LDmatprop, beta.elem(indsprop), arma::solve_opts::no_approx);
-
-        gval = gf(gvalpar, subset_vector(z, indsprop), sematinvindsprop, LDmatprop,
-                  subset_vector(tau, indsprop), fullmodelsizeprop, r);
-
-        lmlnew = LMarlikApprox(gvalpar, sematinvindsprop, subset_vector(z, indsprop),
-                               subset_vector(tau, indsprop), 1, r, fullmodelsizeprop,
-                               LDmatprop, gval);
-        lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k, maxsize) + lmultinom(fullgammavecprop, omega);
-
-        betaprop = arma::zeros(p);
-        betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
-
-        // need to calculate residuals of the proposed model;
-        // xtrprop = beta - LDmat*betaprop;
-        betadiff = betaprop - betavec;
-        betanonzero1 = unique(arma::join_cols(arma::conv_to<arma::vec>::from(inds), arma::conv_to<arma::vec>::from(indsprop)));
-        betanonzero = arma::conv_to<arma::uvec>::from(betanonzero1(sort_index(betanonzero1)));
-        xtrprop = xtr - LDmat.cols(betanonzero)*betadiff(betanonzero);
-
-        if(add == 0){
-
-          probsback = xtrprop;
-
-          for(int j = 1; j <= k; ++j){
-            if(j == pheno + 1){
-              zerovecback = arma::zeros(indsprop.size());
-              // zero probabilities for indices existing in the model
-              probsback = set_vector_vals(probsback, indsprop, zerovecback);
-            }
-            else {
-              zerovecback = arma::zeros(singlep);
-              probsback = set_vector_vals(probsback, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovecback);
-            }
-          }
-
-          probsback = arma::square(probsback);
-          probsback = probsback/arma::accu(probsback);
-
-          pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
-          // pbackward2 = 1.0/(p - modelsizeprop);
-
-        }
-
-        lqcurrprop = log(pforward) + log(pforward2);
-        lqpropcurr = log(pbackward) + log(pbackward2);
-
-
-
-        barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
-
-      } else {
-        // hybrid sampling
-
-        parsinit["tau"] = subset_vector(tau, indsprop);
-        parsinit["z"] = subset_vector(z, indsprop);
-
-        arma::mat tmpmat1 = sematinv(indsprop, indsprop);
-        parsinit["sematinv"] = tmpmat1;
-
-        arma::mat tmpmat2 = LDmat(indsprop, indsprop);
-        parsinit["LDmat"] = tmpmat2;
-        // r is the same all the time
-
-        input = beta.elem(indsprop);
-
-        funlist = opt_nm(input, parsinit);
-        gval = funlist["value"];
-        gvalpar = as<arma::vec>(funlist["par"]);
-
-        lmlnew = LMarlik(gvalpar, parsinit["sematinv"], parsinit["tau"], 1, r, fullmodelsizeprop,
-                         parsinit["LDmat"], gval);
-        lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k, maxsize) + lmultinom(fullgammavecprop, omega);
-
-        betaprop = arma::zeros(p);
-        betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
-
-        // need to calculate residuals of the proposed model;
-        // xtrprop = beta - LDmat*betaprop;
-        betadiff = betaprop - betavec;
-        betanonzero1 = unique(arma::join_cols(arma::conv_to<arma::vec>::from(inds), arma::conv_to<arma::vec>::from(indsprop)));
-        betanonzero = arma::conv_to<arma::uvec>::from(betanonzero1(sort_index(betanonzero1)));
-        xtrprop = xtr - LDmat.cols(betanonzero)*betadiff(betanonzero);
-
-        if(add == 0){
-
-
-          probsback = xtrprop;
-
-          for(int j = 1; j <= k; ++j){
-            if(j == pheno + 1){
-              zerovecback = arma::zeros(indsprop.size());
-              // zero probabilities for indices existing in the model
-              probsback = set_vector_vals(probsback, indsprop, zerovecback);
-            }
-            else {
-              zerovecback = arma::zeros(singlep);
-              probsback = set_vector_vals(probsback, arma::linspace<arma::uvec>((j-1)*singlep, j*singlep - 1, singlep), zerovecback);
-            }
-          }
-
-
-
-          probsback = arma::square(probsback);
-          probsback = probsback/arma::accu(probsback);
-
-          pbackward2 = probsback(arma::conv_to<arma::uword>::from(swapindex));
-          // pbackward2 = 1.0/(p - modelsizeprop);
-
-        }
-
-        lqcurrprop = log(pforward) + log(pforward2);
-        lqpropcurr = log(pbackward) + log(pbackward2);
-
-        barker = 1/(1 + exp(lp + lqcurrprop - (lpnew + lqpropcurr)));
-
-      }
     }
 
 
@@ -1448,12 +1637,14 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
       inds = indsprop;
       betavec = betaprop;
 
-      // addition
-      // modelsizevec(pheno) = modelsizeprop;
       modelsizevec = modelsizevecprop;
-      // ldmultinomvec = ldmultinomvecprop;
-      // end addition
-      fullgammavecprop = fullgammavec;
+
+      gammamat = gammamatprop;
+      globalnums = globalnumsprop;
+      globalinds = globalindsprop;
+      globalmodelsize = globalmodelsizeprop;
+
+
 
       // xtr = beta - LDmat*betavec;
       xtr = xtrprop;
@@ -1476,23 +1667,49 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
     val[i] = lm;
     outmodsize[i] = modelsize;
     modindices[i] = s2;
-    betavecmat.col(i) = betavec;
+    // betavecmat.col(i) = betavec;
 
     // addition
     modelsizemat.col(i) = modelsizevec;
-    phenovec(i) = pheno;
-    addvec(i) = add;
+    // phenovec(i) = pheno;
+    // addvec(i) = add;
+    // testvec(i) = global;
     // test 'probs' as the output as well (needs to be a matrix)
-    testmat.col(i) = probs;
+    // testmat.col(i) = probsback;
     // end addition
   }
 
+  // out["iter"] = niter;
 
+
+
+  // out["theta"] = theta;
   out["value"] = val;
 
+  // out["modsize"] = outmodsize; ORIGINAL
+  // addition
   out["modsize"] = modelsizemat;
+  // end addition
 
+  // out["probs"] = probs;
+  // out["swapindex"] = swapindex;
+  // out["ip"] = addindex;
   out["modindices"] = modindices;
+  // out["betavec"] = betavec;
+  // out["betaprop"] = betaprop;
+  // out["betavec"] = betavec;
+  // out["sematinv"] = parsinit["sematinv"];
+  // out["LDmat"] = parsinit["LDmat"];
+  // out["testpheno"] = phenovec;
+  // out["testmultinomvec"] = ldmultinomvecprop;
+  // out["testgamma"] = gammamat;
+  // out["global"] = globalinds;
+  // out["global2"] = globalnums;
+  // out["global3"] = globalmodelsize;
+  // out["add"] = addvec;
+  // out["test"] = testvec;
+  // out["outtemp"] = indsprop;
+  // out["testmat"] = testmat;
 
   return out;
 }

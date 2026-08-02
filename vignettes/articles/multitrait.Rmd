@@ -18,14 +18,14 @@ knitr::include_graphics("work-in-progress.png")
 ```
 
 
-This is a short tutorial for multi-trait fine-mapping.
+This is a short tutorial for multi-trait fine-mapping, updated in August 2026.
 Please note that the multi-trait implementation is under constant development -- moreover, the current implementation is tested for only two traits, and other number of traits may return an error.
 
 Please report any unexpected behaviour to: ville dot karhunen at mrc-bsu.cam.ac.uk.
 
 # Package installation and load
 
-Make sure that you are using the most recent version of the package.
+Make sure that you are using the most recent version (0.3.0) of the package.
 
 ```{r setup, echo = FALSE}
 
