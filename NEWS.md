@@ -1,3 +1,5 @@
+# finimom 0.3.0
+
 # finimom 0.2.0
 
 * Added the multi-trait version.
