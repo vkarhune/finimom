@@ -32,7 +32,11 @@ multi_finimom(
   clump = TRUE,
   clump_r2 = 0.995^2,
   check_ld = FALSE,
-  purity = 0.5
+  purity = 0.5,
+  h2cap = NULL,
+  cprior = NULL,
+  collinear = sqrt(0.9),
+  zeta = NULL
 )
 }
 \arguments{

@@ -47,7 +47,8 @@ multi_finimom <- function(beta, se, eaf, R,
                     insampleLD = NULL,
                     clump = TRUE, clump_r2 = 0.995^2, check_ld = FALSE,
                     #ala = NULL,
-                    purity = 0.5){
+                    purity = 0.5,
+                    h2cap = NULL, cprior = NULL, collinear = sqrt(0.9), zeta = NULL){
 
   if(0){
   # all checks here
@@ -127,7 +128,8 @@ multi_finimom <- function(beta, se, eaf, R,
       niter = niter, burnin = burnin, seed = seed, excl.burnin = TRUE,
       a0 = a0, b0 = b0, inds0 = inds0, standardize = standardize,
       verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld,
-      ala = TRUE
+      ala = TRUE,
+      h2cap = h2cap, lam = cprior, collinear = collinear, zeta = zeta
     )
 
     p_clumped <- length(samples[[4]])

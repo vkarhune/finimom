@@ -31,9 +31,9 @@ posterior_samples_multitrait <- function(
     maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
     a0 = 1, b0 = NULL, inds0 = NULL, standardize = TRUE,
     verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
-    ala = NULL){
+    ala = NULL, h2cap = NULL, lam = cprior, collinear = collinear, zeta = zeta){
 
-
+  if(is.null(k)) k <- length(beta)
 
   if(standardize){
     beta <- lapply(beta, function(x) x*sqrt(2*eaf*(1-eaf)))
@@ -42,16 +42,7 @@ posterior_samples_multitrait <- function(
 
   z <- lapply(seq_len(k), function(x) beta[[x]]/se[[x]])
 
-  if(k == 2){
-  z1c <- z[[1]][apply(do.call("cbind", lapply(z, abs)), 1, max) < 2]
-  z2c <- z[[2]][apply(do.call("cbind", lapply(z, abs)), 1, max) < 2]
 
-  rho_null <- cor(z1c, z2c)
-  Cmat <- matrix(c(1, -rho_null, -rho_null, 1), nrow = 2)
-
-  } else {
-    Cmat <- diag(k)
-  }
 
   if(clump){
     cat(sprintf("Clumping variants at r2=%.3g\n", clump_r2))
@@ -81,7 +72,7 @@ posterior_samples_multitrait <- function(
     p <- length(keepinds)
 
     if(is.null(omega)){
-      omega <- rep(1/p, times = length(unlist(beta)))
+      omega <- rep(1/p, times = length(keepinds))
     }
 
     R <- R[keepinds, keepinds]
@@ -106,7 +97,17 @@ posterior_samples_multitrait <- function(
   if(msprior %in% "complexity") {
     lprior <- sapply(seq_len(maxsize), dbb, p = p, a = a0, b = p^u)
     lprior <- log(exp(lprior)/sum(exp(lprior)))
-    lprior <- rep(lprior, k)
+  }
+
+  Cmatmethod <- "tcor"
+
+  if(Cmatmethod %in% "tcor"){
+    rho_t <- stats::cor(I(unname(as.data.frame(z) > 0)))
+    CkR <- create_Cmatrix(rho_t) %x% R
+  }
+
+  if(is.null(h2cap)){
+    h2vals <- rep(0, k)
   }
 
   if(is.null(ala)) ala <- TRUE
@@ -115,9 +116,11 @@ posterior_samples_multitrait <- function(
   dat <- list(
     beta = unlist(beta),
     se = unlist(se),
-    LDmat = Cmat %x% R,
+    LDmat = CkR,
     npheno = k
   )
+
+  vsprobs <- log(sapply(1:k, stats::dpois, lambda = lam)/(sum(sapply(1:k, stats::dpois, lambda = lam))))
 
   if(length(n) == 1){ n <- rep(n, k) }
   taus <- sapply(seq_along(n), function(x) estimate_tau(n = n[x]))
@@ -131,8 +134,12 @@ posterior_samples_multitrait <- function(
                        maxsize = maxsize, r = 1, p = length(dat[["beta"]]),
                        niter = niter,
                        lpriorval = lprior,
-                       approx = 1, k = 2,
-                       omega = omega)
+                       k = k,
+                       omega = omega,
+                       vsprobs = vsprobs,
+                       collinear = collinear,
+                       zeta = zeta,
+                       h2cap = h2vals)
 
     cat(sprintf("\n%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
 

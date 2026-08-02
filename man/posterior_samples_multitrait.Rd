@@ -29,7 +29,11 @@ posterior_samples_multitrait(
   clump = TRUE,
   clump_r2 = 0.99^2,
   check_ld = FALSE,
-  ala = NULL
+  ala = NULL,
+  h2cap = NULL,
+  lam = cprior,
+  collinear = collinear,
+  zeta = zeta
 )
 }
 \arguments{
