@@ -1,13 +1,12 @@
-pandoc: 3.1.11
-pkgdown: 2.1.1
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   articles/betabinprior: betabinprior.html
   articles/multitrait: multitrait.html
   articles/nonlocalpriors: nonlocalpriors.html
   articles/taylorlaplace: taylorlaplace.html
-  articles/tutorial: tutorial.html
-last_built: 2024-11-07T15:48Z
+last_built: 2026-08-02T14:52Z
 urls:
   reference: https://vkarhune.github.io/finimom/reference
   article: https://vkarhune.github.io/finimom/articles
