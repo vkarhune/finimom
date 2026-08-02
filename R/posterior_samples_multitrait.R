@@ -117,7 +117,7 @@ posterior_samples_multitrait <- function(
     beta = unlist(beta),
     se = unlist(se),
     LDmat = CkR,
-    npheno = k
+    LDglobal = R
   )
 
   vsprobs <- log(sapply(1:k, stats::dpois, lambda = lam)/(sum(sapply(1:k, stats::dpois, lambda = lam))))
