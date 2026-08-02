@@ -114,24 +114,14 @@ res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
                     verbose = TRUE,
                     insampleLD = FALSE,
                     clump = TRUE, clump_r2 = 0.995^2, check_ld = TRUE,
-                    u = 1.05,
-                    purity = 0.5)
+                    u = 2,
+                    purity = 0.5,
+                    h2cap = NULL, cprior = 0.1, zeta = 0.5)
 
 res$sets
 
 ```
 
-# Choosing the tuning parameter u
-
-Multi-FiniMOM requires the tuning parameter *u* as an input.
-This parameter controls the prior distribution for the number of causal variants.
-In particular, *u* can be used to counter a potential mismatch between the summary statistics and the LD matrix, in that larger values of *u* protect against false positives when using an out-of-sample LD reference.
-
-In the example, we have used *u=1.05*.
-However, in the presence of severe LD mismatch (particularly if using a small LD reference panel, such as 1000Genomes), one might require *u* values up to 20 or 30 to provide reasonable fine-mapping results.
-A rough rule-of-thumb is to increase *u* until there are no credible sets for which $|z|<2$ for all of the variants within the set.
-
-It should be noted that due to the different model formulation of the univariate and multi-trait implementations, the *u* values for the univariate and multi-trait fine-mapping are not directly comparable.
 
 # Session information
 
