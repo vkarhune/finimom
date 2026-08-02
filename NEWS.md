@@ -1,5 +1,7 @@
 # finimom 0.3.0
 
+* Update the multi-trait version.
+
 # finimom 0.2.0
 
 * Added the multi-trait version.
