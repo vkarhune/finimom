@@ -130,7 +130,7 @@ posterior_samples_multitrait <- function(
   if(h2cap){
 
     topzinds <- lapply(z, function(x) which.max(abs(x)))
-    h2leads <- lapply(length(beta), function(i) beta[[i]][topzinds[[i]]]^2)
+    h2leads <- lapply(seq_along(beta), function(i) beta[[i]][topzinds[[i]]]^2)
 
     h2vals <- h2_cap(betalist = beta, LDmat = R, n_eigen = num_eigen,
                      h2leads = h2leads, verbose = verbose)
