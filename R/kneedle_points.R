@@ -1,6 +1,6 @@
 kneedle_points <- function(betalist, eR, h2leadlist, n_eigen = n_eigen, verbose = verbose){
 
-  out <- lapply(length(betalist), function(i){
+  out <- lapply(seq_along(betalist), function(i){
 
     betavec <- betalist[[i]]
     h2lead <- h2leadlist[[i]]
