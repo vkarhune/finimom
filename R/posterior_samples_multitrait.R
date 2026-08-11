@@ -127,18 +127,19 @@ posterior_samples_multitrait <- function(
     CkR <- create_Cmatrix(rho_none) %x% R
   }
 
-  if(h2cap){
+  if(is.null(h2cap)){
+    h2vals <- rep(0, k)
+  } else if(h2cap){
 
     topzinds <- lapply(z, function(x) which.max(abs(x)))
     h2leads <- lapply(seq_along(beta), function(i) beta[[i]][topzinds[[i]]]^2)
 
     h2vals <- h2_cap(betalist = beta, LDmat = R, n_eigen = num_eigen,
                      h2leads = h2leads, verbose = verbose)
-  }
-
-  if(is.null(h2cap)){
+  } else {
     h2vals <- rep(0, k)
   }
+
 
   if(is.null(ala)) ala <- TRUE
   set.seed(seed)
