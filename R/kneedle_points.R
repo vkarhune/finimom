@@ -13,7 +13,7 @@ kneedle_points <- function(betalist, eR, h2leadlist, n_eigen = n_eigen, verbose 
     if(verbose){
       cat(sprintf("Trait %i:\n", i))
       cat(sprintf("Kneedle point: %s\n",
-                  formatC(signif(out, digits = 3), digits = 3, format = "fg", flag = "#")))
+                  formatC(signif(outk, digits = 3), digits = 3, format = "fg", flag = "#")))
       cat(sprintf("Lead variant R2: %s\n",
                   formatC(signif(h2lead, digits = 3), digits = 3, format = "fg", flag = "#")))
     }
