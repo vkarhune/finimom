@@ -21,6 +21,6 @@ h2_cap <- function(betalist, LDmat, n_eigen, h2leads, verbose = verbose){
 
   if(verbose){ cat(sprintf("Eigendecomposition nu = %i\n", n_eigen)) }
 
-  return(kneedles)
+  return(unlist(kneedles))
 }
 
