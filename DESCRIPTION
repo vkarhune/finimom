@@ -12,6 +12,7 @@ RoxygenNote: 7.3.1
 Imports: 
     Rcpp,
     roptim,
+    RSpectra,
     stats
 URL: https://vkarhune.github.io/finimom,
     https://vkarhune.github.io/finimom/

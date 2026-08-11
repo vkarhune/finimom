@@ -80,8 +80,8 @@ multi_finimom <- function(beta, se, eaf, R,
 
   if(!(is.null(b0)) & !(is.null(u))) { warning("Both b0 and u given - using p^u for beta-binomial hyperparameter") }
 
-  default_u_insampleLD <- 1.01
-  default_u_refLD <- 1.05
+  default_u_insampleLD <- 2
+  default_u_refLD <- 2
 
   # define input params to workhorse function
 

@@ -29,8 +29,10 @@
 posterior_samples_multitrait <- function(
     beta, se, eaf, R, k, omega, u, n,
     maxsize, tau0, r0, niter, burnin, p, seed = 456, excl.burnin = TRUE,
-    a0 = 1, b0 = NULL, inds0 = NULL, standardize = TRUE,
+    a0 = 1, b0 = NULL, inds0 = NULL, standardize = NULL,
     verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
+    Cmatmethod = "tcor",
+    num_eigen = 100,
     ala = NULL, h2cap = NULL, lam = cprior, collinear = collinear, zeta = zeta){
 
   if(is.null(k)) k <- length(beta)
@@ -40,8 +42,13 @@ posterior_samples_multitrait <- function(
     se <- lapply(se, function(x) x*sqrt(2*eaf*(1-eaf)))
   }
 
-  z <- lapply(seq_len(k), function(x) beta[[x]]/se[[x]])
+  #z <- lapply(seq_len(k), function(x) beta[[x]]/se[[x]])
 
+  z <- lapply(seq_len(k), function(x){
+    beta[[x]] / ( sqrt(se[[x]]^2 + beta[[x]]^2/n[[x]]) )
+  })
+
+  se <- lapply(seq_len(k), function(x){ sqrt(se[[x]]^2 + beta[[x]]^2/n[[x]]) } )
 
 
   if(clump){
@@ -99,11 +106,34 @@ posterior_samples_multitrait <- function(
     lprior <- log(exp(lprior)/sum(exp(lprior)))
   }
 
-  Cmatmethod <- "tcor"
+  # Cmatmethod <- "tcor"
+
+  if(k == 1 | is.null(Cmatmethod)){
+    CkR <- R
+  }
 
   if(Cmatmethod %in% "tcor"){
     rho_t <- stats::cor(I(unname(as.data.frame(z) > 0)))
     CkR <- create_Cmatrix(rho_t) %x% R
+  }
+
+  if(Cmatmethod %in% "nullcor"){
+    rho_null <- stats::cor(unname(as.data.frame(z)))
+    CkR <- create_Cmatrix(rho_null) %x% R
+  }
+
+  if(Cmatmethod %in% "none"){
+    rho_none <- diag(k)
+    CkR <- create_Cmatrix(rho_none) %x% R
+  }
+
+  if(h2cap){
+
+    topzinds <- lapply(z, function(x) which.max(abs(z)))
+    h2leads <- lapply(length(beta), function(i) beta[[i]][topzinds[[i]]]^2)
+
+    h2vals <- h2_cap(betalist = beta, LDmat = R, n_eigen = num_eigen,
+                     h2leads = h2leads, verbose = verbose)
   }
 
   if(is.null(h2cap)){
