@@ -5,7 +5,7 @@ kneedle_points <- function(betalist, eR, h2leadlist, n_eigen = n_eigen, verbose 
     betavec <- betalist[[i]]
     h2lead <- h2leadlist[[i]]
 
-    quadterm <- quadratic(b = bvec, eR = eR, q = n_eigen)
+    quadterm <- quadratic(b = betavec, eR = eR, q = n_eigen)
 
     kn <- kneedler(y = quadterm, h2lead = h2lead, Sens = 1)
     outk <- kn$knee_y

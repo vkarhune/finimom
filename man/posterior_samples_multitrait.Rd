@@ -33,7 +33,7 @@ posterior_samples_multitrait(
   num_eigen = 100,
   ala = NULL,
   h2cap = NULL,
-  lam = cprior,
+  lam = NULL,
   collinear = collinear,
   zeta = zeta
 )
