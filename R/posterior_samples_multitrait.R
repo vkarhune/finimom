@@ -108,8 +108,17 @@ posterior_samples_multitrait <- function(
 
   # Cmatmethod <- "tcor"
 
-  if(k == 1 | is.null(Cmatmethod)){
+  if(k == 1){
+    if(!(is.null(Cmatmethod))){
+      if(!(Cmatmethod %in% "none")){
+        cat(sprintf("Only one trait - option 'Cmatmethod' not used\n"))
+      }
+    }
     CkR <- R
+  }
+
+  if(is.null(Cmatmethod)){
+    Cmatmethod <- "none"
   }
 
   if(Cmatmethod %in% "tcor"){

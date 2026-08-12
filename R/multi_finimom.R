@@ -48,7 +48,8 @@ multi_finimom <- function(beta, se, eaf, R,
                     clump = TRUE, clump_r2 = 0.995^2, check_ld = FALSE,
                     #ala = NULL,
                     purity = 0.5,
-                    h2cap = NULL, cprior = NULL, collinear = sqrt(0.9), zeta = NULL){
+                    h2cap = NULL, cprior = NULL, collinear = sqrt(0.9), zeta = NULL,
+                    Cmatmethod = "tcor"){
 
   if(0){
   # all checks here
