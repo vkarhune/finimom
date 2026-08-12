@@ -1,6 +1,6 @@
 get_multitrait_credible_sets <- function(input, num_signals, level, purity, R){
 
-ctable <- sort(table(input[[3]][apply(input[[2]], 2, function(x) all(x == num_signals))]),
+ctable <- sort(table(input[[3]][apply(input[[2]][,,drop = FALSE], 2, function(x) all(x == num_signals))]),
 #ctable <- sort(table(input1[[3]][apply(input1[[2]], 2, function(x) all(x == num_signals))]),
 #ctable <- sort(table(input2[[3]][apply(input2[[2]], 2, function(x) all(x == num_signals))]),
         decreasing = T)

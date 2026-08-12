@@ -115,7 +115,6 @@ posterior_samples_multitrait <- function(
         Cmatmethod <- "none"
       }
     }
-    CkR <- R
   }
 
   if(is.null(Cmatmethod)){
@@ -133,8 +132,12 @@ posterior_samples_multitrait <- function(
   }
 
   if(Cmatmethod %in% "none"){
-    rho_none <- diag(k)
-    CkR <- create_Cmatrix(rho_none) %x% R
+    if(k == 1){
+      CkR <- R
+    } else {
+      rho_none <- diag(k)
+      CkR <- create_Cmatrix(rho_none) %x% R
+    }
   }
 
   if(is.null(h2cap)){
@@ -190,7 +193,7 @@ posterior_samples_multitrait <- function(
 
   if(excl.burnin){
     out <- list(out[[1]][(burnin + 1):niter,],
-                out[[2]][,(burnin + 1):niter],
+                out[[2]][,(burnin + 1):niter,drop = FALSE],
                 out[[3]][(burnin + 1):niter])
   }
 
