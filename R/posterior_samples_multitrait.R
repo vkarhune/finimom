@@ -112,6 +112,7 @@ posterior_samples_multitrait <- function(
     if(!(is.null(Cmatmethod))){
       if(!(Cmatmethod %in% "none")){
         cat(sprintf("Only one trait - option 'Cmatmethod' not used\n"))
+        Cmatmethod <- "none"
       }
     }
     CkR <- R
@@ -160,7 +161,11 @@ posterior_samples_multitrait <- function(
     LDglobal = R
   )
 
-  vsprobs <- log(sapply(1:k, stats::dpois, lambda = lam)/(sum(sapply(1:k, stats::dpois, lambda = lam))))
+  if(k == 1){
+    vsprobs <- 0
+  } else {
+    vsprobs <- log(sapply(1:k, stats::dpois, lambda = lam)/(sum(sapply(1:k, stats::dpois, lambda = lam))))
+  }
 
   if(length(n) == 1){ n <- rep(n, k) }
   taus <- sapply(seq_along(n), function(x) estimate_tau(n = n[x]))
