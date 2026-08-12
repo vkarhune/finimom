@@ -37,11 +37,15 @@ posterior_samples_multitrait <- function(
 
   if(is.null(k)) k <- length(beta)
 
-  if(standardize){
-    if(!(is.null(eaf))){
-      beta <- lapply(seq_len(k), function(x) beta[[x]]*sqrt(2*eaf*(1-eaf)))
-      se <- lapply(seq_len(k), function(x) se[[x]]*sqrt(2*eaf*(1-eaf)))
-    }
+  if(!(is.null(standardize))){
+
+   if(standardize){
+     if(!(is.null(eaf))){
+       beta <- lapply(seq_len(k), function(x) beta[[x]]*sqrt(2*eaf*(1-eaf)))
+       se <- lapply(seq_len(k), function(x) se[[x]]*sqrt(2*eaf*(1-eaf)))
+     }
+   }
+
   }
 
   #z <- lapply(seq_len(k), function(x) beta[[x]]/se[[x]])
