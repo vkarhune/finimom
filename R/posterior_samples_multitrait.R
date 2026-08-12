@@ -38,17 +38,30 @@ posterior_samples_multitrait <- function(
   if(is.null(k)) k <- length(beta)
 
   if(standardize){
-    beta <- lapply(seq_len(k), function(x) beta[[x]]*sqrt(2*eaf*(1-eaf)))
-    se <- lapply(seq_len(k), function(x) se[[x]]*sqrt(2*eaf*(1-eaf)))
+    if(!(is.null(eaf))){
+      beta <- lapply(seq_len(k), function(x) beta[[x]]*sqrt(2*eaf*(1-eaf)))
+      se <- lapply(seq_len(k), function(x) se[[x]]*sqrt(2*eaf*(1-eaf)))
+    }
   }
 
   #z <- lapply(seq_len(k), function(x) beta[[x]]/se[[x]])
 
+  # PVE-adjusted z-scores
   z <- lapply(seq_len(k), function(x){
     beta[[x]] / ( sqrt(se[[x]]^2 + beta[[x]]^2/n[[x]]) )
   })
 
-  se <- lapply(seq_len(k), function(x){ sqrt(se[[x]]^2 + beta[[x]]^2/n[[x]]) } )
+  # PVE-adjusted betas
+  beta <- lapply(seq_len(k), function(x){
+    z[[x]] / (sqrt(n[[x]] + z[[x]]^2))
+  })
+
+  # PVE-adjusted ses
+  se <- lapply(seq_len(k), function(x){
+    beta[[x]] / z[[x]]
+  })
+
+  # se <- lapply(seq_len(k), function(x){ sqrt(se[[x]]^2 + beta[[x]]^2/n[[x]]) } )
 
 
   if(clump){
