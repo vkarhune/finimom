@@ -38,8 +38,8 @@ posterior_samples_multitrait <- function(
   if(is.null(k)) k <- length(beta)
 
   if(standardize){
-    beta <- lapply(beta, function(x) x*sqrt(2*eaf*(1-eaf)))
-    se <- lapply(se, function(x) x*sqrt(2*eaf*(1-eaf)))
+    beta <- lapply(seq_len(k), function(x) beta[[x]]*sqrt(2*eaf*(1-eaf)))
+    se <- lapply(seq_len(k), function(x) se[[x]]*sqrt(2*eaf*(1-eaf)))
   }
 
   #z <- lapply(seq_len(k), function(x) beta[[x]]/se[[x]])
@@ -73,9 +73,9 @@ posterior_samples_multitrait <- function(
 
 
 
-    beta <- lapply(beta, function(x) x[keepinds])
-    se <- lapply(se, function(x) x[keepinds])
-    z <- lapply(z, function(x) x[keepinds])
+    beta <- lapply(seq_len(k), function(x) beta[[x]][keepinds])
+    se <- lapply(seq_len(k), function(x) se[[x]][keepinds])
+    z <- lapply(seq_len(k), function(x) z[[x]][keepinds])
     p <- length(keepinds)
 
     if(is.null(omega)){
@@ -140,8 +140,8 @@ posterior_samples_multitrait <- function(
     h2vals <- rep(0, k)
   } else if(h2cap){
 
-    topzinds <- lapply(z, function(x) which.max(abs(x)))
-    h2leads <- lapply(seq_along(beta), function(i) beta[[i]][topzinds[[i]]]^2)
+    topzinds <- lapply(seq_len(k), function(x) which.max(abs(z[[k]])))
+    h2leads <- lapply(seq_len(k), function(i) beta[[i]][topzinds[[i]]]^2)
 
     h2vals <- h2_cap(betalist = beta, LDmat = R, n_eigen = num_eigen,
                      h2leads = h2leads, verbose = verbose)
