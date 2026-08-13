@@ -6,7 +6,8 @@ create_Cmatrix <- function(rho){
     edrho <- eigen(rho)
   }
   S <- edrho$vectors %*% diag(edrho$values^(-0.5)) %*% t(edrho$vectors)
-  #out <- cov2cor(S)
-  #return(out)
-  return(S)
+
+  out <- stats::cov2cor(S)
+  return(out)
+  #return(S)
 }
