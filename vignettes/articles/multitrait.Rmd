@@ -108,7 +108,7 @@ Multi-trait fine-mapping can be run as follows:
 ```{r multitrait}
 
 res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
-                    n = 50000, k = 2, omega = NULL,
+                    n = rep(50000, 2), k = 2, omega = NULL,
                     niter = 62500, burnin = 12500,
                     standardize = TRUE,
                     verbose = TRUE,
