@@ -8,12 +8,12 @@
 ## Citation
 
 Karhunen V (2026). *finimom: Fine-mapping Using Inverse-Moment Prior*. R
-package version 0.3.0, <https://vkarhune.github.io/finimom>.
+package version 0.3.1, <https://vkarhune.github.io/finimom>.
 
     @Manual{,
       title = {finimom: Fine-mapping Using Inverse-Moment Prior},
       author = {Ville Karhunen},
       year = {2026},
-      note = {R package version 0.3.0},
+      note = {R package version 0.3.1},
       url = {https://vkarhune.github.io/finimom},
     }

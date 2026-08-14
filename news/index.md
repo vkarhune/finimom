@@ -1,5 +1,9 @@
 # Changelog
 
+## finimom 0.3.1
+
+- Added RSpectra dependency.
+
 ## finimom 0.3.0
 
 - Update the multi-trait version.

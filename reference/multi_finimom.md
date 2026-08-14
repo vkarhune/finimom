@@ -37,7 +37,8 @@ multi_finimom(
   h2cap = NULL,
   cprior = NULL,
   collinear = sqrt(0.9),
-  zeta = NULL
+  zeta = NULL,
+  Cmatmethod = "tcor"
 )
 ```
 

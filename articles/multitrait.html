@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">finimom</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@
                         <h4 data-toc-skip class="author">Ville
 Karhunen</h4>
             
-            <h4 data-toc-skip class="date">02.08.2026</h4>
+            <h4 data-toc-skip class="date">14.08.2026</h4>
       
 
       <div class="d-none name"><code>multitrait.Rmd</code></div>
@@ -157,7 +157,7 @@ frequencies for the variants are provided in object ‘mafs’.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multi_finimom.html">multi_finimom</a></span><span class="op">(</span>beta <span class="op">=</span> <span class="va">beta</span>, se <span class="op">=</span> <span class="va">se</span>, eaf <span class="op">=</span> <span class="va">mafs</span>, R <span class="op">=</span> <span class="va">LDmat</span>,</span>
-<span>                    n <span class="op">=</span> <span class="fl">50000</span>, k <span class="op">=</span> <span class="fl">2</span>, omega <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                    n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">50000</span>, <span class="fl">2</span><span class="op">)</span>, k <span class="op">=</span> <span class="fl">2</span>, omega <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>                    niter <span class="op">=</span> <span class="fl">62500</span>, burnin <span class="op">=</span> <span class="fl">12500</span>,</span>
 <span>                    standardize <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                    verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -169,7 +169,7 @@ frequencies for the variants are provided in object ‘mafs’.</p>
 <span><span class="co">#&gt; Clumping variants at r2=0.99</span></span>
 <span><span class="co">#&gt; Sampling from the posterior...</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 62500 iterations done in 3.64 seconds</span></span>
+<span><span class="co">#&gt; 62500 iterations done in 3.52 seconds</span></span>
 <span></span>
 <span><span class="va">res</span><span class="op">$</span><span class="va">sets</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
@@ -211,14 +211,14 @@ frequencies for the variants are provided in object ‘mafs’.</p>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] finimom_0.3.0</span></span>
+<span><span class="co">#&gt; [1] finimom_0.3.1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] digest_0.6.39     desc_1.4.3        R6_2.6.1          fastmap_1.2.0    </span></span>
 <span><span class="co">#&gt;  [5] xfun_0.60         cachem_1.1.0      knitr_1.51        htmltools_0.5.9  </span></span>
 <span><span class="co">#&gt;  [9] rmarkdown_2.31    lifecycle_1.0.5   cli_3.6.6         sass_0.4.10      </span></span>
 <span><span class="co">#&gt; [13] pkgdown_2.2.1     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2</span></span>
-<span><span class="co">#&gt; [17] compiler_4.6.1    tools_4.6.1       ragg_1.5.2        bslib_0.11.0     </span></span>
+<span><span class="co">#&gt; [17] compiler_4.6.1    tools_4.6.1       ragg_1.5.2        bslib_0.12.0     </span></span>
 <span><span class="co">#&gt; [21] evaluate_1.0.5    Rcpp_1.1.2        yaml_2.3.12       otel_0.2.0       </span></span>
 <span><span class="co">#&gt; [25] jsonlite_2.0.0    rlang_1.3.0       fs_2.1.0</span></span></code></pre></div>
 </div>
