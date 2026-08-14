@@ -106,4 +106,12 @@ credible_sets
 
 })
 
+
+dups <- sapply(sets1, function(x) any(duplicated(unlist(x))))
+if(any(dups)){
+  warning("Same variant in multiple credible sets for one trait - no credible sets provided. This is usually a symptom of an LD mismatch")
+  sets1 <- lapply(seq_along(sets1), function(x) NULL )
+}
+
+
 }
