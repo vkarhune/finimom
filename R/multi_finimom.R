@@ -147,7 +147,11 @@ multi_finimom <- function(beta, se, eaf, R,
       R = R[sapply(samples[[4]], "[", 1),sapply(samples[[4]], "[", 1)]
       )
 
-    sets <- lapply(seq_along(sets), function(i){ lapply(seq_len(num_signals[i]), function(j) sort(unlist(samples[[4]][sets[[i]][[j]]])) ) })
+    if(any(!(sapply(sets, is.null)))){
+      sets <- lapply(seq_along(sets), function(i){
+        lapply(seq_len(num_signals[i]), function(j) sort(unlist(samples[[4]][sets[[i]][[j]]])) )
+      })
+    }
 
     out <- list("samples" = samples, "sets" = sets)
 
