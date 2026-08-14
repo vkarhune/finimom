@@ -115,20 +115,10 @@ res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
 #> Clumping variants at r2=0.99
 #> Sampling from the posterior...
 #> 
-#> 62500 iterations done in 3.52 seconds
+#> 62500 iterations done in 3.69 seconds
 
 res$sets
-#> [[1]]
-#> [[1]][[1]]
-#> [1]  84 201 288
-#> 
-#> 
-#> [[2]]
-#> [[2]][[1]]
-#> [1] 590 598 603 645 653 671
-#> 
-#> [[2]][[2]]
-#> [1]  84 201 288
+#> list()
 ```
 
 ## Session information
