@@ -49,16 +49,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // ltotprior
-double ltotprior(arma::vec lpval, arma::vec msvec, int k, int maxs);
-RcppExport SEXP _finimom_ltotprior(SEXP lpvalSEXP, SEXP msvecSEXP, SEXP kSEXP, SEXP maxsSEXP) {
+double ltotprior(arma::vec lpriorv, arma::vec modsizev, int k);
+RcppExport SEXP _finimom_ltotprior(SEXP lpriorvSEXP, SEXP modsizevSEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type lpval(lpvalSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type msvec(msvecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type lpriorv(lpriorvSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type modsizev(modsizevSEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< int >::type maxs(maxsSEXP);
-    rcpp_result_gen = Rcpp::wrap(ltotprior(lpval, msvec, k, maxs));
+    rcpp_result_gen = Rcpp::wrap(ltotprior(lpriorv, modsizev, k));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -71,6 +70,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type gammavec(gammavecSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type probs(probsSEXP);
     rcpp_result_gen = Rcpp::wrap(lmultinom(gammavec, probs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lmultinommat
+double lmultinommat(arma::mat gammamat, arma::vec probs, int k);
+RcppExport SEXP _finimom_lmultinommat(SEXP gammamatSEXP, SEXP probsSEXP, SEXP kSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type gammamat(gammamatSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type probs(probsSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    rcpp_result_gen = Rcpp::wrap(lmultinommat(gammamat, probs, k));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -199,8 +211,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_finimom_arma_setdiff", (DL_FUNC) &_finimom_arma_setdiff, 2},
     {"_finimom_subset_vector", (DL_FUNC) &_finimom_subset_vector, 2},
     {"_finimom_set_vector_vals", (DL_FUNC) &_finimom_set_vector_vals, 3},
-    {"_finimom_ltotprior", (DL_FUNC) &_finimom_ltotprior, 4},
+    {"_finimom_ltotprior", (DL_FUNC) &_finimom_ltotprior, 3},
     {"_finimom_lmultinom", (DL_FUNC) &_finimom_lmultinom, 2},
+    {"_finimom_lmultinommat", (DL_FUNC) &_finimom_lmultinommat, 3},
     {"_finimom_lvarspecp", (DL_FUNC) &_finimom_lvarspecp, 3},
     {"_finimom_LMarlik", (DL_FUNC) &_finimom_LMarlik, 8},
     {"_finimom_gf", (DL_FUNC) &_finimom_gf, 7},

@@ -13,12 +13,16 @@ set_vector_vals <- function(x, pos, vals) {
     .Call(`_finimom_set_vector_vals`, x, pos, vals)
 }
 
-ltotprior <- function(lpval, msvec, k, maxs) {
-    .Call(`_finimom_ltotprior`, lpval, msvec, k, maxs)
+ltotprior <- function(lpriorv, modsizev, k) {
+    .Call(`_finimom_ltotprior`, lpriorv, modsizev, k)
 }
 
 lmultinom <- function(gammavec, probs) {
     .Call(`_finimom_lmultinom`, gammavec, probs)
+}
+
+lmultinommat <- function(gammamat, probs, k) {
+    .Call(`_finimom_lmultinommat`, gammamat, probs, k)
 }
 
 lvarspecp <- function(nonz, globalmodelsize, vprobs) {
