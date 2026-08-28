@@ -32,7 +32,7 @@ posterior_samples_multitrait <- function(
     a0 = 1, b0 = NULL, inds0 = NULL, standardize = NULL,
     verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
     Cmatmethod = "tcor",
-    num_eigen = 100,
+    num_eigen = "estimate",
     ala = NULL, h2cap = NULL, lam = NULL, collinear = collinear, zeta = zeta){
 
   if(is.null(k)) k <- length(beta)
@@ -96,7 +96,7 @@ posterior_samples_multitrait <- function(
     p <- length(keepinds)
 
     if(is.null(omega)){
-      omega <- rep(1/p, times = length(keepinds))
+      omega <- rep(1/p, times = p)
     }
 
     R <- R[keepinds, keepinds]
@@ -157,6 +157,14 @@ posterior_samples_multitrait <- function(
     }
   }
 
+  dat <- list(
+    beta = unlist(beta),
+    se = unlist(se),
+    LDmat = CkR,
+    LDglobal = R
+  )
+
+
   if(is.null(h2cap)){
     h2vals <- rep(0, k)
   } else if(h2cap){
@@ -166,6 +174,7 @@ posterior_samples_multitrait <- function(
 
     h2vals <- h2_cap(betalist = beta, LDmat = R, n_eigen = num_eigen,
                      h2leads = h2leads, verbose = verbose)
+
   } else {
     h2vals <- rep(0, k)
   }
@@ -174,21 +183,37 @@ posterior_samples_multitrait <- function(
   if(is.null(ala)) ala <- TRUE
   set.seed(seed)
 
-  dat <- list(
-    beta = unlist(beta),
-    se = unlist(se),
-    LDmat = CkR,
-    LDglobal = R
-  )
 
   if(k == 1){
     vsprobs <- 0
+    #lglobal <- rep(0, maxsize)
   } else {
-    vsprobs <- log(sapply(1:k, stats::dpois, lambda = lam)/(sum(sapply(1:k, stats::dpois, lambda = lam))))
+    vsprobs <- log(sapply(seq_len(k), stats::dpois, lambda = lam)/
+                     (sum(sapply(seq_len(k), stats::dpois, lambda = lam))))
+    #vsprobs <- rep(0, k + 1)
+    #vsprobs <- sapply(seq(0, k), stats::dbinom, size = k, prob = lam, log = TRUE)
+    #vsprobs <- sapply(seq(0, k), dbb, p = k, a = 1, b = p, log = TRUE)
+
+    if(0){
+    f <- function(x, p, a, maxsize, k){
+      lprobs <- sapply(seq_len(maxsize), function(y) lchoose(p, y) + lbeta(y + a, p - y + x) - lbeta(a, x) )
+      probs <- exp(lprobs - max(lprobs)) / sum(exp(lprobs - max(lprobs)))
+      out <- sum(probs*seq_len(maxsize)) - k
+      return(out)
+    }
+
+    bprime <- uniroot(f, c(1, p), p = p, a = 1, maxsize = maxsize, k = k)$root
+
+    # a_global <- 1
+    lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = bprime)
+    #lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = p)
+    lglobal <- log(exp(lglobal)/sum(exp(lglobal)))
+    }
   }
 
   if(length(n) == 1){ n <- rep(n, k) }
   taus <- sapply(seq_along(n), function(x) estimate_tau(n = n[x]))
+
 
 
     if(verbose){ cat(sprintf("Sampling from the posterior...\n")) }
@@ -202,6 +227,7 @@ posterior_samples_multitrait <- function(
                        k = k,
                        omega = omega,
                        vsprobs = vsprobs,
+                       #lglobal = lglobal,
                        collinear = collinear,
                        zeta = zeta,
                        h2cap = h2vals)

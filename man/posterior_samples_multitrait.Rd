@@ -30,7 +30,7 @@ posterior_samples_multitrait(
   clump_r2 = 0.99^2,
   check_ld = FALSE,
   Cmatmethod = "tcor",
-  num_eigen = 100,
+  num_eigen = "estimate",
   ala = NULL,
   h2cap = NULL,
   lam = NULL,

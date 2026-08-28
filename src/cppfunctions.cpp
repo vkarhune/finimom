@@ -56,20 +56,6 @@ arma::vec set_vector_vals(arma::vec x, arma::uvec pos, arma::vec vals) {
 }
 
 // [[Rcpp::export]]
-double ltotprior(arma::vec lpriorv, arma::vec modsizev, int k){
-
-  arma::vec subtot(k);
-
-  for(int j = 1; j <= k; ++j){
-    subtot(j - 1) = lpriorv(modsizev(j - 1) - 1);
-  }
-
-  //return(2.0);
-  return(arma::accu(subtot));
-
-}
-
-// [[Rcpp::export]]
 double lmultinom(arma::vec gammavec, arma::vec probs){
   // Function dm("dmultinom");
   Function lg("lgamma");
@@ -79,21 +65,7 @@ double lmultinom(arma::vec gammavec, arma::vec probs){
   // return *REAL(dm(gammavec, Named("prob") = probs, Named("log") = "TRUE"));
 }
 
-// [[Rcpp::export]]
-double lmultinommat(arma::mat gammamat, arma::vec probs, int k){
 
-  Function lg("lgamma");
-
-  arma::vec gammavec;
-  arma::vec subtot(k);
-
-  for(int j = 1; j <= k; ++j){
-    gammavec = gammamat.col(j - 1);
-    subtot(j - 1) = *REAL(lg(arma::accu(gammavec) + 1)) + arma::accu(gammavec % log(probs));
-  }
-
-  return(arma::accu(subtot));
-}
 
 // [[Rcpp::export]]
 double lvarspecp(arma::vec nonz, int globalmodelsize, arma::vec vprobs){
@@ -856,7 +828,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   arma::vec modelsizevec(k);
   arma::vec fullgammavec(p);
 
-  arma::vec ldmultinomvec(k);
+  // arma::vec ldmultinomvec(k);
 
   // arma::vec phenovec(niter);
   // arma::vec addvec(niter);
@@ -878,27 +850,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   arma::uvec globalinds;
   arma::vec globalnums(singlep);
 
-  // check if all omega values are unique
-  arma::vec uo;
-  bool allomegas;
-  arma::vec lmultinomvals(maxsize);
 
-
-  uo = unique(omega);
-  if(uo.size() == 1){
-    allomegas = true;
-
-    arma::vec tmpg(singlep);
-    tmpg = arma::zeros(singlep);
-
-    for(int j = 1; j <= maxsize; ++j){
-      tmpg(j - 1) = 1.0;
-      lmultinomvals(j - 1) = lmultinom(tmpg, omega);
-    }
-
-  } else {
-    allomegas = false;
-  }
 
   for(int j = 1; j <= k; ++j){
 
@@ -914,7 +866,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
     gammamat.col(j - 1) = gammavec;
 
 
-    ldmultinomvec(j - 1) = lmultinom(gammavec, omega);
+    // ldmultinomvec(j - 1) = lmultinom(gammavec, omega);
 
     // fullgammavec = set_vector_vals(); SEE LINE 946 and 982// ldmultinomvec(j - 1) = lmultinom(gammavec, omega.subvec(singlep*(j - 1), j*singlep - 1));
 
@@ -1030,12 +982,10 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
                      parsinit["tau"], 1, r, fullmodelsize, parsinit["LDmat"], gval);
   //  }
 
-  // lp = lm + lpriorval[modelsize - 1];
-
-  // lp = lm + ltotprior(lpriorval, modelsizevec, k, maxsize) + lmultinom(fullgammavec, omega); // lp = lm + ltotprior(lpriorval, modelsizevec, k, maxsize) + arma::accu(ldmultinomvec);
   // lp = lm + lpriorval[globalmodelsize - 1] + lmultinom(arma::clamp(globalnums, 0, 1), omega) + lvarspecp(arma::nonzeros(globalnums), globalmodelsize, vsprobs);
   // lp = lm + ltotprior(lpriorval, modelsizevec, k) + lmultinommat(gammamat, omega, k) + lvarspecp(arma::nonzeros(globalnums), globalmodelsize, vsprobs);
-  lp = lm + ltotprior(lpriorval, modelsizevec, k) + arma::accu(ldmultinomvec) + lvarspecp(arma::nonzeros(globalnums), globalmodelsize, vsprobs);
+  // lp = lm + lglobal(globalmodelsize - 1) + ltotprior(lpriorval, modelsizevec, k) + arma::accu(ldmultinomvec) + lvarspecp(arma::nonzeros(globalnums), globalmodelsize, vsprobs);
+  lp = lm + lpriorval(globalmodelsize - 1) + lmultinom(arma::clamp(globalnums, 0, 1), omega) + lvarspecp(arma::nonzeros(globalnums), globalmodelsize, vsprobs);
 
   val[0] = lm;
 
@@ -1070,7 +1020,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
   // globalmodelsizeprop defined earlier
 
   arma::vec indsproppheno;
-  arma::vec ldmultinomvecprop(k);
+  // arma::vec ldmultinomvecprop(k);
 
   // testing for now:
   // indsprop = inds;
@@ -1205,13 +1155,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
       fullgammavecprop = gammamatprop.as_col();
       indsprop = find(fullgammavecprop);
 
-      ldmultinomvecprop = ldmultinomvec;
-
-      if(allomegas == false){
-      for(int j = 1; j <= k; ++j){
-          ldmultinomvecprop(j - 1) = lmultinom(gammamatprop.col(j - 1), omega);
-      }
-      }
+      // ldmultinomvecprop = ldmultinomvec;
 
       //// define the proposed indices on the level of local vars
       //indsprop1 = arma::join_cols(arma_setdiff(arma::conv_to<arma::vec>::from(inds), as_scalar(swapindex) + singlep*phenoindexvec), as_scalar(addindex) + singlep*phenoindexvec);
@@ -1258,7 +1202,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
       modelsizevecprop = modelsizevec;
       gammamatprop = gammamat;
 
-      ldmultinomvecprop = ldmultinomvec;
+      // ldmultinomvecprop = ldmultinomvec;
 
 
       // randomly pick add = 1, delete = 0, swap = 2
@@ -1344,11 +1288,6 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
         globalindsprop = arma::find(globalnumsprop);
         globalmodelsizeprop = globalindsprop.size();
         // end addition
-        if(allomegas){
-          ldmultinomvecprop(pheno) = lmultinomvals(modelsizeprop - 1);
-        } else {
-          ldmultinomvecprop(pheno) = lmultinom(gammamatprop.col(pheno), omega);
-        }
 
         // probability of delete backwards
         // pbackward2 = 1.0/indsprop.size();
@@ -1425,11 +1364,6 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
           globalindsprop = arma::find(globalnumsprop);
           globalmodelsizeprop = globalindsprop.size();
           // end addition
-          if(allomegas){
-            ldmultinomvecprop(pheno) = lmultinomvals(modelsizeprop - 1);
-          } else {
-            ldmultinomvecprop(pheno) = lmultinom(gammamatprop.col(pheno), omega);
-          }
 
           // probability of swap backwards
           // pbackward2 = pforward2;
@@ -1497,11 +1431,6 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
           globalindsprop = arma::find(globalnumsprop);
           globalmodelsizeprop = globalindsprop.size();
           // end addition
-          if(allomegas){
-            ldmultinomvecprop(pheno) = lmultinomvals(modelsizeprop - 1);
-          } else {
-            ldmultinomvecprop(pheno) = lmultinom(gammamatprop.col(pheno), omega);
-          }
 
           // pforward2 = 1.0/inds.size();
           pforward2 = 1.0/modelsize;
@@ -1588,11 +1517,11 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
       lmlnew = LMarlikApprox(gvalpar, sematinvindsprop, subset_vector(z, indsprop),
                              subset_vector(tau, indsprop), 1, r, fullmodelsizeprop,
                              LDmatprop, gval);
-      // lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k, maxsize) + lmultinom(fullgammavecprop, omega);
-      // lpnew = lmlnew + lpriorval[globalmodelsizeprop - 1] + lmultinom(arma::clamp(globalnumsprop, 0, 1), omega) + lvectruncbinomial(globalnumsprop, globalmodelsizeprop, k, tbprob);
+
       // lpnew = lmlnew + lpriorval[globalmodelsizeprop - 1] + lmultinom(arma::clamp(globalnumsprop, 0, 1), omega) + lvarspecp(arma::nonzeros(globalnumsprop), globalmodelsizeprop, vsprobs);
       // lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k) + lmultinommat(gammamatprop, omega, k) + lvarspecp(arma::nonzeros(globalnumsprop), globalmodelsizeprop, vsprobs);
-      lpnew = lmlnew + ltotprior(lpriorval, modelsizevecprop, k) + arma::accu(ldmultinomvecprop) + lvarspecp(arma::nonzeros(globalnumsprop), globalmodelsizeprop, vsprobs);
+      // lpnew = lmlnew + lglobal(globalmodelsizeprop - 1) + ltotprior(lpriorval, modelsizevecprop, k) + arma::accu(ldmultinomvecprop) + lvarspecp(arma::nonzeros(globalnumsprop), globalmodelsizeprop, vsprobs);
+      lpnew = lmlnew + lpriorval(globalmodelsizeprop - 1) + lmultinom(arma::clamp(globalnumsprop, 0, 1), omega) + lvarspecp(arma::nonzeros(globalnumsprop), globalmodelsizeprop, vsprobs);
 
       betaprop = arma::zeros(p);
       betaprop = set_vector_vals(betaprop, indsprop, gvalpar);
@@ -1668,9 +1597,9 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
         h2vec = arma::zeros(k);
       } else {
         for(int q = 1; q <= k; ++q){
-          tmpind = find(gammamatprop.col(q - 1)) + singlep*(q - 1);
-          btemp = beta.elem(tmpind);
-          Rtemp = LDmat(tmpind, tmpind);
+          tmpind = find(gammamatprop.col(q - 1));
+          btemp = beta.elem(tmpind + singlep*(q - 1));
+          Rtemp = LDglobal(tmpind, tmpind);
 
           h2vec(q - 1) = arma::as_scalar(btemp.t() * inv(Rtemp) * btemp);
         }
@@ -1709,7 +1638,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
       globalnums = globalnumsprop;
       globalinds = globalindsprop;
       globalmodelsize = globalmodelsizeprop;
-      ldmultinomvec = ldmultinomvecprop;
+      // ldmultinomvec = ldmultinomvecprop;
 
 
 

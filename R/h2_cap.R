@@ -1,5 +1,10 @@
 h2_cap <- function(betalist, LDmat, n_eigen, h2leads, verbose = verbose){
 
+  if(n_eigen == "estimate"){
+    ldscores <- colSums(LDmat^2)
+    n_eigen <- 2*ceiling( nrow(LDmat)^2 / sum(ldscores) )
+  }
+
   cond <- FALSE
 
   while(!cond){
