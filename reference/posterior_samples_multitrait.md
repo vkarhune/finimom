@@ -31,12 +31,13 @@ posterior_samples_multitrait(
   clump_r2 = 0.99^2,
   check_ld = FALSE,
   Cmatmethod = "tcor",
-  num_eigen = "estimate",
+  num_eigen,
   ala = NULL,
   h2cap = NULL,
   lam = NULL,
   collinear = collinear,
-  zeta = zeta
+  zeta = zeta,
+  signcheck
 )
 ```
 
