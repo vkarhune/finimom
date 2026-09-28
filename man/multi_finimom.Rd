@@ -37,7 +37,9 @@ multi_finimom(
   cprior = NULL,
   collinear = sqrt(0.9),
   zeta = NULL,
-  Cmatmethod = "tcor"
+  Cmatmethod = "tcor",
+  num_eigen = NULL,
+  signcheck = FALSE
 )
 }
 \arguments{

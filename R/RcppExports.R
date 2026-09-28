@@ -13,6 +13,10 @@ set_vector_vals <- function(x, pos, vals) {
     .Call(`_finimom_set_vector_vals`, x, pos, vals)
 }
 
+ltotprior <- function(lpriorv, modsizev, k) {
+    .Call(`_finimom_ltotprior`, lpriorv, modsizev, k)
+}
+
 lmultinom <- function(gammavec, probs) {
     .Call(`_finimom_lmultinom`, gammavec, probs)
 }
@@ -41,7 +45,7 @@ posterior <- function(dat, tau, maxsize, r, p, niter, lpriorval, approx) {
     .Call(`_finimom_posterior`, dat, tau, maxsize, r, p, niter, lpriorval, approx)
 }
 
-posteriormv <- function(dat, tau, maxsize, r, p, niter, lpriorval, k, omega, vsprobs, collinear, zeta, h2cap) {
-    .Call(`_finimom_posteriormv`, dat, tau, maxsize, r, p, niter, lpriorval, k, omega, vsprobs, collinear, zeta, h2cap)
+posteriormv <- function(dat, tau, maxsize, r, p, niter, lpriorval, k, lglobal, omega, vsprobs, collinear, zeta, h2cap, signcheck) {
+    .Call(`_finimom_posteriormv`, dat, tau, maxsize, r, p, niter, lpriorval, k, lglobal, omega, vsprobs, collinear, zeta, h2cap, signcheck)
 }
 

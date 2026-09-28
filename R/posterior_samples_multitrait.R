@@ -32,8 +32,9 @@ posterior_samples_multitrait <- function(
     a0 = 1, b0 = NULL, inds0 = NULL, standardize = NULL,
     verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
     Cmatmethod = "tcor",
-    num_eigen = "estimate",
-    ala = NULL, h2cap = NULL, lam = NULL, collinear = collinear, zeta = zeta){
+    num_eigen,
+    ala = NULL, h2cap = NULL, lam = NULL, collinear = collinear, zeta = zeta,
+    signcheck){
 
   if(is.null(k)) k <- length(beta)
 
@@ -169,6 +170,10 @@ posterior_samples_multitrait <- function(
     h2vals <- rep(0, k)
   } else if(h2cap){
 
+    if(is.null(num_eigen)){
+      num_eigen <- "estimate"
+    }
+
     topzinds <- lapply(seq_len(k), function(i) which.max(abs(z[[i]])))
     h2leads <- lapply(seq_len(k), function(i) beta[[i]][topzinds[[i]]]^2)
 
@@ -186,15 +191,14 @@ posterior_samples_multitrait <- function(
 
   if(k == 1){
     vsprobs <- 0
-    #lglobal <- rep(0, maxsize)
+    lglobal <- rep(0, maxsize)
   } else {
-    vsprobs <- log(sapply(seq_len(k), stats::dpois, lambda = lam)/
-                     (sum(sapply(seq_len(k), stats::dpois, lambda = lam))))
-    #vsprobs <- rep(0, k + 1)
-    #vsprobs <- sapply(seq(0, k), stats::dbinom, size = k, prob = lam, log = TRUE)
-    #vsprobs <- sapply(seq(0, k), dbb, p = k, a = 1, b = p, log = TRUE)
+    #vsprobs <- log(sapply(seq_len(k), stats::dpois, lambda = lam)/
+    #                 (sum(sapply(seq_len(k), stats::dpois, lambda = lam))))
+    vsprobs <- log(c(1, sapply(seq_len(k-1), function(x) prod((1 - lam^(1:x))))) /
+                     (sum(c(1, sapply(seq_len(k-1), function(x) prod((1 - lam^(1:x))))))))
 
-    if(0){
+    #if(0){
     f <- function(x, p, a, maxsize, k){
       lprobs <- sapply(seq_len(maxsize), function(y) lchoose(p, y) + lbeta(y + a, p - y + x) - lbeta(a, x) )
       probs <- exp(lprobs - max(lprobs)) / sum(exp(lprobs - max(lprobs)))
@@ -202,13 +206,13 @@ posterior_samples_multitrait <- function(
       return(out)
     }
 
-    bprime <- uniroot(f, c(1, p), p = p, a = 1, maxsize = maxsize, k = k)$root
+    bprime <- stats::uniroot(f, c(1, p), p = p, a = 1, maxsize = maxsize, k = k)$root
 
     # a_global <- 1
     lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = bprime)
     #lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = p)
     lglobal <- log(exp(lglobal)/sum(exp(lglobal)))
-    }
+    #}
   }
 
   if(length(n) == 1){ n <- rep(n, k) }
@@ -227,10 +231,11 @@ posterior_samples_multitrait <- function(
                        k = k,
                        omega = omega,
                        vsprobs = vsprobs,
-                       #lglobal = lglobal,
+                       lglobal = lglobal,
                        collinear = collinear,
                        zeta = zeta,
-                       h2cap = h2vals)
+                       h2cap = h2vals,
+                       signcheck = signcheck)
 
     cat(sprintf("\n%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
 
