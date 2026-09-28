@@ -1534,6 +1534,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
 
 
     arma::mat LDmatprop = LDmat(indsprop, indsprop);
+    arma::mat LDmatgprop = LDglobal(globalindsprop, globalindsprop);
 
     arma::mat sematinvindsprop = sematinv(indsprop, indsprop);
 
@@ -1544,7 +1545,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
     } else{
 
       // arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
-      arma::mat LDmatupper = arma::abs(arma::trimatu(LDglobal(globalindsprop, globalindsprop), 1));
+      arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatgprop, 1));
       double mval = LDmatupper.max();
 
       if(mval <= collinear){
