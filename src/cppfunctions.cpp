@@ -1542,8 +1542,11 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
 
     if(k == 1 && modelsizeprop == 1){
       useala = true;
-    } else{
+    } else {
 
+      if(globalmodelsizeprop == 1){
+        useala = true;
+      } else {
       // arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatprop, 1));
       arma::mat LDmatupper = arma::abs(arma::trimatu(LDmatgprop, 1));
       double mval = LDmatupper.max();
@@ -1552,6 +1555,7 @@ Rcpp::List posteriormv(Rcpp::List dat, arma::vec tau, int maxsize, double r,
         useala = true;
       } else {
         useala = false;
+      }
       }
 
     }
