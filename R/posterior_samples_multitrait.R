@@ -33,8 +33,7 @@ posterior_samples_multitrait <- function(
     verbose = TRUE, clump = TRUE, clump_r2 = 0.99^2, check_ld = FALSE,
     Cmatmethod = "tcor",
     num_eigen,
-    ala = NULL, h2cap = NULL, lam = NULL, collinear = collinear, zeta = zeta,
-    signcheck){
+    ala = NULL, h2cap = NULL, lam = NULL, collinear = collinear, zeta = zeta){
 
   if(is.null(k)) k <- length(beta)
 

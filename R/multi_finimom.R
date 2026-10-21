@@ -49,7 +49,7 @@ multi_finimom <- function(beta, se, eaf, R,
                     #ala = NULL,
                     purity = 0.5,
                     h2cap = NULL, cprior = NULL, collinear = sqrt(0.9), zeta = NULL,
-                    Cmatmethod = "tcor", num_eigen = NULL, signcheck = FALSE){
+                    Cmatmethod = "tcor", num_eigen = NULL){
 
   if(0){
   # all checks here
@@ -130,8 +130,7 @@ multi_finimom <- function(beta, se, eaf, R,
       a0 = a0, b0 = b0, inds0 = inds0, standardize = standardize,
       verbose = verbose, clump = clump, clump_r2 = clump_r2, check_ld = check_ld,
       ala = TRUE,
-      h2cap = h2cap, num_eigen = num_eigen, lam = cprior, collinear = collinear, zeta = zeta,
-      signcheck = signcheck*1
+      h2cap = h2cap, num_eigen = num_eigen, lam = cprior, collinear = collinear, zeta = zeta
     )
 
     p_clumped <- length(samples[[4]])
