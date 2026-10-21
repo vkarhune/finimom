@@ -116,7 +116,7 @@ res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
                     clump = TRUE, clump_r2 = 0.995^2, check_ld = TRUE,
                     u = 2,
                     purity = 0.5,
-                    h2cap = NULL, cprior = 0.1, zeta = 0.5)
+                    h2cap = NULL, cprior = 0.95, zeta = 0.5)
 
 res$sets
 
