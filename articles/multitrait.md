@@ -111,11 +111,11 @@ res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
                     clump = TRUE, clump_r2 = 0.995^2, check_ld = TRUE,
                     u = 2,
                     purity = 0.5,
-                    h2cap = NULL, cprior = 0.1, zeta = 0.5)
+                    h2cap = NULL, cprior = 0.95, zeta = 0.5)
 #> Clumping variants at r2=0.99
 #> Sampling from the posterior...
 #> 
-#> 62500 iterations done in 2.65 seconds
+#> 62500 iterations done in 2.73 seconds
 
 res$sets
 #> [[1]]
