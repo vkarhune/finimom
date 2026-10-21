@@ -191,28 +191,12 @@ posterior_samples_multitrait <- function(
 
   if(k == 1){
     vsprobs <- 0
-    lglobal <- rep(0, maxsize)
   } else {
     #vsprobs <- log(sapply(seq_len(k), stats::dpois, lambda = lam)/
     #                 (sum(sapply(seq_len(k), stats::dpois, lambda = lam))))
     vsprobs <- log(c(1, sapply(seq_len(k-1), function(x) prod((1 - lam^(1:x))))) /
                      (sum(c(1, sapply(seq_len(k-1), function(x) prod((1 - lam^(1:x))))))))
 
-    #if(0){
-    f <- function(x, p, a, maxsize, k){
-      lprobs <- sapply(seq_len(maxsize), function(y) lchoose(p, y) + lbeta(y + a, p - y + x) - lbeta(a, x) )
-      probs <- exp(lprobs - max(lprobs)) / sum(exp(lprobs - max(lprobs)))
-      out <- sum(probs*seq_len(maxsize)) - k
-      return(out)
-    }
-
-    bprime <- stats::uniroot(f, c(1, p), p = p, a = 1, maxsize = maxsize, k = k)$root
-
-    # a_global <- 1
-    lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = bprime)
-    #lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = p)
-    lglobal <- log(exp(lglobal)/sum(exp(lglobal)))
-    #}
   }
 
   if(length(n) == 1){ n <- rep(n, k) }
@@ -231,11 +215,9 @@ posterior_samples_multitrait <- function(
                        k = k,
                        omega = omega,
                        vsprobs = vsprobs,
-                       lglobal = lglobal,
                        collinear = collinear,
                        zeta = zeta,
-                       h2cap = h2vals,
-                       signcheck = signcheck)
+                       h2cap = h2vals)
 
     cat(sprintf("\n%i iterations done in %.2f seconds\n", niter, (proc.time() - prc)[[3]]))
 
