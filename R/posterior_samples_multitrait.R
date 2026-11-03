@@ -190,18 +190,22 @@ posterior_samples_multitrait <- function(
 
   if(k == 1){
     vsprobs <- 0
+    lglobal <- rep(0, maxsize)
   } else {
     #vsprobs <- log(sapply(seq_len(k), stats::dpois, lambda = lam)/
     #                 (sum(sapply(seq_len(k), stats::dpois, lambda = lam))))
     vsprobs <- log(c(1, sapply(seq_len(k-1), function(x) prod((1 - lam^(1:x))))) /
                      (sum(c(1, sapply(seq_len(k-1), function(x) prod((1 - lam^(1:x))))))))
 
+    bprime <- stats::uniroot(truncbb, c(1, p), p = p, a = 1, maxsize = maxsize, k = k)$root
+
+    lglobal <- sapply(seq_len(maxsize), dbb, p = p, a = 1, b = bprime)
+    lglobal <- log(exp(lglobal)/sum(exp(lglobal)))
+
   }
 
   if(length(n) == 1){ n <- rep(n, k) }
   taus <- sapply(seq_along(n), function(x) estimate_tau(n = n[x]))
-
-
 
     if(verbose){ cat(sprintf("Sampling from the posterior...\n")) }
     prc <- proc.time()
@@ -214,6 +218,7 @@ posterior_samples_multitrait <- function(
                        k = k,
                        omega = omega,
                        vsprobs = vsprobs,
+                       lglobal = lglobal,
                        collinear = collinear,
                        zeta = zeta,
                        h2cap = h2vals)
