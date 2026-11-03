@@ -115,20 +115,17 @@ res <- multi_finimom(beta = beta, se = se, eaf = mafs, R = LDmat,
 #> Clumping variants at r2=0.99
 #> Sampling from the posterior...
 #> 
-#> 62500 iterations done in 3.76 seconds
+#> 62500 iterations done in 3.86 seconds
 
 res$sets
 #> [[1]]
 #> [[1]][[1]]
-#> [1]  84 201 288
+#> [1] 260 281 318 420 609 620 689
 #> 
 #> 
 #> [[2]]
 #> [[2]][[1]]
 #> [1] 590 598 603 645 653 671
-#> 
-#> [[2]][[2]]
-#> [1]  84 201 288
 ```
 
 ## Session information
@@ -137,13 +134,13 @@ res$sets
 
 
 sessionInfo()
-#> R version 4.6.1 (2026-06-24)
+#> R version 4.6.2 (2026-10-29)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.5 LTS
+#> Running under: Ubuntu 26.04.1 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
+#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.32.so;  LAPACK version 3.12.0
 #> 
 #> locale:
 #>  [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
@@ -165,7 +162,7 @@ sessionInfo()
 #>  [5] xfun_0.62         cachem_1.1.0      knitr_1.52        htmltools_0.5.9  
 #>  [9] rmarkdown_2.32    lifecycle_1.0.5   cli_3.6.6         sass_0.4.10      
 #> [13] pkgdown_2.2.1     textshaping_1.0.5 jquerylib_0.1.4   systemfonts_1.3.2
-#> [17] compiler_4.6.1    tools_4.6.1       ragg_1.5.2        bslib_0.12.0     
+#> [17] compiler_4.6.2    tools_4.6.2       ragg_1.5.2        bslib_0.12.0     
 #> [21] evaluate_1.0.5    Rcpp_1.1.2        yaml_2.3.12       otel_0.2.0       
 #> [25] jsonlite_2.0.0    rlang_1.3.0       fs_2.1.0
 ```
